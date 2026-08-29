@@ -8,6 +8,10 @@ export class SearchPage {
   readonly resultCount;
   readonly resultsGrid;
   readonly pagination;
+  readonly postalCodeFilter;
+  readonly cityFilter;
+  readonly statusFilter;
+  readonly activeFilters;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -17,6 +21,10 @@ export class SearchPage {
     this.resultCount = page.getByRole('status');
     this.resultsGrid = page.getByTestId('results-grid');
     this.pagination = page.locator('#pagination');
+    this.postalCodeFilter = page.getByRole('textbox', { name: 'Code postal', exact: true });
+    this.cityFilter = page.getByRole('textbox', { name: 'Commune', exact: true });
+    this.statusFilter = page.getByRole('combobox', { name: 'État', exact: true });
+    this.activeFilters = page.getByTestId('active-filters');
   }
 
   async goto() {
@@ -27,6 +35,10 @@ export class SearchPage {
   async submit(query: string) {
     await this.queryInput.fill(query);
     await this.searchButton.click();
+  }
+
+  async showAdvancedFilters() {
+    await this.page.getByText('Filtres avancés', { exact: true }).click();
   }
 
   companyCard(siren: string) {
