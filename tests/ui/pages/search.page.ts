@@ -12,6 +12,10 @@ export class SearchPage {
   readonly cityFilter;
   readonly statusFilter;
   readonly activeFilters;
+  readonly previousPageButton;
+  readonly nextPageButton;
+  readonly pageLabel;
+  readonly resultsPerPageFilter;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -25,6 +29,13 @@ export class SearchPage {
     this.cityFilter = page.getByRole('textbox', { name: 'Commune', exact: true });
     this.statusFilter = page.getByRole('combobox', { name: 'État', exact: true });
     this.activeFilters = page.getByTestId('active-filters');
+    this.previousPageButton = page.getByRole('button', { name: 'Précédent' });
+    this.nextPageButton = page.getByRole('button', { name: 'Suivant' });
+    this.pageLabel = this.pagination.getByText(/^Page \d+ \/ \d+$/);
+    this.resultsPerPageFilter = page.getByRole('combobox', {
+      name: 'Résultats / page',
+      exact: true,
+    });
   }
 
   async goto() {
@@ -39,6 +50,10 @@ export class SearchPage {
 
   async showAdvancedFilters() {
     await this.page.getByText('Filtres avancés', { exact: true }).click();
+  }
+
+  async selectPageSize(size: string) {
+    await this.resultsPerPageFilter.selectOption(size);
   }
 
   companyCard(siren: string) {

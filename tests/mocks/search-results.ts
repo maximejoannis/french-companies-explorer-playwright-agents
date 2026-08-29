@@ -38,3 +38,35 @@ export const emptySearchResponse = {
   results: [],
   total_results: 0,
 };
+
+export const paginationCompanies = [
+  mockedCompanies[0],
+  mockedCompanies[1],
+  {
+    siren: '333333333',
+    nom_complet: 'GAMMA CONSEIL',
+    etat_administratif: 'A',
+    libelle_activite_principale: 'Conseil pour les affaires',
+    date_creation: '2020-01-15',
+    siege: {
+      siret: '33333333300033',
+      code_postal: '33000',
+      libelle_commune: 'BORDEAUX',
+    },
+  },
+] as const;
+
+export function paginatedSearchResponse(
+  company: (typeof paginationCompanies)[number],
+  page: number,
+  totalResults: number,
+  perPage = 20,
+) {
+  return {
+    results: [company],
+    total_results: totalResults,
+    page,
+    per_page: perPage,
+    total_pages: Math.ceil(totalResults / perPage),
+  };
+}
