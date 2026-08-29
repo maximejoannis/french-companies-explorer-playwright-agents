@@ -16,6 +16,8 @@ export class SearchPage {
   readonly nextPageButton;
   readonly pageLabel;
   readonly resultsPerPageFilter;
+  readonly sortSelect;
+  readonly companyCards;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -36,6 +38,8 @@ export class SearchPage {
       name: 'Résultats / page',
       exact: true,
     });
+    this.sortSelect = page.getByRole('combobox', { name: 'Trier par', exact: true });
+    this.companyCards = this.resultsGrid.locator('[data-testid^="company-card-"]');
   }
 
   async goto() {
@@ -54,6 +58,17 @@ export class SearchPage {
 
   async selectPageSize(size: string) {
     await this.resultsPerPageFilter.selectOption(size);
+  }
+
+  async selectSort(value: string) {
+    await this.sortSelect.selectOption(value);
+  }
+
+  async visibleSirens() {
+    const testIds = await this.companyCards.evaluateAll((cards) =>
+      cards.map((card) => card.getAttribute('data-testid')),
+    );
+    return testIds.map((testId) => testId?.replace('company-card-', '') ?? '');
   }
 
   companyCard(siren: string) {
