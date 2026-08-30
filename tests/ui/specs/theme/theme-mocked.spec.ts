@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 
 const APP_URL = 'https://maximejoannis.github.io/french-companies-explorer-qa/';
 const API_URL = 'https://recherche-entreprises.api.gouv.fr/search';
@@ -49,6 +50,12 @@ function expectNoApiActivity(requests: ApiRequest[]) {
   expect(requests).toEqual([]);
   expect(requests.filter(({ method }) => WRITE_METHODS.has(method))).toEqual([]);
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Theme');
+  await allure.story('US-THEME-01 — Choisir et conserver le thème d’affichage');
+});
 
 test('TC-THEME-001 @regression applique et persiste les deux thèmes', async ({ page }) => {
   // Couvre US-THEME-01 / AC-01, AC-02, AC-03, AC-04, AC-09, AC-10, AC-12

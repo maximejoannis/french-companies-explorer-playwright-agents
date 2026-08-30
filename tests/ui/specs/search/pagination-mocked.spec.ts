@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { paginatedSearchResponse, paginationCompanies } from '../../../mocks/search-results';
 import { SearchPage } from '../../pages/search.page';
 
@@ -16,6 +17,12 @@ async function routeResponses(page: Page, responses: unknown[], requests: URL[])
     responseIndex += 1;
   });
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Pagination');
+  await allure.story('US-PAGINATION-01 — Parcourir les pages de résultats');
+});
 
 test('TC-PAGINATION-002 @positive représente les limites de première et dernière page', async ({
   page,

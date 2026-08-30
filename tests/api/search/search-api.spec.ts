@@ -1,6 +1,13 @@
 import { expect, test } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 
 const API_URL = 'https://recherche-entreprises.api.gouv.fr/search';
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Search');
+  await allure.story('US-SEARCH-01 — Rechercher une entreprise');
+});
 
 test('TC-SEARCH-001 @positive contrat minimal d’une recherche textuelle', async ({ request }) => {
   // Couvre US-SEARCH-01 / AC-01

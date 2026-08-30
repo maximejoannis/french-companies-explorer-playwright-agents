@@ -1,4 +1,5 @@
 import { expect, test, type APIResponse } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 
 const API_URL = 'https://recherche-entreprises.api.gouv.fr/search';
 const PER_PAGE = 2;
@@ -30,6 +31,12 @@ async function readPaginatedResponse(response: APIResponse) {
   );
   return body as PaginatedResponse;
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Pagination');
+  await allure.story('US-PAGINATION-01 — Parcourir les pages de résultats');
+});
 
 test('TC-PAGINATION-001 @positive expose des pages API cohérentes et distinctes', async ({
   request,

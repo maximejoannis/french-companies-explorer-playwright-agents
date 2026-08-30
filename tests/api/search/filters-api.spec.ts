@@ -1,4 +1,5 @@
 import { expect, test, type APIResponse } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 
 const API_URL = 'https://recherche-entreprises.api.gouv.fr/search';
 const GENERIC_QUERY = 'restaurant';
@@ -39,6 +40,12 @@ async function readSearchResponse(response: APIResponse) {
   );
   return body as SearchResponse;
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Filters');
+  await allure.story('US-FILTERS-01 — Filtrer les entreprises recherchées');
+});
 
 test('TC-FILTERS-001 @positive filtre réellement par code postal', async ({ request }) => {
   // Couvre US-FILTERS-01 / AC-01, contribution AC-07

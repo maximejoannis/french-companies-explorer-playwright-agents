@@ -1,4 +1,5 @@
 import { expect, test, type Browser, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import {
   alphaCompareCompany,
   betaCompareCompany,
@@ -131,6 +132,12 @@ async function expectComparisonValues(search: SearchPage, companies: CompareComp
     }
   }
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Compare');
+  await allure.story('US-COMPARE-01 — Comparer plusieurs entreprises');
+});
 
 test('TC-COMPARE-001 @positive sélectionne uniquement Alpha sans doublon', async ({ page }) => {
   // Couvre US-COMPARE-01 / AC-01, AC-03, AC-04, AC-12

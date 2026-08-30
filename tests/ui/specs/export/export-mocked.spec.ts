@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test, type Locator, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { alphaCompany, betaCompany } from '../../../mocks/detail-results';
 import {
   emptySearchResponse,
@@ -126,6 +127,12 @@ async function localStorageSnapshot(page: Page) {
     ),
   );
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Export');
+  await allure.story('US-EXPORT-01 — Exporter les résultats de recherche en JSON ou CSV');
+});
 
 test('TC-EXPORT-001 @regression exporte la représentation JSON normalisée', async ({ page }) => {
   // Couvre US-EXPORT-01 / AC-01, AC-02, AC-08, AC-09, AC-10, AC-11

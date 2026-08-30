@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import {
   statsAlpha,
   statsBeta,
@@ -55,6 +56,12 @@ async function expectStats(search: SearchPage, expected: ExpectedStats) {
     ),
   );
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Stats');
+  await allure.story('US-STATS-01 — Consulter les statistiques de la page courante');
+});
 
 test('TC-STATS-001 @positive calcule les indicateurs sur la page affichée', async ({ page }) => {
   // Couvre US-STATS-01 / AC-01, AC-02

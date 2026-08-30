@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { SearchPage } from '../../pages/search.page';
 
 interface ApiCompany {
@@ -19,6 +20,12 @@ function companyName(company: ApiCompany) {
   }
   return undefined;
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Detail');
+  await allure.story('US-DETAIL-01 — Consulter le détail d’une entreprise');
+});
 
 test('TC-DETAIL-005 @smoke @positive relie un résultat API réel à sa fiche locale', async ({
   page,

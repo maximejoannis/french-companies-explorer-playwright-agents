@@ -1,4 +1,5 @@
 import { expect, test, type Browser, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { mockedSearchResponse } from '../../../mocks/search-results';
 import { SearchPage } from '../../pages/search.page';
 
@@ -108,6 +109,12 @@ async function prepareSearch(page: Page) {
   await search.goto();
   return { search, apiRequests };
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Saved Searches');
+  await allure.story('US-SAVED-SEARCH-01 — Sauvegarder et réutiliser une recherche');
+});
 
 test('TC-SAVED-001 @regression crée explicitement une recherche sous un nom exploitable', async ({
   page,

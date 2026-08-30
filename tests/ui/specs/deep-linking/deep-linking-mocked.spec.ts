@@ -1,4 +1,5 @@
 import { expect, test, type Browser, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { mockedCompanies, mockedSearchResponse } from '../../../mocks/search-results';
 import { SearchPage } from '../../pages/search.page';
 
@@ -56,6 +57,12 @@ async function storedValues(page: Page, keys: string[]) {
     return Object.fromEntries(storageKeys.map((key) => [key, localStorage.getItem(key)]));
   }, keys);
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Deep Linking');
+  await allure.story('US-DEEP-LINKING-01 — Restaurer une recherche depuis l’URL');
+});
 
 test('TC-DEEP-LINK-001 @regression restaure un deep link complet', async ({ page }) => {
   // Couvre US-DEEP-LINKING-01 / AC-01, AC-02, AC-03, AC-04, AC-05, AC-10, AC-11, AC-12

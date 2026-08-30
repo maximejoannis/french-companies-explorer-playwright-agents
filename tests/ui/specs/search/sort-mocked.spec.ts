@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import {
   newSearchSortCompanies,
   nextPageSortCompanies,
@@ -29,6 +30,12 @@ async function routeResponses(page: Page, responses: unknown[], requests: URL[])
     responseIndex += 1;
   });
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Sort');
+  await allure.story('US-SORT-01 — Trier les résultats');
+});
 
 test('TC-SORT-001 vérifie les options et l’ordre initial de pertinence', async ({ page }) => {
   // Couvre US-SORT-01 / AC-01, contribution AC-09

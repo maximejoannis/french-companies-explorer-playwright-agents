@@ -1,4 +1,5 @@
 import { expect, test, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import {
   emptySearchResponse,
   mockedCompanies,
@@ -11,6 +12,12 @@ const API_PATTERN = 'https://recherche-entreprises.api.gouv.fr/search**';
 async function mockJson(route: Route, body: unknown) {
   await route.fulfill({ status: 200, contentType: 'application/json', json: body });
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Search');
+  await allure.story('US-SEARCH-01 — Rechercher une entreprise');
+});
 
 test('TC-SEARCH-002 @positive reconnaît et autorise un SIREN', async ({ page }) => {
   // Couvre US-SEARCH-01 / AC-02

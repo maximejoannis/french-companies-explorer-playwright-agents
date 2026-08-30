@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { SearchPage } from '../../pages/search.page';
 
 interface ApiCompany {
@@ -13,6 +14,12 @@ interface ApiCompany {
 interface SearchResponse {
   results: ApiCompany[];
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Search');
+  await allure.story('US-SEARCH-01 — Rechercher une entreprise');
+});
 
 test('TC-SEARCH-010 @smoke @positive affiche une recherche textuelle réelle cohérente', async ({
   page,

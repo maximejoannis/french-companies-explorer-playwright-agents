@@ -1,4 +1,5 @@
 import { expect, test, type Browser, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { mockedCompanies, mockedSearchResponse } from '../../../mocks/search-results';
 import { SearchPage } from '../../pages/search.page';
 
@@ -51,6 +52,12 @@ function expectNoFavoriteApiActivity(requests: string[], countBefore: number) {
   expect(requests).toHaveLength(countBefore);
   expect(requests.filter((method) => WRITE_METHODS.has(method))).toEqual([]);
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Favorites');
+  await allure.story('US-FAVORITES-01 — Gérer des entreprises favorites');
+});
 
 test('TC-FAVORITES-001 @positive associe correctement et conserve un favori unique', async ({
   page,

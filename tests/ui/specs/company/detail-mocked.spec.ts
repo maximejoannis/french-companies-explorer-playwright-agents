@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import {
   alphaCompany,
   betaCompany,
@@ -23,6 +24,12 @@ async function routeResponses(page: Page, responses: unknown[], requests: URL[])
     await mockJson(route, response);
   });
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Detail');
+  await allure.story('US-DETAIL-01 — Consulter le détail d’une entreprise');
+});
 
 test('TC-DETAIL-001 @positive associe la carte choisie à sa fiche complète', async ({ page }) => {
   // Couvre US-DETAIL-01 / AC-01, AC-02, AC-03, AC-04, contribution AC-09

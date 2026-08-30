@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { SearchPage } from '../../pages/search.page';
 
 const EMPTY_STATE = 'Aucune entreprise ne correspond à cette recherche.';
@@ -18,6 +19,12 @@ async function expectSuccessfulOutcome(search: SearchPage, companies: ApiCompany
   const stateText = await search.searchState.textContent();
   expect([visibleCards.includes(true), stateText === EMPTY_STATE]).toContain(true);
 }
+
+test.beforeEach(async () => {
+  await allure.epic('French Companies Explorer');
+  await allure.feature('Filters');
+  await allure.story('US-FILTERS-01 — Filtrer les entreprises recherchées');
+});
 
 test.fixme('TC-FILTERS-009 @regression BUG-001 filtre réellement avec une commune textuelle', async ({
   page,
