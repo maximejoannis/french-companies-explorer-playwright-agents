@@ -22,6 +22,9 @@ export class SearchPage {
   readonly detailView;
   readonly detailContent;
   readonly backToResultsButton;
+  readonly favoritesView;
+  readonly favoritesNavigationButton;
+  readonly clearSearchButton;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -48,6 +51,9 @@ export class SearchPage {
     this.detailView = page.locator('#detailView');
     this.detailContent = this.detailView;
     this.backToResultsButton = page.getByRole('button', { name: '← Retour aux résultats' });
+    this.favoritesView = page.locator('#favoritesView');
+    this.favoritesNavigationButton = page.getByRole('button', { name: 'Favoris', exact: true });
+    this.clearSearchButton = page.getByRole('button', { name: 'Réinitialiser', exact: true });
   }
 
   async goto() {
@@ -83,11 +89,31 @@ export class SearchPage {
     return this.page.getByTestId(`company-card-${siren}`);
   }
 
+  companyFavoriteButton(siren: string) {
+    return this.companyCard(siren).locator('button.fav');
+  }
+
+  detailFavoriteButton() {
+    return this.detailView.locator('#detailFav');
+  }
+
+  favoriteCard(siren: string) {
+    return this.favoritesView.locator('article.company').filter({ hasText: `SIREN ${siren}` });
+  }
+
+  favoriteCardButton(siren: string) {
+    return this.favoriteCard(siren).locator('button.fav');
+  }
+
   async openCompanyDetail(siren: string) {
     await this.companyCard(siren).getByRole('button', { name: 'Voir la fiche' }).click();
   }
 
   async backToResults() {
     await this.backToResultsButton.click();
+  }
+
+  async openFavorites() {
+    await this.favoritesNavigationButton.click();
   }
 }

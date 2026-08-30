@@ -18,30 +18,30 @@ La fiche détail constitue la continuité naturelle d’une recherche : elle per
 
 Cette User Story couvre :
 
-* l’accès au détail depuis un résultat de recherche ;
-* l’identification de l’entreprise sélectionnée ;
-* l’affichage des principales informations disponibles dans la vue détail ;
-* la cohérence entre l’entreprise sélectionnée et le détail affiché ;
-* le comportement lorsque certaines informations sont absentes ;
-* la fermeture ou le retour depuis le détail, selon le mécanisme réellement proposé ;
-* la conservation raisonnable du contexte de recherche après consultation du détail ;
-* l’accessibilité observable du mécanisme d’ouverture et de fermeture ;
-* la cohérence entre données reçues et données affichées dans le détail.
+- l’accès au détail depuis un résultat de recherche ;
+- l’identification de l’entreprise sélectionnée ;
+- l’affichage des principales informations disponibles dans la vue détail ;
+- la cohérence entre l’entreprise sélectionnée et le détail affiché ;
+- le comportement lorsque certaines informations sont absentes ;
+- la fermeture ou le retour depuis le détail, selon le mécanisme réellement proposé ;
+- la conservation raisonnable du contexte de recherche après consultation du détail ;
+- l’accessibilité observable du mécanisme d’ouverture et de fermeture ;
+- la cohérence entre données reçues et données affichées dans le détail.
 
 Cette User Story ne couvre pas :
 
-* les règles de recherche ;
-* les règles métier des filtres ;
-* le tri ;
-* la pagination ;
-* les favoris ;
-* la comparaison ;
-* l’historique ;
-* les recherches sauvegardées ;
-* l’export JSON ou CSV ;
-* la modification d’une entreprise ;
-* la création ou suppression de données ;
-* une validation exhaustive de tous les champs du contrat API.
+- les règles de recherche ;
+- les règles métier des filtres ;
+- le tri ;
+- la pagination ;
+- les favoris ;
+- la comparaison ;
+- l’historique ;
+- les recherches sauvegardées ;
+- l’export JSON ou CSV ;
+- la modification d’une entreprise ;
+- la création ou suppression de données ;
+- une validation exhaustive de tous les champs du contrat API.
 
 ---
 
@@ -78,15 +78,15 @@ Le Planner doit explorer précisément les champs réellement présentés dans l
 
 Parmi les informations potentiellement concernées par l’application figurent notamment :
 
-* SIREN ;
-* SIRET du siège ;
-* activité ;
-* statut administratif ;
-* date de création ;
-* localisation ;
-* catégorie d’entreprise ;
-* tranche d’effectifs ;
-* nombre d’établissements.
+- SIREN ;
+- SIRET du siège ;
+- activité ;
+- statut administratif ;
+- date de création ;
+- localisation ;
+- catégorie d’entreprise ;
+- tranche d’effectifs ;
+- nombre d’établissements.
 
 Cette liste sert de périmètre d’exploration et ne doit pas être transformée automatiquement en assertion exhaustive si l’interface ne présente pas tous ces champs dans la vue détail.
 
@@ -108,10 +108,10 @@ Le test doit être capable de détecter une erreur de sélection, un décalage d
 **lorsque** son détail est affiché,
 **alors** l’interface doit gérer cette absence sans afficher une valeur technique incohérente telle que :
 
-* `undefined` ;
-* `null` ;
-* `[object Object]` ;
-* une exception JavaScript visible.
+- `undefined` ;
+- `null` ;
+- `[object Object]` ;
+- une exception JavaScript visible.
 
 Le comportement attendu exact — valeur de remplacement, champ masqué ou autre présentation — doit être déterminé pendant l’exploration.
 
@@ -125,12 +125,12 @@ Le comportement attendu exact — valeur de remplacement, champ masqué ou autre
 
 Le Planner doit déterminer le mécanisme exact :
 
-* bouton de fermeture ;
-* bouton retour ;
-* dialogue ;
-* panneau ;
-* navigation ;
-* ou autre comportement observable.
+- bouton de fermeture ;
+- bouton retour ;
+- dialogue ;
+- panneau ;
+- navigation ;
+- ou autre comportement observable.
 
 ---
 
@@ -142,12 +142,12 @@ Le Planner doit déterminer le mécanisme exact :
 
 Le Planner doit explorer notamment :
 
-* si les résultats restent présents ;
-* si la recherche est relancée ;
-* si la page courante est conservée ;
-* si le tri courant est conservé ;
-* si les filtres visibles sont conservés ;
-* si une nouvelle requête API est déclenchée.
+- si les résultats restent présents ;
+- si la recherche est relancée ;
+- si la page courante est conservée ;
+- si le tri courant est conservé ;
+- si les filtres visibles sont conservés ;
+- si une nouvelle requête API est déclenchée.
 
 Ce critère ne demande pas de retester intégralement recherche, filtres, tri ou pagination. Il vérifie uniquement que la consultation du détail ne détruit pas involontairement le contexte existant.
 
@@ -161,9 +161,9 @@ Ce critère ne demande pas de retester intégralement recherche, filtres, tri ou
 
 Le Planner doit déterminer si l’ouverture du détail :
 
-* réutilise les données déjà chargées ;
-* effectue une nouvelle requête ;
-* ou combine les deux mécanismes.
+- réutilise les données déjà chargées ;
+- effectue une nouvelle requête ;
+- ou combine les deux mécanismes.
 
 Les tests doivent être placés au niveau adapté au comportement réellement observé.
 
@@ -177,11 +177,11 @@ Les tests doivent être placés au niveau adapté au comportement réellement ob
 
 Le Planner doit observer notamment :
 
-* rôle du contrôle d’ouverture ;
-* nom accessible ;
-* rôle éventuel du détail ou du dialogue ;
-* nom accessible du contrôle de fermeture ;
-* comportement du focus si celui-ci est pertinent et observable.
+- rôle du contrôle d’ouverture ;
+- nom accessible ;
+- rôle éventuel du détail ou du dialogue ;
+- nom accessible du contrôle de fermeture ;
+- comportement du focus si celui-ci est pertinent et observable.
 
 Ce critère ne constitue pas un audit WCAG complet.
 
@@ -191,17 +191,17 @@ Ce critère ne constitue pas un audit WCAG complet.
 
 Les principaux risques sont :
 
-* ouverture du détail de la mauvaise entreprise ;
-* décalage entre la carte sélectionnée et les données détaillées ;
-* données principales manquantes ou incorrectement formatées ;
-* affichage de `undefined`, `null` ou d’une représentation technique ;
-* fermeture impossible ou peu fiable ;
-* perte des résultats après fermeture ;
-* nouvelle requête réseau inutile lors d’une simple ouverture/fermeture ;
-* perte de la page, du tri ou des filtres courants ;
-* données provenant d’une ancienne réponse après une nouvelle recherche ;
-* sélecteurs d’automatisation fragiles alors que des contrôles accessibles existent ;
-* duplication inutile de tests déjà présents sur le rendu des cartes.
+- ouverture du détail de la mauvaise entreprise ;
+- décalage entre la carte sélectionnée et les données détaillées ;
+- données principales manquantes ou incorrectement formatées ;
+- affichage de `undefined`, `null` ou d’une représentation technique ;
+- fermeture impossible ou peu fiable ;
+- perte des résultats après fermeture ;
+- nouvelle requête réseau inutile lors d’une simple ouverture/fermeture ;
+- perte de la page, du tri ou des filtres courants ;
+- données provenant d’une ancienne réponse après une nouvelle recherche ;
+- sélecteurs d’automatisation fragiles alors que des contrôles accessibles existent ;
+- duplication inutile de tests déjà présents sur le rendu des cartes.
 
 ---
 
@@ -211,12 +211,12 @@ Le niveau de test doit être déterminé après exploration.
 
 Le Planner doit privilégier `UI_MOCKED` pour :
 
-* le rendu détaillé déterministe ;
-* la sélection entre plusieurs entreprises ;
-* les valeurs absentes ;
-* la fermeture ;
-* la préservation du contexte ;
-* les états difficiles à garantir avec les données publiques.
+- le rendu détaillé déterministe ;
+- la sélection entre plusieurs entreprises ;
+- les valeurs absentes ;
+- la fermeture ;
+- la préservation du contexte ;
+- les états difficiles à garantir avec les données publiques.
 
 Un `E2E_REAL` peut être pertinent pour démontrer une frontière d’intégration réelle entre :
 
@@ -236,19 +236,19 @@ Si la vue détail ne déclenche aucun endpoint distinct et réutilise simplement
 
 Le Planner doit :
 
-* tester au niveau le plus bas apportant suffisamment de confiance ;
-* explorer avant de supposer le fonctionnement du détail ;
-* distinguer données de carte et données uniquement visibles dans le détail ;
-* utiliser plusieurs entreprises synthétiques pour détecter une mauvaise association ;
-* privilégier des assertions sur les informations métier utiles plutôt qu’une photographie complète du DOM ;
-* ne pas vérifier deux fois les informations déjà suffisamment couvertes sur la carte si cela n’apporte pas de confiance supplémentaire ;
-* utiliser une entreprise avec des champs complets et une entreprise avec des champs facultatifs absents ;
-* éviter toute dépendance à un SIREN réel pour les tests déterministes ;
-* tolérer l’évolution des données publiques dans un éventuel `E2E_REAL` ;
-* ne pas utiliser `waitForTimeout` ;
-* ne pas utiliser `networkidle` comme synchronisation générique ;
-* utiliser les mécanismes observables de Playwright ;
-* conserver une question fonctionnelle principale par TC.
+- tester au niveau le plus bas apportant suffisamment de confiance ;
+- explorer avant de supposer le fonctionnement du détail ;
+- distinguer données de carte et données uniquement visibles dans le détail ;
+- utiliser plusieurs entreprises synthétiques pour détecter une mauvaise association ;
+- privilégier des assertions sur les informations métier utiles plutôt qu’une photographie complète du DOM ;
+- ne pas vérifier deux fois les informations déjà suffisamment couvertes sur la carte si cela n’apporte pas de confiance supplémentaire ;
+- utiliser une entreprise avec des champs complets et une entreprise avec des champs facultatifs absents ;
+- éviter toute dépendance à un SIREN réel pour les tests déterministes ;
+- tolérer l’évolution des données publiques dans un éventuel `E2E_REAL` ;
+- ne pas utiliser `waitForTimeout` ;
+- ne pas utiliser `networkidle` comme synchronisation générique ;
+- utiliser les mécanismes observables de Playwright ;
+- conserver une question fonctionnelle principale par TC.
 
 ---
 
@@ -262,9 +262,9 @@ Elle doit disposer de valeurs discriminantes pour les champs réellement affich�
 
 Les données doivent permettre de vérifier que :
 
-* la bonne entreprise a été ouverte ;
-* plusieurs informations détaillées proviennent bien du bon objet ;
-* aucune donnée de l’autre entreprise n’est mélangée.
+- la bonne entreprise a été ouverte ;
+- plusieurs informations détaillées proviennent bien du bon objet ;
+- aucune donnée de l’autre entreprise n’est mélangée.
 
 ## Entreprise partielle
 
@@ -320,12 +320,12 @@ Si cette frontière est déjà suffisamment démontrée par un test existant, n�
 
 Si un E2E est retenu :
 
-* ne dépends pas d’un nom d’entreprise fixe ;
-* ne dépends pas d’un SIREN fixe ;
-* ne dépends pas d’un nombre exact de résultats ;
-* sélectionne dynamiquement une entreprise exploitable ;
-* compare uniquement des données observables obtenues pendant le scénario ;
-* évite toute assertion volatile non nécessaire.
+- ne dépends pas d’un nom d’entreprise fixe ;
+- ne dépends pas d’un SIREN fixe ;
+- ne dépends pas d’un nombre exact de résultats ;
+- sélectionne dynamiquement une entreprise exploitable ;
+- compare uniquement des données observables obtenues pendant le scénario ;
+- évite toute assertion volatile non nécessaire.
 
 ---
 
@@ -337,16 +337,16 @@ Dérive des cas :
 
 Pour chaque cas, indique :
 
-* identifiant ;
-* question principale ;
-* objectif ;
-* AC couvert(s) ;
-* préconditions ;
-* étapes essentielles ;
-* résultat attendu ;
-* niveau `API`, `UI_MOCKED` ou `E2E_REAL` ;
-* priorité ;
-* justification du niveau.
+- identifiant ;
+- question principale ;
+- objectif ;
+- AC couvert(s) ;
+- préconditions ;
+- étapes essentielles ;
+- résultat attendu ;
+- niveau `API`, `UI_MOCKED` ou `E2E_REAL` ;
+- priorité ;
+- justification du niveau.
 
 Recherche un plan compact.
 
@@ -360,12 +360,12 @@ Plusieurs vérifications peuvent appartenir au même TC lorsqu’elles réponden
 
 Si l’exploration révèle un défaut produit :
 
-* conserve le résultat attendu de la User Story ;
-* ne transforme pas le défaut en exigence ;
-* documente l’écart dans le plan ;
-* propose le prochain identifiant `BUG-xxx` disponible ;
-* associe un TC de non-régression ;
-* ne corrige pas le produit pendant la phase Planner.
+- conserve le résultat attendu de la User Story ;
+- ne transforme pas le défaut en exigence ;
+- documente l’écart dans le plan ;
+- propose le prochain identifiant `BUG-xxx` disponible ;
+- associe un TC de non-régression ;
+- ne corrige pas le produit pendant la phase Planner.
 
 ---
 
@@ -377,14 +377,14 @@ Produis une matrice finale :
 
 Termine par :
 
-* critères entièrement couverts ;
-* éventuels trous de couverture ;
-* doublons volontairement évités ;
-* scénarios volontairement non automatisés ;
-* anomalies observées ;
-* ambiguïtés de spécification ;
-* justification des niveaux choisis ;
-* justification explicite de la présence ou de l’absence d’un test `API` ;
-* justification explicite de la présence ou de l’absence d’un nouvel `E2E_REAL`.
+- critères entièrement couverts ;
+- éventuels trous de couverture ;
+- doublons volontairement évités ;
+- scénarios volontairement non automatisés ;
+- anomalies observées ;
+- ambiguïtés de spécification ;
+- justification des niveaux choisis ;
+- justification explicite de la présence ou de l’absence d’un test `API` ;
+- justification explicite de la présence ou de l’absence d’un nouvel `E2E_REAL`.
 
 Ne génère aucun code Playwright pendant cette étape.
