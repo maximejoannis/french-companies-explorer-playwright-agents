@@ -25,6 +25,7 @@ export class SearchPage {
   readonly favoritesView;
   readonly favoritesNavigationButton;
   readonly clearSearchButton;
+  readonly statsPanel;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -54,6 +55,7 @@ export class SearchPage {
     this.favoritesView = page.locator('#favoritesView');
     this.favoritesNavigationButton = page.getByRole('button', { name: 'Favoris', exact: true });
     this.clearSearchButton = page.getByRole('button', { name: 'Réinitialiser', exact: true });
+    this.statsPanel = page.getByTestId('results-stats');
   }
 
   async goto() {
@@ -103,6 +105,10 @@ export class SearchPage {
 
   favoriteCardButton(siren: string) {
     return this.favoriteCard(siren).locator('button.fav');
+  }
+
+  statsBlock(label: string) {
+    return this.statsPanel.locator('article').filter({ hasText: label });
   }
 
   async openCompanyDetail(siren: string) {
