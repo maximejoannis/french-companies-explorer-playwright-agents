@@ -35,6 +35,8 @@ export class SearchPage {
   readonly historyNavigationButton;
   readonly historyList;
   readonly clearHistoryButton;
+  readonly saveSearchButton;
+  readonly savedSearchesList;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -81,6 +83,11 @@ export class SearchPage {
       name: 'Effacer',
       exact: true,
     });
+    this.saveSearchButton = page.getByRole('button', {
+      name: 'Sauvegarder la recherche',
+      exact: true,
+    });
+    this.savedSearchesList = this.historyView.locator('#savedSearchesList');
   }
 
   async goto() {
@@ -175,6 +182,27 @@ export class SearchPage {
   historyRelaunchButton(query: string, visibleCriteria?: string) {
     return this.historyEntry(query, visibleCriteria).getByRole('button', {
       name: 'Relancer',
+      exact: true,
+    });
+  }
+
+  savedSearchEntry(name: string, query: string) {
+    return this.savedSearchesList
+      .locator('article')
+      .filter({ has: this.page.getByText(name, { exact: true }) })
+      .filter({ has: this.page.getByText(query, { exact: true }) });
+  }
+
+  savedSearchLaunchButton(name: string, query: string) {
+    return this.savedSearchEntry(name, query).getByRole('button', {
+      name: 'Lancer',
+      exact: true,
+    });
+  }
+
+  savedSearchDeleteButton(name: string, query: string) {
+    return this.savedSearchEntry(name, query).getByRole('button', {
+      name: '×',
       exact: true,
     });
   }
