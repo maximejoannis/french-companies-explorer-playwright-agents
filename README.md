@@ -5,7 +5,9 @@
 ![Playwright](https://img.shields.io/badge/Playwright-1.62-45ba4b?logo=playwright&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.x-3178C6?logo=typescript&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-24%20CI-339933?logo=nodedotjs&logoColor=white)
-![Chromium](https://img.shields.io/badge/Browser-Chromium-4285F4?logo=googlechrome&logoColor=white)
+![Chromium](https://img.shields.io/badge/Chromium-Full%20Suite-4285F4?logo=googlechrome&logoColor=white)
+![Firefox](https://img.shields.io/badge/Firefox-UI%20Smoke-FF7139?logo=firefoxbrowser&logoColor=white)
+![WebKit](https://img.shields.io/badge/WebKit-UI%20Smoke-1F6FEB?logo=safari&logoColor=white)
 ![Allure](https://img.shields.io/badge/Report-Allure-ff69b4)
 ![ESLint](https://img.shields.io/badge/ESLint-10.x-4B32C3?logo=eslint&logoColor=white)
 ![Prettier](https://img.shields.io/badge/Prettier-3.x-F7B93E?logo=prettier&logoColor=black)
@@ -185,24 +187,27 @@ Les locators accessibles (`getByRole`, `getByLabel`, `getByText`) sont privilég
 
 - Git ;
 - Node.js et npm ;
-- Chromium Playwright.
+- Chromium Playwright pour la baseline complète ;
+- Firefox et WebKit Playwright pour la campagne cross-browser ciblée.
 
 ```powershell
 git clone https://github.com/maximejoannis/french-companies-explorer-playwright-agents.git
 cd french-companies-explorer-playwright-agents
 npm ci
 npx playwright install chromium
+npx playwright install firefox webkit
 ```
 
 ## Exécuter les tests
 
-La configuration cible Chromium et l'application publique définie par `baseURL`.
+La baseline complète cible Chromium. Une campagne complémentaire réexécute uniquement les deux tests UI `@smoke` sur Firefox et WebKit, sans créer de nouveaux Test Cases fonctionnels.
 
-| Commande              | Usage                                  |
-| --------------------- | -------------------------------------- |
-| `npm test`            | Suite complète sur Chromium            |
-| `npm run test:headed` | Suite complète avec navigateur visible |
-| `npm run test:ui`     | Interface Playwright UI Mode           |
+| Commande                     | Usage                                  |
+| ---------------------------- | -------------------------------------- |
+| `npm test`                   | Suite complète sur Chromium            |
+| `npm run test:headed`        | Suite complète avec navigateur visible |
+| `npm run test:ui`            | Interface Playwright UI Mode           |
+| `npm run test:cross-browser` | Smoke UI ciblé sur Firefox et WebKit   |
 
 Exemples de campagnes directes supportées par les tags existants :
 
@@ -261,6 +266,8 @@ npm run coverage:report
 
 Le rapport `coverage-report/` calcule depuis les US, plans, tests et défauts les Features, TC planifiés et automatisés, niveaux de test, tags et dettes connues.
 
+Les exécutions Firefox et WebKit sont des réexécutions cross-browser de TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 84 et ne modifient pas la répartition 6 `API` / 75 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts séparés.
+
 ### Qualité
 
 ```powershell
@@ -283,10 +290,11 @@ Push main / PR / workflow_dispatch
 → qualité
 → couverture QA
 → installation Chromium
-→ tests Playwright
+→ baseline Playwright complète sur Chromium
 → génération Allure
 → validation des rapports
 → artifact qa-reports
+→ matrix smoke UI Firefox / WebKit
 → GitHub Pages hors PR
 → quality gate final
 ```
@@ -294,9 +302,10 @@ Push main / PR / workflow_dispatch
 - une **pull request** exécute les validations et produit les artefacts sans déployer Pages ;
 - sur **main** ou lors d'un déclenchement approprié hors PR, le portail est construit puis déployé ;
 - l'artefact consolidé `qa-reports` conserve les rapports pendant 30 jours ;
-- le quality gate exige le succès de la qualité, de la couverture, des tests et d'Allure, ainsi que du déploiement lorsqu'il est attendu.
+- les artefacts `cross-browser-smoke-firefox` et `cross-browser-smoke-webkit` conservent séparément les preuves ciblées ;
+- le quality gate exige aussi le succès des smokes Firefox et WebKit, ainsi que du déploiement lorsqu'il est attendu.
 
-La CI utilise Node.js 24, Java 17 pour Allure, Chromium, deux retries et un worker Playwright.
+La CI utilise Node.js 24, Java 17 pour Allure, Chromium pour la baseline, puis une matrix Firefox/WebKit pour les tests UI `@smoke`. Les réglages Playwright conservent deux retries et un worker en CI.
 
 ## Playwright Test Agents et Codex
 

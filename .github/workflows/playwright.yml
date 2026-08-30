@@ -194,10 +194,49 @@ jobs:
         with:
           path: pages-site/
 
+  cross-browser:
+    name: Cross-browser UI smoke (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install ${{ matrix.browser }}
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run UI smoke on ${{ matrix.browser }}
+        run: npx playwright test tests/ui --project=${{ matrix.browser }} --grep "@smoke"
+
+      - name: Upload ${{ matrix.browser }} smoke reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-browser-smoke-${{ matrix.browser }}
+          path: |
+            playwright-report/
+            allure-results/
+            test-results/results.json
+          if-no-files-found: warn
+          retention-days: 30
+
   deploy:
     name: Deploy QA portal to GitHub Pages
-    needs: validate
-    if: ${{ github.event_name != 'pull_request' && needs.validate.result == 'success' }}
+    needs: [validate, cross-browser]
+    if: ${{ github.event_name != 'pull_request' && needs.validate.result == 'success' && needs.cross-browser.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -213,7 +252,7 @@ jobs:
   quality-gate:
     name: Final quality gate
     if: ${{ always() }}
-    needs: [validate, deploy]
+    needs: [validate, cross-browser, deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Verify QA statuses
@@ -221,6 +260,7 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           VALIDATE_RESULT: ${{ needs.validate.result }}
+          CROSS_BROWSER_RESULT: ${{ needs.cross-browser.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
           QUALITY_OUTCOME: ${{ needs.validate.outputs.quality }}
           COVERAGE_OUTCOME: ${{ needs.validate.outputs.coverage }}
@@ -228,6 +268,7 @@ jobs:
           ALLURE_OUTCOME: ${{ needs.validate.outputs.allure }}
         run: |
           test "$VALIDATE_RESULT" = "success"
+          test "$CROSS_BROWSER_RESULT" = "success"
           test "$QUALITY_OUTCOME" = "success"
           test "$COVERAGE_OUTCOME" = "success"
           test "$FUNCTIONAL_OUTCOME" = "success"

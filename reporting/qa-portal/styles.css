@@ -366,7 +366,7 @@ h2 {
 }
 .strategy-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
 .strategy-grid article {
@@ -425,7 +425,7 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
   .strategy-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   .heading,
   .known__card {
@@ -438,6 +438,9 @@ button:focus-visible {
     display: none;
   }
   .metrics {
+    grid-template-columns: 1fr;
+  }
+  .strategy-grid {
     grid-template-columns: 1fr;
   }
   .pipeline dl {
