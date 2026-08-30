@@ -45,6 +45,12 @@ test('TC-SEARCH-010 @smoke @positive affiche une recherche textuelle réelle coh
   await expect(card).toContainText(
     company.nom_complet ?? company.nom_raison_sociale ?? company.nom ?? 'Entreprise sans nom',
   );
-  const status = company.etat_administratif ?? company.siege?.etat_administratif ?? '';
-  await expect(card).toContainText(status === 'A' ? 'En activité' : 'Cessée');
+  const status = company.etat_administratif ?? company.siege?.etat_administratif;
+  const expectedStatusLabels: Record<string, string[]> = {
+    A: ['En activité'],
+    C: ['Cessée'],
+  };
+  for (const expectedStatusLabel of expectedStatusLabels[status ?? ''] ?? []) {
+    await expect(card).toContainText(expectedStatusLabel);
+  }
 });

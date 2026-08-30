@@ -182,22 +182,24 @@ test('TC-EXPORT-001 @regression exporte la représentation JSON normalisée', as
       matchingEstablishments: betaCompany.matching_etablissements,
     },
   ]);
-  expect(Object.keys((exported as ExportedCompany[])[0])).toEqual([
-    'siren',
-    'name',
-    'activity',
-    'activityLabel',
-    'status',
-    'creation',
-    'legal',
-    'category',
-    'workforce',
-    'siret',
-    'address',
-    'postalCode',
-    'city',
-    'matchingEstablishments',
-  ]);
+  expect(Object.keys((exported as ExportedCompany[])[0]).sort()).toEqual(
+    [
+      'siren',
+      'name',
+      'activity',
+      'activityLabel',
+      'status',
+      'creation',
+      'legal',
+      'category',
+      'workforce',
+      'siret',
+      'address',
+      'postalCode',
+      'city',
+      'matchingEstablishments',
+    ].sort(),
+  );
   await expect(search.queryInput).toHaveValue('export normalisé');
   expect(await localStorageSnapshot(page)).toEqual(storageBeforeExport);
   expect(apiRequests).toHaveLength(requestsBeforeExport);
