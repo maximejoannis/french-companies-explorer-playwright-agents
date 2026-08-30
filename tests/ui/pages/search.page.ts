@@ -18,6 +18,10 @@ export class SearchPage {
   readonly resultsPerPageFilter;
   readonly sortSelect;
   readonly companyCards;
+  readonly searchView;
+  readonly detailView;
+  readonly detailContent;
+  readonly backToResultsButton;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -40,6 +44,10 @@ export class SearchPage {
     });
     this.sortSelect = page.getByRole('combobox', { name: 'Trier par', exact: true });
     this.companyCards = this.resultsGrid.locator('[data-testid^="company-card-"]');
+    this.searchView = page.locator('#searchView');
+    this.detailView = page.locator('#detailView');
+    this.detailContent = this.detailView;
+    this.backToResultsButton = page.getByRole('button', { name: '← Retour aux résultats' });
   }
 
   async goto() {
@@ -73,5 +81,13 @@ export class SearchPage {
 
   companyCard(siren: string) {
     return this.page.getByTestId(`company-card-${siren}`);
+  }
+
+  async openCompanyDetail(siren: string) {
+    await this.companyCard(siren).getByRole('button', { name: 'Voir la fiche' }).click();
+  }
+
+  async backToResults() {
+    await this.backToResultsButton.click();
   }
 }
