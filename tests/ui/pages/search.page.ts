@@ -31,6 +31,10 @@ export class SearchPage {
   readonly compareNavigationButton;
   readonly compareTable;
   readonly toast;
+  readonly historyView;
+  readonly historyNavigationButton;
+  readonly historyList;
+  readonly clearHistoryButton;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -68,6 +72,15 @@ export class SearchPage {
       .getByRole('button', { name: 'Comparer', exact: true });
     this.compareTable = this.compareView.locator('table');
     this.toast = page.locator('#toast');
+    this.historyView = page.locator('#historyView');
+    this.historyNavigationButton = page
+      .getByRole('navigation')
+      .getByRole('button', { name: 'Historique', exact: true });
+    this.historyList = this.historyView.locator('#historyList');
+    this.clearHistoryButton = this.historyView.getByRole('button', {
+      name: 'Effacer',
+      exact: true,
+    });
   }
 
   async goto() {
@@ -151,6 +164,21 @@ export class SearchPage {
       .nth(columnIndex - 1);
   }
 
+  historyEntry(query: string, visibleCriteria?: string) {
+    let entry = this.historyList
+      .locator('article')
+      .filter({ has: this.page.getByText(query, { exact: true }) });
+    if (visibleCriteria !== undefined) entry = entry.filter({ hasText: visibleCriteria });
+    return entry;
+  }
+
+  historyRelaunchButton(query: string, visibleCriteria?: string) {
+    return this.historyEntry(query, visibleCriteria).getByRole('button', {
+      name: 'Relancer',
+      exact: true,
+    });
+  }
+
   statsBlock(label: string) {
     return this.statsPanel.locator('article').filter({ hasText: label });
   }
@@ -173,5 +201,9 @@ export class SearchPage {
 
   async openSearch() {
     await this.searchNavigationButton.click();
+  }
+
+  async openHistory() {
+    await this.historyNavigationButton.click();
   }
 }
