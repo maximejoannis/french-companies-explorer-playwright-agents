@@ -37,6 +37,8 @@ export class SearchPage {
   readonly clearHistoryButton;
   readonly saveSearchButton;
   readonly savedSearchesList;
+  readonly exportJsonButton;
+  readonly exportCsvButton;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -88,6 +90,8 @@ export class SearchPage {
       exact: true,
     });
     this.savedSearchesList = this.historyView.locator('#savedSearchesList');
+    this.exportJsonButton = page.getByRole('button', { name: 'Exporter JSON', exact: true });
+    this.exportCsvButton = page.getByRole('button', { name: 'Exporter CSV', exact: true });
   }
 
   async goto() {
