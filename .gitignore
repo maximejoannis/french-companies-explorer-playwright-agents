@@ -5,6 +5,9 @@ test-results/
 
 allure-results/
 allure-report/
+quality-report/
+coverage-report/
+pages-site/
 
 .env
 .env.*

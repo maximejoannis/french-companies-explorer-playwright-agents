@@ -5,6 +5,18 @@ import prettier from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
+  {
+    ignores: [
+      'allure-report/**',
+      'allure-results/**',
+      'coverage-report/**',
+      'pages-site/**',
+      'playwright-report/**',
+      'quality-report/**',
+      'test-results/**',
+    ],
+  },
+
   js.configs.recommended,
 
   ...tseslint.configs.recommended,
@@ -14,6 +26,31 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         ...globals.node,
+      },
+    },
+  },
+
+  {
+    files: ['reporting/scripts/**/*.{js,mjs}'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+
+  {
+    files: ['reporting/scripts/**/*.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+
+  {
+    files: ['reporting/{coverage,qa-portal}/app.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
       },
     },
   },

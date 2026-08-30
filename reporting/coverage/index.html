@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Couverture QA automatisée de French Companies Explorer." />
+    <title>Couverture QA — French Companies Explorer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./coverage-data.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Aller au contenu</a>
+    <header class="topbar">
+      <div class="container">
+        <strong>French Companies Explorer</strong><a href="../index.html">Portail QA</a>
+      </div>
+    </header>
+    <main id="content" class="container">
+      <section class="hero">
+        <p class="eyebrow">Traçabilité dynamique</p>
+        <h1>Couverture QA</h1>
+        <p>
+          Mesure statique des User Stories, Test Cases, niveaux et défauts documentés à partir des
+          sources du dépôt.
+        </p>
+      </section>
+      <section class="metrics" aria-label="Indicateurs de couverture">
+        <article><strong id="featuresMetric">—</strong><span>Features automatisées</span></article>
+        <article><strong id="testsMetric">—</strong><span>TC automatisés</span></article>
+        <article><strong id="activeMetric">—</strong><span>TC actifs</span></article>
+        <article><strong id="fixmeMetric">—</strong><span>fixme connus</span></article>
+      </section>
+      <section class="panel">
+        <div class="heading">
+          <div>
+            <p class="eyebrow">Niveaux</p>
+            <h2>Répartition de la stratégie</h2>
+          </div>
+          <p>Chaque TC est compté une seule fois selon sa frontière principale.</p>
+        </div>
+        <div id="levels" class="levels"></div>
+      </section>
+      <section class="panel">
+        <div class="heading">
+          <div>
+            <p class="eyebrow">Feature → Story → TC</p>
+            <h2>Couverture par Feature</h2>
+          </div>
+          <p id="coverageSummary"></p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>User Story</th>
+                <th>TC</th>
+                <th>Actifs</th>
+                <th>Fixme</th>
+                <th>Niveaux</th>
+              </tr>
+            </thead>
+            <tbody id="featuresTable"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="split">
+        <article class="panel">
+          <p class="eyebrow">Traçabilité TC</p>
+          <h2>Plans et automatisation</h2>
+          <dl id="traceability"></dl>
+          <div id="traceabilityWarnings" class="notice"></div>
+        </article>
+        <article class="panel">
+          <p class="eyebrow">Tags et défauts</p>
+          <h2>Indicateurs documentés</h2>
+          <div id="tags" class="chips"></div>
+          <dl id="defects"></dl>
+        </article>
+      </section>
+      <p class="generated">
+        Généré le <span id="generatedAt">—</span>. Un TC actif n’est pas présenté comme passé sans
+        résultat runtime.
+      </p>
+    </main>
+  </body>
+</html>

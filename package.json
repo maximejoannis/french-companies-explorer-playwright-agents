@@ -13,7 +13,9 @@
     "format:check": "prettier . --check",
     "typecheck": "tsc --noEmit",
     "allure:generate": "allure generate allure-results --clean -o allure-report",
-    "allure:open": "allure open allure-report"
+    "allure:open": "allure open allure-report",
+    "coverage:report": "node reporting/scripts/generate-coverage-report.js",
+    "quality:report": "node reporting/scripts/generate-quality-report.mjs"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,237 @@
+name: Playwright QA
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qa-pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate and build QA reports
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    outputs:
+      quality: ${{ steps.quality.outcome }}
+      coverage: ${{ steps.coverage.outcome }}
+      functional: ${{ steps.functional.outcome }}
+      allure: ${{ steps.allure.outcome }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Set up Java for Allure
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate quality report
+        id: quality
+        continue-on-error: true
+        run: npm run quality:report
+
+      - name: Generate QA coverage report
+        id: coverage
+        continue-on-error: true
+        run: npm run coverage:report
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        id: functional
+        continue-on-error: true
+        run: npm test
+
+      - name: Generate Allure report
+        id: allure
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: npm run allure:generate
+
+      - name: Validate generated reports
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          test -f playwright-report/index.html
+          test -f allure-report/index.html
+          test -f quality-report/index.html
+          test -f quality-report/summary.json
+          test -f coverage-report/index.html
+          test -f coverage-report/data.json
+          test -f test-results/results.json
+          node --check reporting/qa-portal/app.js
+          node --check reporting/coverage/app.js
+          node --check reporting/scripts/generate-coverage-report.js
+          node --check reporting/scripts/generate-quality-report.mjs
+
+      - name: Upload consolidated QA reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-reports
+          path: |
+            playwright-report/
+            allure-report/
+            allure-results/
+            quality-report/
+            coverage-report/
+            test-results/results.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Build GitHub Pages site
+        if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+        shell: bash
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          QUALITY_OUTCOME: ${{ steps.quality.outcome }}
+          COVERAGE_OUTCOME: ${{ steps.coverage.outcome }}
+          FUNCTIONAL_OUTCOME: ${{ steps.functional.outcome }}
+          ALLURE_OUTCOME: ${{ steps.allure.outcome }}
+        run: |
+          mkdir -p pages-site/allure pages-site/functional pages-site/quality pages-site/coverage
+          cp -R reporting/qa-portal/. pages-site/
+          cp -R allure-report/. pages-site/allure/
+          cp -R playwright-report/. pages-site/functional/
+          cp -R quality-report/. pages-site/quality/
+          cp -R coverage-report/. pages-site/coverage/
+          node <<'NODE'
+          const fs = require('node:fs');
+          const readJson = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
+          const coverage = readJson('coverage-report/data.json');
+          const quality = readJson('quality-report/summary.json');
+          const playwright = readJson('test-results/results.json');
+          const outcomes = {
+            quality: process.env.QUALITY_OUTCOME,
+            coverage: process.env.COVERAGE_OUTCOME,
+            functional: process.env.FUNCTIONAL_OUTCOME,
+            allure: process.env.ALLURE_OUTCOME,
+          };
+          const runtime = { total: 0, passed: 0, failed: 0, skipped: 0 };
+          const visit = (suite) => {
+            for (const spec of suite.specs ?? []) {
+              for (const test of spec.tests ?? []) {
+                runtime.total += 1;
+                const result = test.results?.at(-1);
+                const status = result?.status;
+                if (status === 'passed' && test.status !== 'unexpected') runtime.passed += 1;
+                else if (status === 'skipped' || test.status === 'skipped') runtime.skipped += 1;
+                else runtime.failed += 1;
+              }
+            }
+            for (const child of suite.suites ?? []) visit(child);
+          };
+          for (const suite of playwright.suites ?? []) visit(suite);
+          const report = (name, directory) => ({
+            available: fs.existsSync(`${directory}/index.html`),
+            status: outcomes[name] === 'success' ? 'passed' : 'failed',
+          });
+          const buildInfo = {
+            schemaVersion: 1,
+            status: Object.values(outcomes).every((outcome) => outcome === 'success') ? 'passed' : 'failed',
+            generatedAt: new Date().toISOString(),
+            branch: process.env.BRANCH_NAME,
+            commit: process.env.COMMIT_SHA.slice(0, 7),
+            workflowUrl: process.env.WORKFLOW_URL,
+            reports: {
+              functional: report('functional', 'playwright-report'),
+              allure: report('allure', 'allure-report'),
+              quality: report('quality', 'quality-report'),
+              coverage: report('coverage', 'coverage-report'),
+            },
+            coverage: {
+              features: coverage.features,
+              testCases: {
+                planned: coverage.testCases.planned,
+                automated: coverage.testCases.automated,
+                active: coverage.testCases.active,
+                fixme: coverage.testCases.fixme,
+              },
+              levels: coverage.levels,
+              tags: coverage.tags,
+              defects: coverage.defects,
+            },
+            runtime,
+            quality: {
+              overallStatus: quality.overallStatus,
+              eslint: quality.eslint,
+              prettier: quality.prettier,
+              typescript: quality.typescript,
+            },
+          };
+          fs.writeFileSync('pages-site/build-info.json', `${JSON.stringify(buildInfo, null, 2)}\n`);
+          NODE
+          touch pages-site/.nojekyll
+
+      - name: Configure GitHub Pages
+        if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages-site/
+
+  deploy:
+    name: Deploy QA portal to GitHub Pages
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' && needs.validate.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  quality-gate:
+    name: Final quality gate
+    if: ${{ always() }}
+    needs: [validate, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify QA statuses
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          VALIDATE_RESULT: ${{ needs.validate.result }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+          QUALITY_OUTCOME: ${{ needs.validate.outputs.quality }}
+          COVERAGE_OUTCOME: ${{ needs.validate.outputs.coverage }}
+          FUNCTIONAL_OUTCOME: ${{ needs.validate.outputs.functional }}
+          ALLURE_OUTCOME: ${{ needs.validate.outputs.allure }}
+        run: |
+          test "$VALIDATE_RESULT" = "success"
+          test "$QUALITY_OUTCOME" = "success"
+          test "$COVERAGE_OUTCOME" = "success"
+          test "$FUNCTIONAL_OUTCOME" = "success"
+          test "$ALLURE_OUTCOME" = "success"
+          if [ "$EVENT_NAME" != "pull_request" ]; then
+            test "$DEPLOY_RESULT" = "success"
+          fi

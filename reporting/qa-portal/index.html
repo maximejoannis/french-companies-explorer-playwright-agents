@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Portail des preuves QA automatisées de French Companies Explorer."
+    />
+    <title>Portail QA — French Companies Explorer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Aller au contenu principal</a>
+    <header class="topbar">
+      <div class="container topbar__content">
+        <a class="brand" href="./"
+          ><span class="brand__icon" aria-hidden="true">F</span
+          ><span
+            ><strong>French Companies Explorer</strong
+            ><small>Portail d'assurance qualité</small></span
+          ></a
+        >
+        <nav aria-label="Liens du projet">
+          <a href="https://maximejoannis.github.io/french-companies-explorer-qa/">Application</a
+          ><a href="https://github.com/maximejoannis/french-companies-explorer-playwright-agents"
+            >GitHub</a
+          ><button id="themeToggle" type="button" aria-label="Changer le thème">
+            <span aria-hidden="true">◐</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+    <main id="main-content">
+      <section class="hero">
+        <div class="container hero__grid">
+          <div>
+            <p class="eyebrow">Pilotage qualité automatisé</p>
+            <h1>Un point d’entrée unique vers les preuves QA.</h1>
+            <p class="lead">
+              Suivez les résultats Playwright, la traçabilité métier, la qualité du code et les
+              rapports Allure du projet.
+            </p>
+            <div class="actions">
+              <a class="button primary" href="#reports">Consulter les rapports</a
+              ><a
+                class="button secondary"
+                href="https://github.com/maximejoannis/french-companies-explorer-playwright-agents"
+                >Voir le dépôt</a
+              >
+            </div>
+          </div>
+          <aside class="pipeline">
+            <div class="pipeline__head">
+              <div>
+                <p>Dernier pipeline</p>
+                <h2>État de la qualité</h2>
+              </div>
+              <span id="globalStatus" class="status status--loading" aria-live="polite"
+                >Chargement</span
+              >
+            </div>
+            <dl>
+              <div>
+                <dt>Branche</dt>
+                <dd id="branchValue">—</dd>
+              </div>
+              <div>
+                <dt>Commit</dt>
+                <dd id="commitValue">—</dd>
+              </div>
+              <div>
+                <dt>Date</dt>
+                <dd id="generatedAtValue">—</dd>
+              </div>
+              <div>
+                <dt>Workflow</dt>
+                <dd><a id="workflowLink" href="#reports">Voir les rapports</a></dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
+      </section>
+      <section class="container metrics" aria-label="Indicateurs principaux">
+        <article>
+          <span aria-hidden="true">F</span>
+          <div><strong id="featuresValue">—</strong><small>Features</small></div>
+        </article>
+        <article>
+          <span aria-hidden="true">TC</span>
+          <div><strong id="testsValue">—</strong><small>tests Playwright</small></div>
+        </article>
+        <article>
+          <span aria-hidden="true">L</span>
+          <div><strong id="levelsValue">—</strong><small>niveaux de test</small></div>
+        </article>
+        <article>
+          <span aria-hidden="true">!</span>
+          <div><strong id="fixmeValue">—</strong><small>fixme connus</small></div>
+        </article>
+      </section>
+      <section id="reports" class="section">
+        <div class="container">
+          <div class="heading">
+            <div>
+              <p class="eyebrow">Rapports disponibles</p>
+              <h2>Explorer les preuves de qualité</h2>
+            </div>
+            <p>
+              Chaque vue répond à une question distincte et conserve les éléments utiles au
+              diagnostic.
+            </p>
+          </div>
+          <div class="report-grid">
+            <article class="report primary-card" data-report="allure">
+              <header>
+                <span class="report__icon">A</span
+                ><span class="status status--unknown" data-report-status>Indisponible</span>
+              </header>
+              <p class="category">Rapport consolidé</p>
+              <h3>Allure</h3>
+              <p>Hiérarchie Epic, Feature, Story et résultats détaillés des Test Cases.</p>
+              <a href="./allure/" data-report-link>Ouvrir Allure →</a>
+            </article>
+            <article class="report" data-report="functional">
+              <header>
+                <span class="report__icon">P</span
+                ><span class="status status--unknown" data-report-status>Indisponible</span>
+              </header>
+              <p class="category">Playwright HTML</p>
+              <h3>Tests fonctionnels</h3>
+              <p id="runtimeSummary">Résultats runtime, traces et diagnostics Playwright.</p>
+              <a href="./functional/" data-report-link>Ouvrir Playwright →</a>
+            </article>
+            <article class="report" data-report="coverage">
+              <header>
+                <span class="report__icon">%</span
+                ><span class="status status--unknown" data-report-status>Indisponible</span>
+              </header>
+              <p class="category">Traçabilité statique</p>
+              <h3>Couverture QA</h3>
+              <p id="coverageSummary">Features, TC, niveaux, tags et défauts issus des sources.</p>
+              <a href="./coverage/" data-report-link>Ouvrir la couverture →</a>
+            </article>
+            <article class="report" data-report="quality">
+              <header>
+                <span class="report__icon">Q</span
+                ><span class="status status--unknown" data-report-status>Indisponible</span>
+              </header>
+              <p class="category">Contrôles statiques</p>
+              <h3>Qualité du code</h3>
+              <p id="qualitySummary">Prettier, ESLint et TypeScript exécutés réellement.</p>
+              <a href="./quality/" data-report-link>Ouvrir la qualité →</a>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="strategy">
+        <div class="container">
+          <div class="heading">
+            <div>
+              <p class="eyebrow">Stratégie de test</p>
+              <h2>La confiance utile au niveau le plus bas.</h2>
+            </div>
+            <p>Pas de duplication systématique : chaque niveau protège une frontière distincte.</p>
+          </div>
+          <div class="strategy-grid">
+            <article>
+              <strong>API</strong><span>Contrats stables de l’API publique read-only.</span
+              ><b id="apiCount">— TC</b>
+            </article>
+            <article>
+              <strong>UI mockée</strong
+              ><span>Comportements frontend déterministes et états limites.</span
+              ><b id="mockedCount">— TC</b>
+            </article>
+            <article>
+              <strong>E2E réel</strong
+              ><span>Quelques jonctions critiques entre navigateur et API.</span
+              ><b id="e2eCount">— TC</b>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="known">
+        <div class="container known__card">
+          <div>
+            <p class="eyebrow">Défauts connus</p>
+            <h2>Une dette produit visible, pas des échecs masqués.</h2>
+            <p>
+              <strong id="knownFixme">—</strong> fixme documentés et
+              <strong id="unexpectedFailures">—</strong> échec inattendu lors du dernier run.
+            </p>
+          </div>
+          <a class="button secondary" href="./coverage/">Voir la traçabilité</a>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="container">
+        Portail généré automatiquement par GitHub Actions ·
+        <a href="https://github.com/maximejoannis/french-companies-explorer-playwright-agents"
+          >Dépôt GitHub</a
+        >
+      </div>
+    </footer>
+  </body>
+</html>
