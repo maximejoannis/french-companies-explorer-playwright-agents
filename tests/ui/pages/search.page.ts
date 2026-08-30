@@ -19,6 +19,7 @@ export class SearchPage {
   readonly sortSelect;
   readonly companyCards;
   readonly searchView;
+  readonly searchNavigationButton;
   readonly detailView;
   readonly detailContent;
   readonly backToResultsButton;
@@ -26,6 +27,10 @@ export class SearchPage {
   readonly favoritesNavigationButton;
   readonly clearSearchButton;
   readonly statsPanel;
+  readonly compareView;
+  readonly compareNavigationButton;
+  readonly compareTable;
+  readonly toast;
 
   constructor(readonly page: Page) {
     this.queryInput = page.getByLabel('Recherche d’entreprise');
@@ -49,6 +54,7 @@ export class SearchPage {
     this.sortSelect = page.getByRole('combobox', { name: 'Trier par', exact: true });
     this.companyCards = this.resultsGrid.locator('[data-testid^="company-card-"]');
     this.searchView = page.locator('#searchView');
+    this.searchNavigationButton = page.getByRole('button', { name: 'Recherche', exact: true });
     this.detailView = page.locator('#detailView');
     this.detailContent = this.detailView;
     this.backToResultsButton = page.getByRole('button', { name: '← Retour aux résultats' });
@@ -56,6 +62,12 @@ export class SearchPage {
     this.favoritesNavigationButton = page.getByRole('button', { name: 'Favoris', exact: true });
     this.clearSearchButton = page.getByRole('button', { name: 'Réinitialiser', exact: true });
     this.statsPanel = page.getByTestId('results-stats');
+    this.compareView = page.locator('#compareView');
+    this.compareNavigationButton = page
+      .getByRole('navigation')
+      .getByRole('button', { name: 'Comparer', exact: true });
+    this.compareTable = this.compareView.locator('table');
+    this.toast = page.locator('#toast');
   }
 
   async goto() {
@@ -95,8 +107,16 @@ export class SearchPage {
     return this.companyCard(siren).locator('button.fav');
   }
 
+  companyCompareButton(siren: string) {
+    return this.companyCard(siren).getByRole('button', { name: 'Comparer', exact: true });
+  }
+
   detailFavoriteButton() {
     return this.detailView.locator('#detailFav');
+  }
+
+  detailCompareButton() {
+    return this.detailView.getByRole('button', { name: 'Comparer', exact: true });
   }
 
   favoriteCard(siren: string) {
@@ -105,6 +125,30 @@ export class SearchPage {
 
   favoriteCardButton(siren: string) {
     return this.favoriteCard(siren).locator('button.fav');
+  }
+
+  favoriteCardCompareButton(siren: string) {
+    return this.favoriteCard(siren).getByRole('button', { name: 'Comparer', exact: true });
+  }
+
+  comparePanel(siren: string) {
+    return this.compareView.locator('article.compare-panel').filter({ hasText: `SIREN ${siren}` });
+  }
+
+  compareRemoveButton(siren: string) {
+    return this.comparePanel(siren).getByRole('button', { name: 'Retirer', exact: true });
+  }
+
+  async compareCell(rowLabel: string, companyName: string) {
+    const headers = await this.compareTable.locator('thead th').allTextContents();
+    const columnIndex = headers.findIndex((header) => header.trim() === companyName);
+    if (columnIndex < 1) throw new Error(`Colonne Compare introuvable : ${companyName}`);
+
+    return this.compareTable
+      .getByRole('row')
+      .filter({ has: this.page.getByRole('rowheader', { name: rowLabel, exact: true }) })
+      .getByRole('cell')
+      .nth(columnIndex - 1);
   }
 
   statsBlock(label: string) {
@@ -121,5 +165,13 @@ export class SearchPage {
 
   async openFavorites() {
     await this.favoritesNavigationButton.click();
+  }
+
+  async openCompare() {
+    await this.compareNavigationButton.click();
+  }
+
+  async openSearch() {
+    await this.searchNavigationButton.click();
   }
 }
