@@ -179,6 +179,14 @@ Les mocks :
 - représentent la partie du contrat consommée par le frontend ;
 - ne réimplémentent ni le tri ni les autres algorithmes testés.
 
+## Tests
+
+Le projet contient des tests Playwright utilisant à la fois
+des réponses API réelles et des réponses mockées. Pour comprendre l'organisation des tests et la différence entre
+tests réels et tests mockés, consultez :
+
+👉 [Documentation des tests](docs/testing.md)
+
 Les locators accessibles (`getByRole`, `getByLabel`, `getByText`) sont privilégiés lorsque l'application le permet. Les limites connues des contrôles Favoris et Saved Searches sont conservées dans les défauts d'accessibilité `BUG-006` et `BUG-012`.
 
 ## Installation
