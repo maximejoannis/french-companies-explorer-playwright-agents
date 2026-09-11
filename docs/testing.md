@@ -1,6 +1,6 @@
 # Comprendre les tests du projet
 
-Ce document explique simplement comment les tests sont organisés dans le projet, pourquoi certains tests utilisent des données simulées (*mocks*) et pourquoi d'autres utilisent la véritable API.
+Ce document explique simplement comment les tests sont organisés dans le projet, pourquoi certains tests utilisent des données simulées (_mocks_) et pourquoi d'autres utilisent la véritable API.
 
 L'objectif n'est pas seulement de savoir lancer les tests, mais de comprendre **ce que chaque type de test cherche à vérifier**.
 
@@ -62,11 +62,11 @@ Cela pose un problème lorsqu'on veut tester uniquement notre interface.
 
 Un test peut échouer parce que :
 
-* notre application contient un bug ;
-* Internet est indisponible ;
-* l'API externe est indisponible ;
-* l'API répond lentement ;
-* les données de l'API ont changé.
+- notre application contient un bug ;
+- Internet est indisponible ;
+- l'API externe est indisponible ;
+- l'API répond lentement ;
+- les données de l'API ont changé.
 
 Dans ce cas, il devient difficile de savoir immédiatement si le problème vient réellement de notre application.
 
@@ -559,13 +559,13 @@ Il répond principalement à la question :
 
 Avantages :
 
-* rapide ;
-* prévisible ;
-* reproductible ;
-* permet de provoquer facilement des erreurs ;
-* permet de simuler une API lente ;
-* ne dépend pas d'Internet ;
-* ne dépend pas de la disponibilité de l'API.
+- rapide ;
+- prévisible ;
+- reproductible ;
+- permet de provoquer facilement des erreurs ;
+- permet de simuler une API lente ;
+- ne dépend pas d'Internet ;
+- ne dépend pas de la disponibilité de l'API.
 
 ---
 
@@ -583,9 +583,9 @@ Il répond principalement à la question :
 
 Avantages :
 
-* vérifie la véritable intégration ;
-* permet de détecter une modification de l'API ;
-* se rapproche davantage des conditions réelles d'utilisation.
+- vérifie la véritable intégration ;
+- permet de détecter une modification de l'API ;
+- se rapproche davantage des conditions réelles d'utilisation.
 
 En revanche, il dépend davantage de facteurs extérieurs.
 
@@ -611,12 +611,12 @@ Par exemple :
 
 | Situation                                                         | Test mocké |            Test réel |
 | ----------------------------------------------------------------- | ---------: | -------------------: |
-| Vérifier l'affichage de 2 entreprises                             |          ✅ |             Possible |
-| Simuler facilement 0 résultat                                     |          ✅ | Difficile à garantir |
-| Simuler une erreur serveur                                        |          ✅ | Difficile à garantir |
-| Simuler une réponse lente                                         |          ✅ | Difficile à garantir |
-| Vérifier que l'API réelle fonctionne                              |          ❌ |                    ✅ |
-| Vérifier que notre code comprend toujours le format réel de l'API |          ❌ |                    ✅ |
+| Vérifier l'affichage de 2 entreprises                             |         ✅ |             Possible |
+| Simuler facilement 0 résultat                                     |         ✅ | Difficile à garantir |
+| Simuler une erreur serveur                                        |         ✅ | Difficile à garantir |
+| Simuler une réponse lente                                         |         ✅ | Difficile à garantir |
+| Vérifier que l'API réelle fonctionne                              |         ❌ |                   ✅ |
+| Vérifier que notre code comprend toujours le format réel de l'API |         ❌ |                   ✅ |
 
 ---
 
@@ -641,13 +641,13 @@ Un Page Object peut être vu comme le **mode d'emploi de la page pour le robot P
 Au lieu d'écrire partout :
 
 ```ts
-page.getByLabel('Recherche d’entreprise')
+page.getByLabel('Recherche d’entreprise');
 ```
 
 ou :
 
 ```ts
-page.getByRole('button', { name: 'Rechercher' })
+page.getByRole('button', { name: 'Rechercher' });
 ```
 
 on centralise ces informations dans une classe.
