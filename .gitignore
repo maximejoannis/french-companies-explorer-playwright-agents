@@ -1,0 +1,16 @@
+node_modules/
+
+playwright-report/
+test-results/
+
+allure-results/
+allure-report/
+quality-report/
+coverage-report/
+pages-site/
+
+.env
+.env.*
+
+.DS_Store
+Thumbs.db
