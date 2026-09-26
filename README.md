@@ -27,6 +27,7 @@ Projet d'automatisation QA de [French Companies Explorer](https://maximejoannis.
 | [Application testée](https://maximejoannis.github.io/french-companies-explorer-qa/)        | Frontend French Companies Explorer                                  |
 | [Sprint Review](./SPRINT-REVIEW.md)                                                        | Démarche, défis, enseignements, résultats et décision finale        |
 | [Audit final](./AUDIT-FINAL.md)                                                            | Revue détaillée de la couverture et de l'automatisation             |
+| [Bilan v1.1.1](./BILAN-V1.1.1.md)                                                          | Problèmes rencontrés, solutions et enseignements vulgarisés         |
 | [Repository](https://github.com/maximejoannis/french-companies-explorer-playwright-agents) | Sources du projet                                                   |
 
 ---
