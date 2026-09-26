@@ -31,7 +31,12 @@ async function favoriteSirens(page: Page) {
 function trackApiRequests(page: Page) {
   const requests: string[] = [];
   page.on('request', (request) => {
-    if (request.url().startsWith(API_URL)) requests.push(request.method());
+    if (
+      request.url().startsWith(API_URL) &&
+      new URL(request.url()).searchParams.get('minimal') !== 'true'
+    ) {
+      requests.push(request.method());
+    }
   });
   return requests;
 }
@@ -163,6 +168,10 @@ test('TC-FAVORITES-004 @regression BUG-005 synchronise immédiatement le cœur d
   await expect.poll(() => favoriteSirens(page)).toEqual([alphaCompany.siren]);
 
   await search.backToResults();
+  test.fail(
+    true,
+    'BUG-005 : le bouton favori de la carte ne reflète pas la modification effectuée depuis la fiche',
+  );
   await expect(search.companyFavoriteButton(alphaCompany.siren)).toHaveClass(/\bactive\b/);
   await expect(search.companyFavoriteButton(betaCompany.siren)).not.toHaveClass(/\bactive\b/);
   await search.openFavorites();

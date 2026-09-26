@@ -56,7 +56,7 @@ export class SearchPage {
     this.queryHint = page.locator('#queryHint');
     this.searchButton = page.getByRole('button', { name: 'Rechercher' });
     this.searchState = page.locator('#searchState');
-    this.resultCount = page.getByRole('status');
+    this.resultCount = page.locator('#resultCount');
     this.resultsGrid = page.getByTestId('results-grid');
     this.pagination = page.locator('#pagination');
     this.postalCodeFilter = page.locator('#postalCodeFilter');

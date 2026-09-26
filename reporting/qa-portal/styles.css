@@ -264,6 +264,10 @@ h2 {
   color: var(--danger);
   background: var(--danger-bg);
 }
+.status--known-issues {
+  color: #8a5700;
+  background: #fff1c2;
+}
 .status--unknown,
 .status--loading {
   color: var(--unknown);

@@ -35,8 +35,8 @@
     })
     .then((data) => {
       const global = document.getElementById('globalStatus');
-      global.textContent = data.status === 'passed' ? 'PASS' : 'ÉCHEC';
-      global.className = `status status--${data.status === 'passed' ? 'passed' : 'failed'}`;
+      global.textContent = data.statusLabel ?? (data.status === 'passed' ? 'CI conforme' : 'ÉCHEC');
+      global.className = `status status--${data.status ?? 'unknown'}`;
       setText('branchValue', data.branch);
       setText('commitValue', data.commit);
       setText(
@@ -65,11 +65,16 @@
         coverage.levels?.E2E_REAL === undefined ? null : `${coverage.levels.E2E_REAL} TC`,
       );
       setText('knownFixme', coverage.testCases?.fixme);
-      setText('unexpectedFailures', data.runtime?.failed);
+      setText('expectedFailures', data.runtime?.expectedFailed);
+      setText('expectedFailuresSummary', data.runtime?.expectedFailed);
+      setText('unexpectedFailures', data.runtime?.unexpectedFailed);
+      setText('unexpectedPasses', data.runtime?.unexpectedPassed);
+      setText('flakyTests', data.runtime?.flaky);
+      setText('skippedTests', data.runtime?.skipped);
       setText(
         'runtimeSummary',
         data.runtime
-          ? `${data.runtime.passed} réussis · ${data.runtime.failed} échec · ${data.runtime.skipped} ignorés/fixme.`
+          ? `${data.runtime.passed} réussis · ${data.runtime.expectedFailed} échecs attendus · ${data.runtime.unexpectedFailed} échecs inattendus · ${data.runtime.unexpectedPassed} succès inattendus · ${data.runtime.flaky} instables · ${data.runtime.skipped} ignorés.`
           : null,
         'Résultats runtime indisponibles.',
       );

@@ -24,7 +24,11 @@ test('TC-FILTERS-009 @regression BUG-001 résout une commune en code INSEE', asy
     }),
   );
   await page.route(COMPANY_API, (route) => {
-    companyRequest = new URL(route.request().url());
+    const requestUrl = new URL(route.request().url());
+    if (requestUrl.searchParams.get('minimal') === 'true') {
+      return route.fulfill({ status: 200, contentType: 'application/json', json: { results: [] } });
+    }
+    companyRequest = requestUrl;
     return route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -51,6 +55,9 @@ test('TC-FILTERS-010 @error affiche une erreur Geo API sans requête Entreprises
   let companyRequests = 0;
   await page.route(GEO_API, (route) => route.fulfill({ status: 503, body: 'unavailable' }));
   await page.route(COMPANY_API, (route) => {
+    if (new URL(route.request().url()).searchParams.get('minimal') === 'true') {
+      return route.fulfill({ status: 200, contentType: 'application/json', json: { results: [] } });
+    }
     companyRequests += 1;
     return route.abort();
   });

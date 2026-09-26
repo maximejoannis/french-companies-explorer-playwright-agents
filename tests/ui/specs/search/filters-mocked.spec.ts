@@ -143,7 +143,12 @@ test('TC-FILTERS-008 conserve le filtre dans un état vide fonctionnel', async (
   // Couvre US-FILTERS-01 / AC-06, contribution AC-05
   let filteredRequest: URL | undefined;
   await page.route(API_PATTERN, async (route) => {
-    filteredRequest = new URL(route.request().url());
+    const requestUrl = new URL(route.request().url());
+    if (requestUrl.searchParams.get('minimal') === 'true') {
+      await mockJson(route, { results: [] });
+      return;
+    }
+    filteredRequest = requestUrl;
     await mockJson(route, emptySearchResponse);
   });
   const search = new SearchPage(page);

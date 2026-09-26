@@ -338,6 +338,7 @@ test('TC-HISTORY-007 @regression BUG-010 préserve la récence pendant la naviga
   );
 
   await search.openSearch();
+  await search.showAdvancedFilters();
   const requestsBeforePageSize = apiRequests.length;
   const pageSizeResponse = page.waitForResponse((response) => response.url().startsWith(API_URL));
   await search.selectPageSize('10');

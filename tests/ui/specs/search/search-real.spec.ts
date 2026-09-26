@@ -27,9 +27,6 @@ test('TC-SEARCH-010 @smoke @positive affiche une recherche textuelle réelle coh
   // Couvre US-SEARCH-01 / AC-01, AC-05
   const search = new SearchPage(page);
   await page.goto('./');
-  await expect(
-    page.getByText('Compare jusqu’à trois entreprises sur les principales données.'),
-  ).toBeVisible();
   await search.openSearch();
 
   const responsePromise = page.waitForResponse(

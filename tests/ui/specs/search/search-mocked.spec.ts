@@ -19,6 +19,21 @@ test.beforeEach(async () => {
   await allure.story('US-SEARCH-01 — Rechercher une entreprise');
 });
 
+test('TC-SEARCH-011 @smoke @regression BUG-015 annonce une comparaison jusqu’à trois entreprises', async ({
+  page,
+}) => {
+  // Couvre US-SEARCH-01 / cohérence du contenu avec FEAT-COMPARE-V111
+  // Niveau : UI_MOCKED
+  await page.goto('./');
+  test.fail(
+    true,
+    'BUG-015 : le texte d’accueil annonce encore deux entreprises alors que la limite est trois',
+  );
+  await expect(
+    page.getByText('Compare jusqu’à trois entreprises sur les principales données.'),
+  ).toBeVisible();
+});
+
 test('TC-SEARCH-002 @positive reconnaît et autorise un SIREN', async ({ page }) => {
   // Couvre US-SEARCH-01 / AC-02
   let requestedQuery: string | null = null;

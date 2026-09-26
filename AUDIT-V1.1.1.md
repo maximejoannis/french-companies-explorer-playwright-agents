@@ -1,5 +1,7 @@
 # Rapport de migration Playwright — French Companies Explorer v1.1.1
 
+> Mise à jour CI : la suite compte désormais 133 tests. BUG-005, BUG-015 et BUG-016 sont des échecs attendus ciblés avec `test.fail()`. La campagne Chromium finale est conforme (133/133, dont 3 anomalies connues, aucun résultat inattendu) et les smokes Firefox/WebKit sont conformes (6/6). Voir [AUDIT-CI-KNOWN-DEFECTS.md](./AUDIT-CI-KNOWN-DEFECTS.md). Les tableaux ci-dessous conservent les résultats de la campagne de migration antérieure à cette politique d’acceptation temporaire.
+
 ## Résumé exécutif
 
 - Baseline confirmée : 84 tests, 72 passants, 12 `fixme`, 0 échec inattendu.

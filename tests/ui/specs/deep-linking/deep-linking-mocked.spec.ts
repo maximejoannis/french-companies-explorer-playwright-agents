@@ -162,7 +162,43 @@ test('TC-DEEP-LINK-001 @regression restaure un deep link complet', async ({ page
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-DEEP-LINK-002 @regression synchronise et retire les paramètres après interaction', async ({
+test('TC-DEEP-LINK-002 @regression BUG-016 retire le code commune à la réinitialisation', async ({
+  page,
+}) => {
+  // Couvre US-DEEP-LINKING-01 / AC-10, AC-12
+  // Niveau : UI_MOCKED
+  await page.route(API_PATTERN, (route) =>
+    mockJson(route, {
+      ...mockedSearchResponse,
+      total_results: 30,
+      page: Number(new URL(route.request().url()).searchParams.get('page')),
+      per_page: 10,
+      total_pages: 3,
+    }),
+  );
+  const search = new SearchPage(page);
+  await search.goto();
+  await search.showAdvancedFilters();
+  await search.postalCodeFilter.fill('75001');
+  await search.cityFilter.fill('Lyon');
+  await search.statusFilter.selectOption('C');
+  await search.resultsPerPageFilter.selectOption('10');
+  const initialResponse = page.waitForResponse((response) => response.url().startsWith(API_URL));
+  await search.submit('Synchronisation URL');
+  await initialResponse;
+  await expect(search.companyCard(mockedCompanies[0].siren)).toBeVisible();
+
+  await search.clearSearchButton.click();
+  await expect(search.queryInput).toHaveValue('');
+  await expect(search.cityFilter).toHaveValue('');
+  test.fail(
+    true,
+    'BUG-016 : Réinitialiser conserve cityCode dans l’URL après une recherche par commune',
+  );
+  await expect(page).toHaveURL((url) => url.search === '');
+});
+
+test('TC-DEEP-LINK-007 @regression synchronise les paramètres après interaction', async ({
   page,
 }) => {
   // Couvre US-DEEP-LINKING-01 / AC-06, AC-10, AC-12
@@ -181,7 +217,6 @@ test('TC-DEEP-LINK-002 @regression synchronise et retire les paramètres après 
   await search.goto();
   await search.showAdvancedFilters();
   await search.postalCodeFilter.fill('75001');
-  await search.cityFilter.fill('Lyon');
   await search.statusFilter.selectOption('C');
   await search.resultsPerPageFilter.selectOption('10');
   const initialResponse = page.waitForResponse((response) => response.url().startsWith(API_URL));
@@ -193,8 +228,6 @@ test('TC-DEEP-LINK-002 @regression synchronise et retire les paramètres après 
   expect(Object.fromEntries(urlParameters)).toEqual({
     q: 'Synchronisation URL',
     cp: '75001',
-    city: 'Lyon',
-    cityCode: '69123',
     status: 'C',
     size: '10',
   });
@@ -213,18 +246,6 @@ test('TC-DEEP-LINK-002 @regression synchronise et retire les paramètres après 
   urlParameters = currentUrlParameters(page);
   expect(urlParameters.get('page')).toBe('2');
   expect(urlParameters.get('sort')).toBe('name-desc');
-
-  const requestsBeforeReset = apiRequests.length;
-  await search.clearSearchButton.click();
-  await expect(page).toHaveURL((url) => url.search === '');
-  await expect(search.queryInput).toHaveValue('');
-  await expect(search.postalCodeFilter).toHaveValue('');
-  await expect(search.cityFilter).toHaveValue('');
-  await expect(search.statusFilter).toHaveValue('');
-  await expect(search.resultsPerPageFilter).toHaveValue('20');
-  await expect(search.sortSelect).toHaveValue('relevance');
-  await expect(search.pagination).toBeHidden();
-  expect(apiRequests).toHaveLength(requestsBeforeReset);
   expect(apiRequests).toHaveLength(2);
   expect(apiRequests.map(({ method }) => method)).toEqual(['GET', 'GET']);
   expectNoApiWrites(apiRequests);

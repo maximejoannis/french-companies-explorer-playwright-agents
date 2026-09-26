@@ -98,7 +98,7 @@
         </article>
         <article>
           <span aria-hidden="true">!</span>
-          <div><strong id="fixmeValue">—</strong><small>fixme connus</small></div>
+          <div><strong id="expectedFailures">—</strong><small>anomalies connues</small></div>
         </article>
       </section>
       <section id="reports" class="section">
@@ -195,8 +195,11 @@
             <p class="eyebrow">Défauts connus</p>
             <h2>Une dette produit visible, pas des échecs masqués.</h2>
             <p>
-              <strong id="knownFixme">—</strong> fixme documentés et
-              <strong id="unexpectedFailures">—</strong> échec inattendu lors du dernier run.
+              <strong id="expectedFailuresSummary">voir le bilan ci-dessus</strong> ·
+              <strong id="unexpectedFailures">—</strong> échec(s) inattendu(s) ·
+              <strong id="unexpectedPasses">—</strong> succès inattendu(s) ·
+              <strong id="flakyTests">—</strong> test(s) instable(s) ·
+              <strong id="skippedTests">—</strong> test(s) ignoré(s).
             </p>
           </div>
           <a class="button secondary" href="./coverage/">Voir la traçabilité</a>

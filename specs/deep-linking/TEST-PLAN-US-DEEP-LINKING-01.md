@@ -376,3 +376,10 @@ Aucun `E2E_REAL` n’apporte de frontière distincte : les suites Search et Filt
 - Tests actifs proposés : 5.
 - `fixme` proposés : 1 (`TC-DEEP-LINK-006`, `BUG-014`).
 - Défauts potentiels : 1 (`BUG-014`).
+
+### TC-DEEP-LINK-007 — Synchronisation après interaction
+
+- Critères couverts : AC-06, AC-10, AC-12.
+- Niveau : `UI_MOCKED`.
+- Priorité : haute.
+- Résultat attendu : recherche, tri et pagination sont reflétés dans l’URL sans appel superflu.

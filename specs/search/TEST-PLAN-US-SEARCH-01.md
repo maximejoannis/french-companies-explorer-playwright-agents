@@ -216,3 +216,10 @@ Deux précisions sont à conserver dans l'automatisation future :
 
 - le texte des critères parle d'un identifiant « interprété » comme SIREN ou SIRET ; l'application rend bien cette interprétation visible par un indice, mais transmet dans les deux cas la valeur sous le paramètre API générique `q` ;
 - après une réponse vide, le compteur est construit à partir du total retourné tandis que le message d'état exprime explicitement l'absence d'entreprise. Le test doit valider cette distinction fonctionnelle sans imposer une formulation de compteur non spécifiée.
+
+### TC-SEARCH-011 — Cohérence du texte de comparaison
+
+- Critère couvert : cohérence avec FEAT-COMPARE-V111.
+- Niveau : `UI_MOCKED`.
+- Priorité : moyenne.
+- Résultat attendu : l’accueil annonce une comparaison jusqu’à trois entreprises.

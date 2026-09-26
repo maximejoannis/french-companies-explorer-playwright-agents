@@ -12,10 +12,10 @@
 ![ESLint](https://img.shields.io/badge/ESLint-10.x-4B32C3?logo=eslint&logoColor=white)
 ![Prettier](https://img.shields.io/badge/Prettier-3.x-F7B93E?logo=prettier&logoColor=black)
 ![Functional Scope](https://img.shields.io/badge/Functional%20Scope-100%25-brightgreen)
-![Tests](https://img.shields.io/badge/Playwright%20Tests-131-blue)
+![Tests](https://img.shields.io/badge/Playwright%20Tests-133-blue)
 ![E2E Real](https://img.shields.io/badge/E2E%20Real-3%20tests-brightgreen)
 
-> Migration v1.1.1 : 131 tests découverts, aucun `fixme`. La campagne et les anomalies actives sont détaillées dans [AUDIT-V1.1.1.md](./AUDIT-V1.1.1.md). La release n’est pas déclarée validée tant que les échecs produit documentés subsistent.
+> État v1.1.1 : 133 tests découverts, aucun `fixme`. BUG-005, BUG-015 et BUG-016 sont exécutés comme échecs attendus ciblés. « CI conforme avec anomalies connues » signifie qu’aucun résultat inattendu n’a été observé ; la release n’est pas présentée comme entièrement validée.
 
 Projet d'automatisation QA de [French Companies Explorer](https://maximejoannis.github.io/french-companies-explorer-qa/) fondé sur **Playwright Test** et **TypeScript**. La suite combine tests sur l'API réelle, tests UI avec API mockée et quelques E2E réels, avec traçabilité métier, reporting consolidé et CI/CD.
 
@@ -49,7 +49,7 @@ Le projet met en œuvre une démarche QA Automation complète :
 
 > La couverture correspond au périmètre fonctionnel défini pour cet exercice. Elle ne représente ni du code coverage, ni une couverture exhaustive de French Companies Explorer ou de l'API gouvernementale.
 
-## Résultats clés
+## Baseline historique v1.0.0
 
 | Indicateur                                 |            Résultat |
 | ------------------------------------------ | ------------------: |
@@ -290,6 +290,8 @@ Le rapport `quality-report/` consolide Prettier, ESLint et TypeScript.
 
 Le [portail QA public](https://maximejoannis.github.io/french-companies-explorer-playwright-agents/) réunit les rapports Playwright, Allure, couverture et qualité. Il constitue la vue principale des preuves QA publiées.
 
+Le portail distingue les réussites, échecs attendus, échecs inattendus, succès inattendus, tests ignorés et tests instables. Un succès inattendu sur un test annoté `test.fail()` fait échouer Playwright afin d’imposer le retrait de l’annotation lorsque le produit est corrigé.
+
 ## CI/CD
 
 Le workflow [`.github/workflows/playwright.yml`](./.github/workflows/playwright.yml) est déclenché par un push sur `main`, une pull request vers `main` ou `workflow_dispatch`.
@@ -314,6 +316,7 @@ Push main / PR / workflow_dispatch
 - l'artefact consolidé `qa-reports` conserve les rapports pendant 30 jours ;
 - les artefacts `cross-browser-smoke-firefox` et `cross-browser-smoke-webkit` conservent séparément les preuves ciblées ;
 - le quality gate exige aussi le succès des smokes Firefox et WebKit, ainsi que du déploiement lorsqu'il est attendu.
+- le déploiement dépend des sorties réelles des contrôles qualité, couverture, Playwright et Allure, même si leurs étapes utilisent `continue-on-error` pour préserver les rapports.
 
 La CI utilise Node.js 24, Java 17 pour Allure, Chromium pour la baseline, puis une matrix Firefox/WebKit pour les tests UI `@smoke`. Les réglages Playwright conservent deux retries et un worker en CI.
 
@@ -334,13 +337,7 @@ Le projet ne revendique pas Playwright MCP : il ne fait pas partie de la stack f
 
 ## Défauts connus
 
-Le dossier [`defects/`](./defects/) documente **14 défauts produit** :
-
-- 12 sont associés à des tests `test.fixme` ;
-- 2 sont des dettes d'accessibilité documentées sans `fixme` (`BUG-006` et `BUG-012`) ;
-- la baseline finale contient 0 échec inattendu.
-
-> `fixme` signifie qu'un scénario conserve l'oracle attendu mais est explicitement désactivé tant que le défaut produit correspondant reste présent. Il ne s'agit pas d'un test failed.
+Le dossier [`defects/`](./defects/) documente les anomalies historiques et v1.1.1. Les anomalies actives temporairement acceptées sont BUG-005, BUG-015 et BUG-016. Leurs tests restent exécutés avec `test.fail()` placé immédiatement avant l’oracle concerné ; les problèmes de préparation ou d’infrastructure restent donc inattendus et bloquants.
 
 ## Synchronisation et robustesse
 
