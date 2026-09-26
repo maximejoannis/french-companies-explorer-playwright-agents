@@ -49,6 +49,27 @@ Le projet met en œuvre une démarche QA Automation complète :
 
 > La couverture correspond au périmètre fonctionnel défini pour cet exercice. Elle ne représente ni du code coverage, ni une couverture exhaustive de French Companies Explorer ou de l'API gouvernementale.
 
+## État v1.1.1
+
+| Indicateur                                  |            Résultat |
+| ------------------------------------------- | ------------------: |
+| Features couvertes                          | **13 / 13 (100 %)** |
+| TC planifiés                                |             **133** |
+| Tests Playwright automatisés                |             **133** |
+| Tests actifs                                |             **133** |
+| `test.fixme`                                |               **0** |
+| Échecs attendus (BUG-005, BUG-015, BUG-016) |               **3** |
+| Échecs inattendus                           |               **0** |
+| Succès inattendus                           |               **0** |
+| Tests instables                             |               **0** |
+| Tests ignorés                               |               **0** |
+| Tests API réels                             |               **6** |
+| Tests UI mockés                             |             **124** |
+| Tests E2E réels                             |               **3** |
+| Défauts documentés                          |              **16** |
+
+Le dernier Chromium complet a exécuté 133 tests conformes, dont trois échecs attendus correspondant aux anomalies produit temporairement acceptées. Les smokes Firefox/WebKit ont exécuté 6 tests conformes. La mention « CI conforme avec anomalies connues » ne constitue pas une validation complète de la release.
+
 ## Baseline historique v1.0.0
 
 | Indicateur                                 |            Résultat |
@@ -69,24 +90,26 @@ Les 83 TC présents dans les plans disposent tous d'une automatisation. Le 84e t
 
 La couverture fonctionnelle de 100 % signifie qu'aucun Test Case défini dans le périmètre fonctionnel retenu n'est dépourvu d'automatisation. Elle ne représente pas du code coverage et ne garantit pas l'absence de défauts.
 
-## Périmètre fonctionnel
+## Périmètre fonctionnel v1.1.1
 
 | Feature        | Test Cases |
 | -------------- | ---------: |
-| Search         |         10 |
-| Filters        |          9 |
+| Search         |         11 |
+| Filters        |         20 |
 | Pagination     |          6 |
 | Sort           |          7 |
 | Detail         |          5 |
-| Favorites      |          5 |
+| Favorites      |          6 |
 | Stats          |          6 |
-| Compare        |          6 |
+| Compare        |         15 |
 | History        |          7 |
 | Saved Searches |          8 |
-| Export         |          6 |
-| Deep Linking   |          6 |
+| Export         |         15 |
+| Deep Linking   |          7 |
+| Autocomplete   |         10 |
+| Share          |          7 |
 | Theme          |          3 |
-| **Total**      |     **84** |
+| **Total**      |    **133** |
 
 Les cas détaillés et leurs arbitrages sont disponibles sous [`specs/`](./specs/) et dans la [Sprint Review](./SPRINT-REVIEW.md).
 
@@ -94,11 +117,11 @@ Les cas détaillés et leurs arbitrages sont disponibles sous [`specs/`](./specs
 
 > Utiliser le niveau de test le plus bas qui apporte la confiance utile.
 
-| Niveau      | Nombre | Responsabilité                                                                 |
-| ----------- | -----: | ------------------------------------------------------------------------------ |
-| `API`       |  **6** | Contrat observable de l'API réelle : HTTP, structure, pagination et paramètres |
-| `UI_MOCKED` | **75** | Comportements frontend déterministes, états rares, persistance et erreurs      |
-| `E2E_REAL`  |  **3** | Frontières critiques entre le navigateur et la vraie API                       |
+| Niveau      |  Nombre | Responsabilité                                                                 |
+| ----------- | ------: | ------------------------------------------------------------------------------ |
+| `API`       |   **6** | Contrat observable de l'API réelle : HTTP, structure, pagination et paramètres |
+| `UI_MOCKED` | **124** | Frontend déterministe, nouvelles fonctionnalités v1.1.1, erreurs et courses    |
+| `E2E_REAL`  |   **3** | Frontières critiques entre navigateur, Geo API et API Entreprises              |
 
 ### API réel
 
@@ -114,7 +137,7 @@ Une réponse mockée prouve donc le comportement du frontend, pas celui du backe
 
 ### E2E réel
 
-Trois scénarios seulement associent le navigateur à la vraie API pour vérifier des intégrations critiques. Cette couche apporte une preuve de jonction sans dupliquer systématiquement les tests API ou UI.
+Trois scénarios seulement associent le navigateur aux API réelles pour vérifier des intégrations critiques, dont la chaîne Commune → Geo API → code INSEE → API Entreprises. Cette couche apporte une preuve de jonction sans dupliquer systématiquement les tests API ou UI.
 
 ## Traçabilité
 
@@ -147,7 +170,7 @@ Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Le
 ├── .github/
 │   └── workflows/
 │       └── playwright.yml         # CI/CD et publication GitHub Pages
-├── defects/                       # BUG-001 à BUG-014
+├── defects/                       # BUG-001 à BUG-016
 ├── reporting/
 │   ├── coverage/                  # Interface du rapport de couverture
 │   ├── qa-portal/                 # Portail consolidé HTML/CSS/JavaScript
@@ -276,7 +299,7 @@ npm run coverage:report
 
 Le rapport `coverage-report/` calcule depuis les US, plans, tests et défauts les Features, TC planifiés et automatisés, niveaux de test, tags et dettes connues.
 
-Les exécutions Firefox et WebKit sont des réexécutions cross-browser de TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 84 et ne modifient pas la répartition 6 `API` / 75 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts séparés.
+Les exécutions Firefox et WebKit sont des smokes cross-browser de TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 133 et ne modifient pas la répartition 6 `API` / 124 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts séparés.
 
 ### Qualité
 
