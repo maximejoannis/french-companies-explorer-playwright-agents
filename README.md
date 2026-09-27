@@ -15,9 +15,9 @@
 ![Tests](https://img.shields.io/badge/Playwright%20Tests-133-blue)
 ![E2E Real](https://img.shields.io/badge/E2E%20Real-3%20tests-brightgreen)
 
-> État v1.1.1 : 133 tests découverts, aucun `fixme`. BUG-005, BUG-015 et BUG-016 sont exécutés comme échecs attendus ciblés. « CI conforme avec anomalies connues » signifie qu’aucun résultat inattendu n’a été observé ; la release n’est pas présentée comme entièrement validée.
+> État v1.1.1 documenté dans le dépôt : 133 tests découverts, aucun `fixme`. BUG-005, BUG-015 et BUG-016 sont exécutés comme échecs attendus ciblés. Le portail n’affiche « CI conforme avec anomalies connues » que lorsque les contrôles du run publié sont réussis et qu’aucun résultat inattendu n’est observé ; cela ne signifie pas que l’application est dépourvue d’anomalies.
 
-Projet d'automatisation QA de [French Companies Explorer](https://maximejoannis.github.io/french-companies-explorer-qa/) fondé sur **Playwright Test** et **TypeScript**. La suite combine tests sur l'API réelle, tests UI avec API mockée et quelques E2E réels, avec traçabilité métier, reporting consolidé et CI/CD.
+Ce dépôt est le projet d’automatisation QA de [French Companies Explorer](https://maximejoannis.github.io/french-companies-explorer-qa/). Fondée sur **Playwright Test** et **TypeScript**, la suite combine tests de l’API réelle, tests UI avec API mockée et quelques tests E2E réels. Le portail QA publie séparément les rapports d’exécution, de couverture et de qualité produits par cette suite.
 
 ## Liens rapides
 
@@ -25,6 +25,7 @@ Projet d'automatisation QA de [French Companies Explorer](https://maximejoannis.
 | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
 | [Portail QA](https://maximejoannis.github.io/french-companies-explorer-playwright-agents/) | Point d'entrée principal vers les preuves d'exécution et de qualité |
 | [Application testée](https://maximejoannis.github.io/french-companies-explorer-qa/)        | Frontend French Companies Explorer                                  |
+| [Dépôt de l'application](https://github.com/maximejoannis/french-companies-explorer-qa)    | Code source du produit testé                                        |
 | [Sprint Review](./SPRINT-REVIEW.md)                                                        | Démarche, défis, enseignements, résultats et décision finale        |
 | [Audit final](./AUDIT-FINAL.md)                                                            | Revue détaillée de la couverture et de l'automatisation             |
 | [Bilan v1.1.1](./BILAN-V1.1.1.md)                                                          | Problèmes rencontrés, solutions et enseignements vulgarisés         |
@@ -34,7 +35,9 @@ Projet d'automatisation QA de [French Companies Explorer](https://maximejoannis.
 
 ## Objectif du projet
 
-French Companies Explorer est un frontend statique HTML, CSS et JavaScript qui interroge directement l'API publique française de recherche d'entreprises. Cette API est externe, read-only et évolutive.
+L’application testée, [French Companies Explorer](https://github.com/maximejoannis/french-companies-explorer-qa), est un site statique en HTML, CSS et JavaScript qui interroge directement l’API publique Recherche d’Entreprises. Ce dépôt contient la suite de tests et les rapports QA qui la couvrent.
+
+L’application, sa suite Playwright et le portail de rapports sont donc trois éléments distincts : le produit est déployé sur son propre site GitHub Pages, les tests vivent dans ce dépôt, et le portail QA publie les preuves générées par les exécutions du workflow.
 
 Le projet met en œuvre une démarche QA Automation complète :
 
@@ -54,7 +57,7 @@ Le projet met en œuvre une démarche QA Automation complète :
 
 | Indicateur                                  |            Résultat |
 | ------------------------------------------- | ------------------: |
-| Features couvertes                          | **13 / 13 (100 %)** |
+| User Stories couvertes                      | **13 / 13 (100 %)** |
 | TC planifiés                                |             **133** |
 | Tests Playwright automatisés                |             **133** |
 | Tests actifs                                |             **133** |
@@ -67,18 +70,20 @@ Le projet met en œuvre une démarche QA Automation complète :
 | Tests API réels                             |               **6** |
 | Tests UI mockés                             |             **124** |
 | Tests E2E réels                             |               **3** |
-| Défauts documentés                          |              **16** |
+| Fiches de défaut historiques                |              **16** |
+| Anomalies encore ouvertes                   |               **3** |
+| Défauts résolus                             |              **13** |
 
-Le dernier Chromium complet a exécuté 133 tests conformes, dont trois échecs attendus correspondant aux anomalies produit temporairement acceptées. Les smokes Firefox/WebKit ont exécuté 6 tests conformes. La mention « CI conforme avec anomalies connues » ne constitue pas une validation complète de la release.
+Le résultat Chromium disponible dans `test-results/results.json` indique 133 résultats attendus, aucun résultat inattendu, aucun test ignoré et aucun test instable. Parmi ces résultats attendus, trois oracles sont annotés avec `test.fail()` pour les anomalies produit temporairement acceptées. Le document [`AUDIT-CI-KNOWN-DEFECTS.md`](./AUDIT-CI-KNOWN-DEFECTS.md) consigne par ailleurs une campagne locale Firefox/WebKit de 6 exécutions conformes ; cette preuve historique ne doit pas être interprétée comme le statut d’un run CI plus récent.
 
 ## Baseline historique v1.0.0
 
 | Indicateur                                 |            Résultat |
 | ------------------------------------------ | ------------------: |
-| Features couvertes                         | **13 / 13 (100 %)** |
+| User Stories couvertes                     | **13 / 13 (100 %)** |
 | TC présents dans les plans                 |              **83** |
 | Tests Playwright automatisés               |              **84** |
-| Tests passed                               |              **72** |
+| Tests réussis                              |              **72** |
 | Tests `fixme` / skipped connus             |              **12** |
 | Échecs inattendus                          |               **0** |
 | Tests API réels                            |               **6** |
@@ -89,9 +94,11 @@ Le dernier Chromium complet a exécuté 133 tests conformes, dont trois échecs 
 
 Les 83 TC présents dans les plans disposent tous d'une automatisation. Le 84e test, `TC-SAVED-008`, est un cas supplémentaire associé à `BUG-011` ; aucun TC planifié n'est manquant.
 
-La couverture fonctionnelle de 100 % signifie qu'aucun Test Case défini dans le périmètre fonctionnel retenu n'est dépourvu d'automatisation. Elle ne représente pas du code coverage et ne garantit pas l'absence de défauts.
+Cette baseline est conservée à titre historique. Sa couverture fonctionnelle de 100 % signifiait qu’aucun Test Case défini dans ce périmètre n’était dépourvu d’automatisation. Elle ne représentait pas du code coverage et ne garantissait pas l’absence de défauts.
 
 ## Périmètre fonctionnel v1.1.1
+
+Les 133 Test Cases se répartissent sur 15 domaines fonctionnels. Certains domaines ajoutés en v1.1.1, comme Autocomplete et Share, enrichissent une User Story existante ; c’est pourquoi le dépôt compte 13 User Stories pour 15 lignes fonctionnelles ci-dessous.
 
 | Feature        | Test Cases |
 | -------------- | ---------: |
@@ -124,19 +131,19 @@ Les cas détaillés et leurs arbitrages sont disponibles sous [`specs/`](./specs
 | `UI_MOCKED` | **124** | Frontend déterministe, nouvelles fonctionnalités v1.1.1, erreurs et courses    |
 | `E2E_REAL`  |   **3** | Frontières critiques entre navigateur, Geo API et API Entreprises              |
 
-### API réel
+### API réelle
 
 Les tests utilisent Playwright `APIRequestContext` et uniquement des requêtes `GET` vers l'API gouvernementale réelle. Les assertions sont tolérantes à la volatilité des données : structure, pagination, paramètres et cohérences observables sont vérifiés sans inventer de règles métier ni dépendre inutilement d'une entreprise fixe.
 
-### UI mockée
+### UI avec API mockée
 
 Le niveau principal utilise `page.route()` pour isoler et vérifier la logique frontend : rendu, erreurs, chargement, tri, statistiques, comparaison, historique, recherches sauvegardées, export, deep linking, thème et persistance `localStorage`.
 
 > Ne jamais mocker ce que l'on cherche précisément à valider.
 
-Une réponse mockée prouve donc le comportement du frontend, pas celui du backend.
+Une réponse mockée apporte donc une preuve sur le comportement du frontend, pas sur celui du backend.
 
-### E2E réel
+### E2E avec API réelles
 
 Trois scénarios seulement associent le navigateur aux API réelles pour vérifier des intégrations critiques, dont la chaîne Commune → Geo API → code INSEE → API Entreprises. Cette couche apporte une preuve de jonction sans dupliquer systématiquement les tests API ou UI.
 
@@ -176,7 +183,7 @@ Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Le
 │   ├── coverage/                  # Interface du rapport de couverture
 │   ├── qa-portal/                 # Portail consolidé HTML/CSS/JavaScript
 │   └── scripts/                   # Générateurs couverture et qualité
-├── specs/                         # 13 User Stories et 13 plans de tests
+├── specs/                         # 13 User Stories, 13 plans associés et 1 plan transverse v1.1.1
 ├── tests/
 │   ├── api/
 │   │   └── search/                # APIRequestContext et API réelle
@@ -196,7 +203,7 @@ Le projet ne crée pas de fixtures ou helpers globaux sans besoin de mutualisati
 
 ## Page Object Model et mocks
 
-Le Page Object centralise les actions utilisateur et les locators significatifs de la SPA. Les assertions métier restent visibles dans les fichiers `.spec.ts`, afin que chaque scénario conserve une intention lisible.
+Le Page Object centralise les actions utilisateur et les locators significatifs de l’interface testée. Les assertions métier restent visibles dans les fichiers `.spec.ts`, afin que chaque scénario conserve une intention lisible.
 
 Les mocks :
 
@@ -207,13 +214,11 @@ Les mocks :
 
 ## Tests
 
-Le projet contient des tests Playwright utilisant à la fois
-des réponses API réelles et des réponses mockées. Pour comprendre l'organisation des tests et la différence entre
-tests réels et tests mockés, consultez :
+Le projet contient des tests Playwright qui interrogent les API publiques ou interceptent leurs réponses selon la responsabilité vérifiée. La documentation suivante détaille l’organisation de la suite et la différence entre tests réels et tests mockés :
 
-👉 [Documentation des tests](docs/testing.md)
+[Documentation des tests](./docs/testing.md)
 
-Les locators accessibles (`getByRole`, `getByLabel`, `getByText`) sont privilégiés lorsque l'application le permet. Les limites connues des contrôles Favoris et Saved Searches sont conservées dans les défauts d'accessibilité `BUG-006` et `BUG-012`.
+Les locators accessibles (`getByRole`, `getByLabel`, `getByText`) sont privilégiés lorsque l’application le permet. Les anciens défauts d’accessibilité `BUG-006` et `BUG-012`, désormais résolus, restent documentés et couverts par des tests de non-régression.
 
 ## Installation
 
@@ -234,7 +239,7 @@ npx playwright install firefox webkit
 
 ## Exécuter les tests
 
-La baseline complète cible Chromium. Une campagne complémentaire réexécute uniquement les deux tests UI `@smoke` sur Firefox et WebKit, sans créer de nouveaux Test Cases fonctionnels.
+La baseline complète cible Chromium. Une campagne complémentaire réexécute les trois tests UI `@smoke` sur Firefox et WebKit, soit six exécutions cross-browser, sans créer de nouveaux Test Cases fonctionnels.
 
 | Commande                     | Usage                                  |
 | ---------------------------- | -------------------------------------- |
@@ -298,7 +303,7 @@ Le rapport final est généré dans `allure-report/` avec la traçabilité fonct
 npm run coverage:report
 ```
 
-Le rapport `coverage-report/` calcule depuis les US, plans, tests et défauts les Features, TC planifiés et automatisés, niveaux de test, tags et dettes connues.
+Le rapport `coverage-report/` calcule depuis les User Stories, plans, tests et fiches de défaut les User Stories couvertes, TC planifiés et automatisés, niveaux de test, tags, anomalies ouvertes et défauts résolus. Un statut de fiche absent ou ambigu est signalé « à clarifier » ; une anomalie associée à `test.fail()` reste classée ouverte.
 
 Les exécutions Firefox et WebKit sont des smokes cross-browser de TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 133 et ne modifient pas la répartition 6 `API` / 124 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts séparés.
 
@@ -312,7 +317,7 @@ Le rapport `quality-report/` consolide Prettier, ESLint et TypeScript.
 
 ### Portail QA
 
-Le [portail QA public](https://maximejoannis.github.io/french-companies-explorer-playwright-agents/) réunit les rapports Playwright, Allure, couverture et qualité. Il constitue la vue principale des preuves QA publiées.
+Le [portail QA public](https://maximejoannis.github.io/french-companies-explorer-playwright-agents/) est une interface de consultation générée par ce dépôt. Il réunit les rapports Playwright, Allure, couverture et qualité ; il ne s’agit ni de l’application testée ni d’un second lanceur de tests.
 
 Le portail distingue les réussites, échecs attendus, échecs inattendus, succès inattendus, tests ignorés et tests instables. Un succès inattendu sur un test annoté `test.fail()` fait échouer Playwright afin d’imposer le retrait de l’annotation lorsque le produit est corrigé.
 
@@ -339,7 +344,7 @@ Push main / PR / workflow_dispatch
 - sur **main** ou lors d'un déclenchement approprié hors PR, le portail est construit puis déployé ;
 - l'artefact consolidé `qa-reports` conserve les rapports pendant 30 jours ;
 - les artefacts `cross-browser-smoke-firefox` et `cross-browser-smoke-webkit` conservent séparément les preuves ciblées ;
-- le quality gate exige aussi le succès des smokes Firefox et WebKit, ainsi que du déploiement lorsqu'il est attendu.
+- le quality gate exige aussi le succès des smokes Firefox et WebKit, ainsi que du déploiement lorsqu'il est attendu ;
 - le déploiement dépend des sorties réelles des contrôles qualité, couverture, Playwright et Allure, même si leurs étapes utilisent `continue-on-error` pour préserver les rapports.
 
 La CI utilise Node.js 24, Java 17 pour Allure, Chromium pour la baseline, puis une matrix Firefox/WebKit pour les tests UI `@smoke`. Les réglages Playwright conservent deux retries et un worker en CI.
@@ -351,8 +356,8 @@ Les configurations sont versionnées sous [`.codex/agents/`](./.codex/agents/) e
 | Rôle          | Contribution                                                                                          |
 | ------------- | ----------------------------------------------------------------------------------------------------- |
 | **Planner**   | Analyse les US, AC et risques, puis aide à construire les plans et choisir le niveau de test          |
-| **Generator** | Aide à implémenter les scénarios navigateur pertinents en conservant la traçabilité                   |
-| **Healer**    | Aide à diagnostiquer les tests navigateur défaillants sans affaiblir leur intention                   |
+| **Generator** | Aide à implémenter le niveau prévu (`API`, `UI_MOCKED` ou `E2E_REAL`) en conservant la traçabilité    |
+| **Healer**    | Aide à diagnostiquer les tests défaillants sans affaiblir leur intention fonctionnelle                |
 | **Codex**     | Assiste l'analyse, l'implémentation, les reviews, l'audit, le reporting, la CI/CD et la documentation |
 
 > Les agents assistent le workflow ; ils ne constituent pas l'oracle métier.
@@ -361,7 +366,7 @@ Le projet ne revendique pas Playwright MCP : il ne fait pas partie de la stack f
 
 ## Défauts connus
 
-Le dossier [`defects/`](./defects/) documente les anomalies historiques et v1.1.1. Les anomalies actives temporairement acceptées sont BUG-005, BUG-015 et BUG-016. Leurs tests restent exécutés avec `test.fail()` placé immédiatement avant l’oracle concerné ; les problèmes de préparation ou d’infrastructure restent donc inattendus et bloquants.
+Le dossier [`defects/`](./defects/) conserve 16 fiches historiques, de BUG-001 à BUG-016. D’après leurs statuts documentés, 13 défauts sont résolus et trois anomalies restent ouvertes : BUG-005, BUG-015 et BUG-016. Leurs tests restent exécutés avec `test.fail()` placé immédiatement avant l’oracle concerné ; les problèmes de préparation ou d’infrastructure restent donc inattendus et bloquants. Le retrait de `test.fail()` est requis dès qu’un correctif transforme l’échec attendu en succès inattendu.
 
 ## Synchronisation et robustesse
 
@@ -391,4 +396,4 @@ Analyse la cohérence de la couverture, l'architecture, les mocks, les locators,
 - les mocks frontend ne prouvent pas le comportement du backend ;
 - les E2E réels vérifient uniquement quelques frontières critiques ;
 - la couverture est limitée au périmètre fonctionnel défini ;
-- les défauts produit documentés restent une dette explicite.
+- les trois anomalies produit encore ouvertes restent une dette explicite ; les treize fiches résolues sont conservées pour la traçabilité historique.
