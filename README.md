@@ -15,7 +15,7 @@
 ![Tests](https://img.shields.io/badge/Playwright%20Tests-133-blue)
 ![E2E Real](https://img.shields.io/badge/E2E%20Real-3%20tests-brightgreen)
 
-> État v1.1.1 documenté dans le dépôt : 133 tests découverts, aucun `fixme`. BUG-005, BUG-015 et BUG-016 sont exécutés comme échecs attendus ciblés. Le portail n’affiche « CI conforme avec anomalies connues » que lorsque les contrôles du run publié sont réussis et qu’aucun résultat inattendu n’est observé ; cela ne signifie pas que l’application est dépourvue d’anomalies.
+> État v1.1.1 documenté dans le dépôt : Playwright découvre 133 tests et aucun n’est désactivé avec `test.fixme`. BUG-005, BUG-015 et BUG-016 utilisent `test.fail()` : leur assertion défaillante est attendue tant que l’anomalie reste ouverte. Le portail n’affiche « CI conforme avec anomalies connues » que lorsque les contrôles du run publié réussissent sans résultat inattendu. Cela ne signifie pas que l’application est dépourvue d’anomalies.
 
 Ce dépôt est le projet d’automatisation QA de [French Companies Explorer](https://maximejoannis.github.io/french-companies-explorer-qa/). Fondée sur **Playwright Test** et **TypeScript**, la suite combine tests de l’API réelle, tests UI avec API mockée et quelques tests E2E réels. Le portail QA publie séparément les rapports d’exécution, de couverture et de qualité produits par cette suite.
 
@@ -43,15 +43,15 @@ Le projet met en œuvre une démarche QA Automation complète :
 
 - analyse fonctionnelle, User Stories et plans de tests ;
 - stratégie multi-niveaux fondée sur le risque ;
-- tests API avec `APIRequestContext` ;
-- tests UI déterministes avec mocks réseau ciblés ;
-- quelques intégrations navigateur + API réelle ;
-- Page Object Model et contrôle des états `localStorage` ;
-- traçabilité Allure ;
-- quality gates, reporting, GitHub Actions et GitHub Pages ;
+- tests directs de l’API avec `APIRequestContext`, le client HTTP de Playwright ;
+- tests UI avec réponses réseau simulées pour obtenir des données et des erreurs reproductibles ;
+- quelques parcours de bout en bout entre le navigateur et les API réelles ;
+- Page Object Model pour regrouper les interactions réutilisables et contrôle des données persistées dans `localStorage` ;
+- rapports Allure reliant chaque exécution à sa Feature et à sa User Story ;
+- contrôles bloquants, rapports, exécution GitHub Actions et publication sur GitHub Pages ;
 - expérimentation encadrée des Playwright Test Agents et de Codex.
 
-> La couverture correspond au périmètre fonctionnel défini pour cet exercice. Elle ne représente ni du code coverage, ni une couverture exhaustive de French Companies Explorer ou de l'API gouvernementale.
+> La couverture correspond au périmètre fonctionnel défini pour cet exercice. Elle mesure les User Stories et Test Cases automatisés, pas les lignes de code exécutées. Elle ne constitue pas non plus une couverture exhaustive de French Companies Explorer ou de l’API gouvernementale.
 
 ## État v1.1.1
 
@@ -74,7 +74,7 @@ Le projet met en œuvre une démarche QA Automation complète :
 | Anomalies encore ouvertes                   |               **3** |
 | Défauts résolus                             |              **13** |
 
-Le résultat Chromium disponible dans `test-results/results.json` indique 133 résultats attendus, aucun résultat inattendu, aucun test ignoré et aucun test instable. Parmi ces résultats attendus, trois oracles sont annotés avec `test.fail()` pour les anomalies produit temporairement acceptées. Le document [`AUDIT-CI-KNOWN-DEFECTS.md`](./AUDIT-CI-KNOWN-DEFECTS.md) consigne par ailleurs une campagne locale Firefox/WebKit de 6 exécutions conformes ; cette preuve historique ne doit pas être interprétée comme le statut d’un run CI plus récent.
+Le résultat Chromium disponible dans `test-results/results.json` indique 133 résultats attendus, aucun résultat inattendu, aucun test ignoré et aucun test instable. Trois assertions fonctionnelles utilisent `test.fail()` pour signaler les anomalies temporairement acceptées sans masquer un autre échec du scénario. Le document [`AUDIT-CI-KNOWN-DEFECTS.md`](./AUDIT-CI-KNOWN-DEFECTS.md) consigne une campagne locale Firefox/WebKit de 6 exécutions conformes. Cette preuve historique ne doit pas être interprétée comme le statut d’un run CI plus récent.
 
 ## Baseline historique v1.0.0
 
@@ -125,19 +125,21 @@ Les cas détaillés et leurs arbitrages sont disponibles sous [`specs/`](./specs
 
 > Utiliser le niveau de test le plus bas qui apporte la confiance utile.
 
-| Niveau      |  Nombre | Responsabilité                                                                 |
-| ----------- | ------: | ------------------------------------------------------------------------------ |
-| `API`       |   **6** | Contrat observable de l'API réelle : HTTP, structure, pagination et paramètres |
-| `UI_MOCKED` | **124** | Frontend déterministe, nouvelles fonctionnalités v1.1.1, erreurs et courses    |
-| `E2E_REAL`  |   **3** | Frontières critiques entre navigateur, Geo API et API Entreprises              |
+| Niveau      |  Nombre | Responsabilité                                                                                                                                   |
+| ----------- | ------: | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `API`       |   **6** | Réponses de l’API réelle : statut HTTP, structure JSON, pagination et paramètres envoyés                                                         |
+| `UI_MOCKED` | **124** | Interface testée avec des réponses API simulées : succès, erreurs, lenteurs et requêtes concurrentes dont les réponses arrivent dans le désordre |
+| `E2E_REAL`  |   **3** | Parcours de bout en bout entre le navigateur, la Geo API et l’API Entreprises                                                                    |
 
 ### API réelle
 
-Les tests utilisent Playwright `APIRequestContext` et uniquement des requêtes `GET` vers l'API gouvernementale réelle. Les assertions sont tolérantes à la volatilité des données : structure, pagination, paramètres et cohérences observables sont vérifiés sans inventer de règles métier ni dépendre inutilement d'une entreprise fixe.
+Les tests utilisent `APIRequestContext`, le client HTTP intégré à Playwright, et uniquement des requêtes `GET` vers l’API gouvernementale réelle. Comme les données publiques évoluent, ils vérifient surtout la structure, la pagination et la cohérence des paramètres. Ils évitent de dépendre inutilement d’une entreprise ou d’un nombre de résultats précis.
 
 ### UI avec API mockée
 
-Le niveau principal utilise `page.route()` pour isoler et vérifier la logique frontend : rendu, erreurs, chargement, tri, statistiques, comparaison, historique, recherches sauvegardées, export, deep linking, thème et persistance `localStorage`.
+Le niveau principal utilise `page.route()` pour intercepter une requête et fournir une réponse contrôlée sans appeler l’API réelle. Il vérifie ainsi le rendu, les erreurs, le chargement, le tri, les statistiques, la comparaison, l’historique, les recherches sauvegardées, l’export, le deep linking — restauration d’un écran depuis son URL —, le thème et la persistance dans `localStorage`.
+
+Les réponses simulées permettent aussi de reproduire des situations difficiles à provoquer avec l’API publique. Par exemple, le test d’autocomplétion retarde volontairement la réponse à la requête A, laisse la requête B finir en premier, puis vérifie que la réponse tardive A ne remplace pas les suggestions de B.
 
 > Ne jamais mocker ce que l'on cherche précisément à valider.
 
@@ -145,7 +147,7 @@ Une réponse mockée apporte donc une preuve sur le comportement du frontend, pa
 
 ### E2E avec API réelles
 
-Trois scénarios seulement associent le navigateur aux API réelles pour vérifier des intégrations critiques, dont la chaîne Commune → Geo API → code INSEE → API Entreprises. Cette couche apporte une preuve de jonction sans dupliquer systématiquement les tests API ou UI.
+Trois scénarios `E2E_REAL` (end-to-end) associent le navigateur aux API réelles. Ils vérifient notamment la chaîne Commune → Geo API → code INSEE → API Entreprises. Cette couche confirme que les systèmes communiquent correctement sans répéter tous les tests API ou UI.
 
 ## Traçabilité
 
@@ -158,7 +160,7 @@ User Story (US-*)
 → Test Playwright
 ```
 
-Allure présente l'exécution selon la hiérarchie :
+Allure organise le rapport d’exécution selon la hiérarchie suivante, afin de remonter d’un test à la fonctionnalité couverte :
 
 ```text
 Epic : French Companies Explorer
@@ -167,7 +169,7 @@ Epic : French Companies Explorer
 → Test Case
 ```
 
-Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Les tags Playwright (`@smoke`, `@positive`, `@negative`, `@error`, `@regression`) facilitent les campagnes, mais ne remplacent pas cette traçabilité métier.
+Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Les tags Playwright sélectionnent des campagnes ciblées : par exemple, `@smoke` désigne les vérifications critiques et rapides, tandis que `@regression` protège un comportement déjà validé. Les tags `@positive`, `@negative` et `@error` décrivent la nature du scénario, mais ne remplacent pas la traçabilité métier.
 
 ## Architecture du projet
 
@@ -199,11 +201,11 @@ Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Le
 └── playwright.config.ts
 ```
 
-Le projet ne crée pas de fixtures ou helpers globaux sans besoin de mutualisation démontré.
+Le projet n’ajoute une fixture — un contexte ou une donnée préparée pour plusieurs tests — ou un helper global que lorsqu’une réutilisation réelle le justifie.
 
 ## Page Object Model et mocks
 
-Le Page Object centralise les actions utilisateur et les locators significatifs de l’interface testée. Les assertions métier restent visibles dans les fichiers `.spec.ts`, afin que chaque scénario conserve une intention lisible.
+Le Page Object `SearchPage` regroupe les locators et actions réutilisables, par exemple saisir une recherche ou ouvrir l’historique. Les assertions métier restent dans les fichiers `.spec.ts` : le lecteur voit donc directement ce que chaque scénario doit prouver.
 
 Les mocks :
 
@@ -239,7 +241,7 @@ npx playwright install firefox webkit
 
 ## Exécuter les tests
 
-La baseline complète cible Chromium. Une campagne complémentaire réexécute les trois tests UI `@smoke` sur Firefox et WebKit, soit six exécutions cross-browser, sans créer de nouveaux Test Cases fonctionnels.
+La campagne de référence exécute toute la suite sur Chromium. Une campagne complémentaire rejoue les trois tests UI `@smoke`, c’est-à-dire les contrôles critiques et rapides, sur Firefox et WebKit. Elle produit six exécutions cross-browser sans créer de nouveaux Test Cases fonctionnels.
 
 | Commande                     | Usage                                  |
 | ---------------------------- | -------------------------------------- |
@@ -295,7 +297,7 @@ npm run allure:generate
 npm run allure:open
 ```
 
-Le rapport final est généré dans `allure-report/` avec la traçabilité fonctionnelle.
+Le rapport final est généré dans `allure-report/`. Allure y regroupe les résultats et leur rattachement aux Features et User Stories.
 
 ### Couverture QA
 
@@ -305,7 +307,7 @@ npm run coverage:report
 
 Le rapport `coverage-report/` calcule depuis les User Stories, plans, tests et fiches de défaut les User Stories couvertes, TC planifiés et automatisés, niveaux de test, tags, anomalies ouvertes et défauts résolus. Un statut de fiche absent ou ambigu est signalé « à clarifier » ; une anomalie associée à `test.fail()` reste classée ouverte.
 
-Les exécutions Firefox et WebKit sont des smokes cross-browser de TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 133 et ne modifient pas la répartition 6 `API` / 124 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts séparés.
+Les exécutions Firefox et WebKit rejouent des TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 133 et ne modifient pas la répartition 6 `API` / 124 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts téléchargeables séparés.
 
 ### Qualité
 
@@ -323,7 +325,7 @@ Le portail distingue les réussites, échecs attendus, échecs inattendus, succ�
 
 ## CI/CD
 
-Le workflow [`.github/workflows/playwright.yml`](./.github/workflows/playwright.yml) est déclenché par un push sur `main`, une pull request vers `main` ou `workflow_dispatch`.
+Le workflow [`.github/workflows/playwright.yml`](./.github/workflows/playwright.yml) est déclenché par un push sur `main`, une pull request vers `main` ou manuellement avec `workflow_dispatch`.
 
 ```text
 Push main / PR / workflow_dispatch
@@ -331,23 +333,23 @@ Push main / PR / workflow_dispatch
 → qualité
 → couverture QA
 → installation Chromium
-→ baseline Playwright complète sur Chromium
+→ suite Playwright complète sur Chromium
 → génération Allure
 → validation des rapports
-→ artifact qa-reports
-→ matrix smoke UI Firefox / WebKit
+→ archive qa-reports
+→ jobs smoke UI Firefox / WebKit
 → GitHub Pages hors PR
-→ quality gate final
+→ contrôle bloquant final
 ```
 
 - une **pull request** exécute les validations et produit les artefacts sans déployer Pages ;
 - sur **main** ou lors d'un déclenchement approprié hors PR, le portail est construit puis déployé ;
-- l'artefact consolidé `qa-reports` conserve les rapports pendant 30 jours ;
+- l’artefact consolidé `qa-reports`, c’est-à-dire l’archive téléchargeable produite par le workflow, conserve les rapports pendant 30 jours ;
 - les artefacts `cross-browser-smoke-firefox` et `cross-browser-smoke-webkit` conservent séparément les preuves ciblées ;
-- le quality gate exige aussi le succès des smokes Firefox et WebKit, ainsi que du déploiement lorsqu'il est attendu ;
-- le déploiement dépend des sorties réelles des contrôles qualité, couverture, Playwright et Allure, même si leurs étapes utilisent `continue-on-error` pour préserver les rapports.
+- le quality gate final bloque le workflow si les smokes Firefox ou WebKit échouent, ou si le déploiement attendu échoue ;
+- les étapes de génération utilisent `continue-on-error` pour produire les rapports même après un échec, mais la gate finale vérifie ensuite leur résultat réel et reste bloquante.
 
-La CI utilise Node.js 24, Java 17 pour Allure, Chromium pour la baseline, puis une matrix Firefox/WebKit pour les tests UI `@smoke`. Les réglages Playwright conservent deux retries et un worker en CI.
+La CI utilise Node.js 24, Java 17 pour Allure et Chromium pour la suite complète. Une matrix GitHub Actions lance ensuite le même job `@smoke` une fois avec Firefox et une fois avec WebKit. En CI, Playwright utilise un seul worker et retente jusqu’à deux fois un test en échec afin d’identifier les échecs intermittents.
 
 ## Playwright Test Agents et Codex
 
@@ -360,24 +362,24 @@ Les configurations sont versionnées sous [`.codex/agents/`](./.codex/agents/) e
 | **Healer**    | Aide à diagnostiquer les tests défaillants sans affaiblir leur intention fonctionnelle                |
 | **Codex**     | Assiste l'analyse, l'implémentation, les reviews, l'audit, le reporting, la CI/CD et la documentation |
 
-> Les agents assistent le workflow ; ils ne constituent pas l'oracle métier.
+> Les agents assistent le workflow ; ils ne définissent pas le résultat fonctionnel attendu, qui reste fixé par les exigences et critères d’acceptation.
 
 Le projet ne revendique pas Playwright MCP : il ne fait pas partie de la stack finale déclarée.
 
 ## Défauts connus
 
-Le dossier [`defects/`](./defects/) conserve 16 fiches historiques, de BUG-001 à BUG-016. D’après leurs statuts documentés, 13 défauts sont résolus et trois anomalies restent ouvertes : BUG-005, BUG-015 et BUG-016. Leurs tests restent exécutés avec `test.fail()` placé immédiatement avant l’oracle concerné ; les problèmes de préparation ou d’infrastructure restent donc inattendus et bloquants. Le retrait de `test.fail()` est requis dès qu’un correctif transforme l’échec attendu en succès inattendu.
+Le dossier [`defects/`](./defects/) conserve 16 fiches historiques, de BUG-001 à BUG-016. D’après leurs statuts documentés, 13 défauts sont résolus et trois anomalies restent ouvertes : BUG-005, BUG-015 et BUG-016. Pour chacune, `test.fail()` est placé juste avant l’assertion qui décrit le comportement attendu. Un problème de navigation, de préparation ou d’infrastructure survenant plus tôt reste donc inattendu et bloquant. Quand le produit est corrigé, l’assertion réussit ; Playwright signale alors un succès inattendu jusqu’au retrait de `test.fail()`.
 
 ## Synchronisation et robustesse
 
 La suite privilégie :
 
-- les assertions auto-attendues Playwright ;
-- `waitForResponse()` lorsque la réponse réseau fait partie de l'oracle ;
-- l'installation du listener avant l'action déclenchante ;
+- les assertions auto-attendues Playwright, qui réessaient jusqu’à obtenir l’état attendu ou atteindre le délai maximal ;
+- `waitForResponse()` lorsque le test doit vérifier une réponse réseau précise ;
+- l’installation de cette attente avant l’action qui déclenche la requête, pour ne pas manquer une réponse rapide ;
 - l'isolation des contextes et états `localStorage`.
 
-Elle n'utilise pas de `waitForTimeout()` arbitraire ni `networkidle` comme solution générique de disponibilité.
+Elle n’utilise pas de pause fixe avec `waitForTimeout()` lorsqu’un état observable permet d’attendre précisément. Elle n’utilise pas non plus `networkidle` comme signal générique de disponibilité, car une page peut rester fonctionnelle tout en maintenant une activité réseau.
 
 ## Documentation de clôture
 
@@ -393,7 +395,7 @@ Analyse la cohérence de la couverture, l'architecture, les mocks, les locators,
 
 - les tests réels dépendent de la disponibilité du réseau et de l'API publique ;
 - les données gouvernementales évoluent et imposent des assertions résilientes ;
-- les mocks frontend ne prouvent pas le comportement du backend ;
+- les réponses simulées prouvent le comportement de l’interface, pas celui de l’API réelle ;
 - les E2E réels vérifient uniquement quelques frontières critiques ;
 - la couverture est limitée au périmètre fonctionnel défini ;
 - les trois anomalies produit encore ouvertes restent une dette explicite ; les treize fiches résolues sont conservées pour la traçabilité historique.
