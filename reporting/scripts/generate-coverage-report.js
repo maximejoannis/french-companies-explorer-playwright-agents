@@ -30,6 +30,30 @@ function duplicates(values) {
   return [...counts].filter(([, count]) => count > 1).map(([value]) => value);
 }
 
+function documentedDefectStatus(source) {
+  const inline = source.match(
+    /^[ \t]*[-*]?[ \t]*\*{0,2}(?:Statut|Status)\*{0,2}[ \t]*:[ \t]*\*{0,2}([^*\r\n]+)\*{0,2}/imu,
+  )?.[1];
+  const heading = source.match(/^##\s+(?:Statut|Status)\s*$/imu);
+  const afterHeading = heading
+    ? source
+        .slice(heading.index + heading[0].length)
+        .split(/\r?\n/u)
+        .map((line) => line.replaceAll('*', '').trim())
+        .find(Boolean)
+    : undefined;
+  const value = (inline ?? afterHeading ?? '').trim();
+  const normalized = value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/gu, '')
+    .toLowerCase();
+
+  if (/^(ouvert|ouverte|open)\b/u.test(normalized)) return { status: 'open', value };
+  if (/^(resolu|resolue|resolved|corrige|corrigee|fixed|closed|ferme|fermee)\b/u.test(normalized))
+    return { status: 'resolved', value };
+  return { status: 'clarify', value: value || null };
+}
+
 const userStories = walk(specsRoot)
   .filter((file) => path.basename(file).startsWith('US-') && file.endsWith('.md'))
   .map((file) => {
@@ -50,8 +74,12 @@ for (const file of walk(specsRoot).filter((item) => path.basename(item).startsWi
 const plannedIds = [...new Set(plannedOccurrences.map(({ id }) => id))].sort();
 
 const testCases = [];
+const expectedFailureDefectIds = new Set();
 for (const file of walk(testsRoot).filter((item) => item.endsWith('.spec.ts'))) {
   const source = fs.readFileSync(file, 'utf8');
+  for (const annotation of source.matchAll(/test\.fail\([\s\S]{0,500}?\);/gu)) {
+    for (const id of annotation[0].match(/BUG-\d+/gu) ?? []) expectedFailureDefectIds.add(id);
+  }
   const feature = source.match(/allure\.feature\(['"]([^'"]+)['"]\)/u)?.[1] ?? 'Non renseignée';
   const story = source.match(/allure\.story\(['"]([^'"]+)['"]\)/u)?.[1] ?? 'Non renseignée';
   const storyId = story.match(/^US-[A-Z-]+-\d+/u)?.[0] ?? null;
@@ -122,14 +150,23 @@ const defectFiles = walk(defectsRoot).filter((file) =>
   /^BUG-\d+.*\.md$/u.test(path.basename(file)),
 );
 const documentedDefects = defectFiles
-  .map((file) => path.basename(file).match(/^BUG-\d+/u)[0])
-  .sort();
-const fixmeDefects = [
-  ...new Set(fixme.flatMap(({ title }) => title.match(/BUG-\d+/gu) ?? [])),
-].sort();
-
+  .map((file) => {
+    const id = path.basename(file).match(/^BUG-\d+/u)[0];
+    const documented = documentedDefectStatus(fs.readFileSync(file, 'utf8'));
+    const hasExpectedFailure = expectedFailureDefectIds.has(id);
+    return {
+      id,
+      file: relative(file),
+      documentedStatus: documented.status,
+      documentedStatusValue: documented.value,
+      status: hasExpectedFailure ? 'open' : documented.status,
+      associatedWithTestFail: hasExpectedFailure,
+      statusConflict: hasExpectedFailure && documented.status === 'resolved',
+    };
+  })
+  .sort((left, right) => left.id.localeCompare(right.id));
 const data = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   generatedAt: new Date().toISOString(),
   features: {
     defined: features.length,
@@ -152,9 +189,23 @@ const data = {
   tags,
   defects: {
     documented: documentedDefects.length,
-    associatedWithFixme: fixmeDefects.length,
-    withoutFixme: documentedDefects.filter((id) => !fixmeDefects.includes(id)).length,
-    fixmeIds: fixmeDefects,
+    open: documentedDefects.filter(({ status }) => status === 'open').length,
+    resolved: documentedDefects.filter(({ status }) => status === 'resolved').length,
+    toClarify: documentedDefects.filter(({ status }) => status === 'clarify').length,
+    openIds: documentedDefects.filter(({ status }) => status === 'open').map(({ id }) => id),
+    resolvedIds: documentedDefects
+      .filter(({ status }) => status === 'resolved')
+      .map(({ id }) => id),
+    toClarifyIds: documentedDefects
+      .filter(({ status }) => status === 'clarify')
+      .map(({ id }) => id),
+    expectedFailureIds: [...expectedFailureDefectIds].sort(),
+    statusConflictIds: documentedDefects
+      .filter(({ statusConflict }) => statusConflict)
+      .map(({ id }) => id),
+    statusRule:
+      'Ouvert/Open = anomalie ouverte ; Résolu/Resolved/Corrigé/Fixed/Closed = défaut résolu ; statut absent ou non reconnu = à clarifier. Une fiche liée à test.fail() reste ouverte.',
+    items: documentedDefects,
   },
 };
 
@@ -177,6 +228,9 @@ console.log(
 );
 console.log(
   `Niveaux : API ${levels.API}, UI_MOCKED ${levels.UI_MOCKED}, E2E_REAL ${levels.E2E_REAL}`,
+);
+console.log(
+  `Défauts : ${data.defects.documented} fiches, ${data.defects.open} ouverts, ${data.defects.resolved} résolus, ${data.defects.toClarify} à clarifier`,
 );
 if (automatedOutsidePlans.length)
   console.warn(`TC automatisés hors plans : ${automatedOutsidePlans.join(', ')}`);

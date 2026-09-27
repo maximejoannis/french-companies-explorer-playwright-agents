@@ -51,10 +51,12 @@
     .map(([tag, count]) => `<span class="chip">${tag} · ${count}</span>`)
     .join('');
   document.getElementById('defects').innerHTML = [
-    ['Défauts documentés', data.defects.documented],
-    ['Défauts associés à fixme', data.defects.associatedWithFixme],
-    ['Dettes sans fixme', data.defects.withoutFixme],
+    ['Fiches de défaut historiques', data.defects.documented],
+    ['Anomalies encore ouvertes', data.defects.open],
+    ['Défauts résolus', data.defects.resolved],
+    ['Statuts à clarifier', data.defects.toClarify],
   ]
     .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
     .join('');
+  text('defectStatusRule', data.defects.statusRule);
 })();

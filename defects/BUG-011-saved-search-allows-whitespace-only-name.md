@@ -2,7 +2,7 @@
 
 ## Statut
 
-Open
+Resolved
 
 ## Sévérité
 
