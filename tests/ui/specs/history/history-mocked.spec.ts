@@ -83,8 +83,22 @@ function identities(entries: HistoryEntry[]) {
   }));
 }
 
+function waitForSearchResponse(page: Page, query: string) {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    const url = new URL(response.url());
+
+    return (
+      `${url.origin}${url.pathname}` === API_URL &&
+      request.method() === 'GET' &&
+      url.searchParams.get('minimal') !== 'true' &&
+      url.searchParams.get('q') === query
+    );
+  });
+}
+
 async function submitAndWait(search: SearchPage, page: Page, query: string) {
-  const responsePromise = page.waitForResponse((response) => response.url().startsWith(API_URL));
+  const responsePromise = waitForSearchResponse(page, query);
   await search.submit(query);
   await responsePromise;
 }
@@ -242,7 +256,7 @@ test('TC-HISTORY-004 @regression restaure et relance uniquement la recherche cho
   await search.openHistory();
   const requestsBeforeReplay = apiRequests.length;
 
-  const replayResponse = page.waitForResponse((response) => response.url().startsWith(API_URL));
+  const replayResponse = waitForSearchResponse(page, 'Alpha historique');
   await search.historyRelaunchButton('Alpha historique', '75001').click();
   const response = await replayResponse;
 
@@ -316,7 +330,7 @@ test('TC-HISTORY-007 @regression BUG-010 préserve la récence pendant la naviga
   await submitAndWait(search, page, 'Alpha navigation');
   await submitAndWait(search, page, 'Bêta navigation');
   await search.openHistory();
-  const replayResponse = page.waitForResponse((response) => response.url().startsWith(API_URL));
+  const replayResponse = waitForSearchResponse(page, 'Alpha navigation');
   await search.historyRelaunchButton('Alpha navigation').click();
   await replayResponse;
   const historyBeforeNavigation = await page.evaluate(() => localStorage.getItem('fce_history'));
@@ -329,7 +343,7 @@ test('TC-HISTORY-007 @regression BUG-010 préserve la récence pendant la naviga
   );
 
   const requestsBeforePagination = apiRequests.length;
-  const paginationResponse = page.waitForResponse((response) => response.url().startsWith(API_URL));
+  const paginationResponse = waitForSearchResponse(page, 'Alpha navigation');
   await search.nextPageButton.click();
   await paginationResponse;
   expect(apiRequests).toHaveLength(requestsBeforePagination + 1);
@@ -340,7 +354,7 @@ test('TC-HISTORY-007 @regression BUG-010 préserve la récence pendant la naviga
   await search.openSearch();
   await search.showAdvancedFilters();
   const requestsBeforePageSize = apiRequests.length;
-  const pageSizeResponse = page.waitForResponse((response) => response.url().startsWith(API_URL));
+  const pageSizeResponse = waitForSearchResponse(page, 'Alpha navigation');
   await search.selectPageSize('10');
   await pageSizeResponse;
   expect(apiRequests).toHaveLength(requestsBeforePageSize + 1);
