@@ -21,7 +21,7 @@ test.beforeEach(async () => {
   await allure.story('US-SEARCH-01 — Rechercher une entreprise');
 });
 
-test('TC-SEARCH-010 @smoke @positive affiche une recherche textuelle réelle cohérente', async ({
+test('TC-SEARCH-010 @real-api @positive affiche une recherche textuelle réelle cohérente', async ({
   page,
 }) => {
   // Couvre US-SEARCH-01 / AC-01, AC-05

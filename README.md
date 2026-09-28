@@ -135,6 +135,8 @@ Les cas détaillés et leurs arbitrages sont disponibles sous [`specs/`](./specs
 
 Les tests utilisent `APIRequestContext`, le client HTTP intégré à Playwright, et uniquement des requêtes `GET` vers l’API gouvernementale réelle. Comme les données publiques évoluent, ils vérifient surtout la structure, la pagination et la cohérence des paramètres. Ils évitent de dépendre inutilement d’une entreprise ou d’un nombre de résultats précis.
 
+Tous les tests qui contactent directement une API externe réelle portent le tag `@real-api`. Ce tag sépare leur responsabilité d’intégration du signal de compatibilité navigateur : une panne réseau, une limitation de débit ou une réponse HTTP non-2xx ne constitue pas, à elle seule, une régression Firefox ou WebKit.
+
 ### UI avec API mockée
 
 Le niveau principal utilise `page.route()` pour intercepter une requête et fournir une réponse contrôlée sans appeler l’API réelle. Il vérifie ainsi le rendu, les erreurs, le chargement, le tri, les statistiques, la comparaison, l’historique, les recherches sauvegardées, l’export, le deep linking — restauration d’un écran depuis son URL —, le thème et la persistance dans `localStorage`.
@@ -169,7 +171,7 @@ Epic : French Companies Explorer
 → Test Case
 ```
 
-Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Les tags Playwright sélectionnent des campagnes ciblées : par exemple, `@smoke` désigne les vérifications critiques et rapides, tandis que `@regression` protège un comportement déjà validé. Les tags `@positive`, `@negative` et `@error` décrivent la nature du scénario, mais ne remplacent pas la traçabilité métier.
+Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Les tags Playwright sélectionnent des campagnes ciblées : `@smoke` désigne les vérifications UI critiques, rapides et déterministes ; `@real-api` identifie les tests dépendant d’un service externe réel ; `@regression` protège un comportement déjà validé. Les tags `@positive`, `@negative` et `@error` décrivent la nature du scénario, mais ne remplacent pas la traçabilité métier.
 
 ## Architecture du projet
 
@@ -241,21 +243,26 @@ npx playwright install firefox webkit
 
 ## Exécuter les tests
 
-La campagne de référence exécute toute la suite sur Chromium. Une campagne complémentaire rejoue les trois tests UI `@smoke`, c’est-à-dire les contrôles critiques et rapides, sur Firefox et WebKit. Elle produit six exécutions cross-browser sans créer de nouveaux Test Cases fonctionnels.
+La commande locale de référence exécute toute la suite sur Chromium. En CI, les tests Chromium déterministes et la couche `@real-api` sont exécutés séparément. Une campagne complémentaire rejoue les deux tests UI `@smoke` déterministes sur Firefox et WebKit. L’exclusion explicite `@real-api` empêche une dépendance externe de devenir un faux signal de compatibilité moteur.
 
-| Commande                     | Usage                                  |
-| ---------------------------- | -------------------------------------- |
-| `npm test`                   | Suite complète sur Chromium            |
-| `npm run test:headed`        | Suite complète avec navigateur visible |
-| `npm run test:ui`            | Interface Playwright UI Mode           |
-| `npm run test:cross-browser` | Smoke UI ciblé sur Firefox et WebKit   |
+| Commande                     | Usage                                                   |
+| ---------------------------- | ------------------------------------------------------- |
+| `npm test`                   | Suite complète sur Chromium, API réelles incluses       |
+| `npm run test:ci`            | Baseline Chromium déterministe, hors `@real-api`        |
+| `npm run test:real-api`      | Intégration avec les API réelles sur Chromium           |
+| `npm run test:headed`        | Suite complète avec navigateur visible                  |
+| `npm run test:ui`            | Interface Playwright UI Mode                            |
+| `npm run test:cross-browser` | Smoke UI déterministe et bloquant sur Firefox et WebKit |
 
 Exemples de campagnes directes supportées par les tags existants :
 
 ```powershell
 npx playwright test --project=chromium --grep "@smoke"
+npx playwright test --project=chromium --grep "@real-api"
 npx playwright test --project=chromium --grep "@regression"
 ```
+
+Le job `Real API integration (chromium)` reste bloquant : une rupture réelle du contrat externe ou de l’intégration doit toujours faire échouer le quality gate. Il est isolé du job cross-browser afin que Firefox et WebKit ne soient responsables que des régressions UI déterministes. Aucun `continue-on-error` n’est appliqué à ces jobs.
 
 ## Quality Gates
 

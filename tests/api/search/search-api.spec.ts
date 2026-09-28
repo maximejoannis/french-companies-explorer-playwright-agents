@@ -9,7 +9,9 @@ test.beforeEach(async () => {
   await allure.story('US-SEARCH-01 — Rechercher une entreprise');
 });
 
-test('TC-SEARCH-001 @positive contrat minimal d’une recherche textuelle', async ({ request }) => {
+test('TC-SEARCH-001 @real-api @positive contrat minimal d’une recherche textuelle', async ({
+  request,
+}) => {
   // Couvre US-SEARCH-01 / AC-01
   const response = await request.get(API_URL, {
     params: { q: 'boulangerie', per_page: 2 },

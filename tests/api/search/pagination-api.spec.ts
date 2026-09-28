@@ -38,7 +38,7 @@ test.beforeEach(async () => {
   await allure.story('US-PAGINATION-01 — Parcourir les pages de résultats');
 });
 
-test('TC-PAGINATION-001 @positive expose des pages API cohérentes et distinctes', async ({
+test('TC-PAGINATION-001 @real-api @positive expose des pages API cohérentes et distinctes', async ({
   request,
 }) => {
   // Couvre US-PAGINATION-01 / contributions AC-01, AC-02, AC-03, AC-04, AC-08

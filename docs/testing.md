@@ -618,6 +618,24 @@ Par exemple :
 | Vérifier que l'API réelle fonctionne                              |         ❌ |                   ✅ |
 | Vérifier que notre code comprend toujours le format réel de l'API |         ❌ |                   ✅ |
 
+### Campagnes CI distinctes
+
+Les tests qui contactent directement une API externe portent `@real-api`. La CI les exécute sur Chromium dans une campagne d’intégration dédiée et bloquante.
+
+Les campagnes Firefox et WebKit utilisent uniquement les `@smoke` UI déterministes et excluent explicitement `@real-api`. Elles continuent donc à faire échouer le quality gate en cas de régression réelle du rendu ou des interactions, sans attribuer à un moteur de navigateur une indisponibilité du service externe.
+
+```text
+UI mockée @smoke
+    → Chromium + Firefox + WebKit
+    → signal de compatibilité navigateur
+
+API réelle @real-api
+    → Chromium
+    → signal d’intégration externe
+```
+
+La couche `@real-api` n’est pas rendue non bloquante. Sa séparation permet d’identifier correctement la responsabilité de l’échec, pas de masquer celui-ci.
+
 ---
 
 ## 18. Le rôle des Page Objects

@@ -92,7 +92,7 @@ test('TC-SEARCH-004 @negative refuse les longueurs numériques invalides sans ap
   expect(apiCalls).toBe(0);
 });
 
-test('TC-SEARCH-005 @positive affiche les informations essentielles de la réponse', async ({
+test('TC-SEARCH-005 @smoke @positive affiche les informations essentielles de la réponse', async ({
   page,
 }) => {
   // Couvre US-SEARCH-01 / AC-05

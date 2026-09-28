@@ -47,7 +47,9 @@ test.beforeEach(async () => {
   await allure.story('US-FILTERS-01 — Filtrer les entreprises recherchées');
 });
 
-test('TC-FILTERS-001 @positive filtre réellement par code postal', async ({ request }) => {
+test('TC-FILTERS-001 @real-api @positive filtre réellement par code postal', async ({
+  request,
+}) => {
   // Couvre US-FILTERS-01 / AC-01, contribution AC-07
   const response = await request.get(API_URL, {
     params: { q: GENERIC_QUERY, code_postal: POSTAL_CODE, per_page: 3 },
@@ -62,7 +64,7 @@ test('TC-FILTERS-001 @positive filtre réellement par code postal', async ({ req
   }
 });
 
-test('TC-FILTERS-002 @positive filtre réellement par identifiant de commune', async ({
+test('TC-FILTERS-002 @real-api @positive filtre réellement par identifiant de commune', async ({
   request,
 }) => {
   // Couvre US-FILTERS-01 / contribution AC-02, AC-07
@@ -77,7 +79,9 @@ test('TC-FILTERS-002 @positive filtre réellement par identifiant de commune', a
   }
 });
 
-test('TC-FILTERS-003 @positive filtre réellement par état administratif', async ({ request }) => {
+test('TC-FILTERS-003 @real-api @positive filtre réellement par état administratif', async ({
+  request,
+}) => {
   // Couvre US-FILTERS-01 / AC-03, contribution AC-07
   for (const status of ['A', 'C']) {
     const response = await request.get(API_URL, {
@@ -92,7 +96,7 @@ test('TC-FILTERS-003 @positive filtre réellement par état administratif', asyn
   }
 });
 
-test('TC-FILTERS-004 @positive combine réellement les filtres', async ({ request }) => {
+test('TC-FILTERS-004 @real-api @positive combine réellement les filtres', async ({ request }) => {
   // Couvre US-FILTERS-01 / AC-04, contribution AC-07
   const response = await request.get(API_URL, {
     params: {
