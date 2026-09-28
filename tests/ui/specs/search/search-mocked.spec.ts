@@ -19,7 +19,7 @@ test.beforeEach(async () => {
   await allure.story('US-SEARCH-01 — Rechercher une entreprise');
 });
 
-test('TC-SEARCH-011 @smoke @regression BUG-015 annonce une comparaison jusqu’à trois entreprises', async ({
+test('TC-SEARCH-011 @smoke @positive @regression BUG-015 annonce une comparaison jusqu’à trois entreprises', async ({
   page,
 }) => {
   // Couvre US-SEARCH-01 / cohérence du contenu avec FEAT-COMPARE-V111
@@ -115,7 +115,7 @@ test('TC-SEARCH-005 @positive affiche les informations essentielles de la répon
   }
 });
 
-test('TC-SEARCH-006 distingue une réponse vide d’une erreur', async ({ page }) => {
+test('TC-SEARCH-006 @positive distingue une réponse vide d’une erreur', async ({ page }) => {
   // Couvre US-SEARCH-01 / AC-06
   await page.route(API_PATTERN, (route) => mockJson(route, emptySearchResponse));
   const search = new SearchPage(page);
@@ -143,7 +143,9 @@ test('TC-SEARCH-007 @error distingue une erreur technique d’une réponse vide'
   await expect(search.searchState).not.toContainText('Aucune entreprise');
 });
 
-test('TC-SEARCH-008 affiche le chargement puis les résultats après succès', async ({ page }) => {
+test('TC-SEARCH-008 @positive affiche le chargement puis les résultats après succès', async ({
+  page,
+}) => {
   // Couvre US-SEARCH-01 / AC-08
   let releaseResponse: (() => void) | undefined;
   const responseCanResolve = new Promise<void>((resolve) => {
@@ -164,7 +166,7 @@ test('TC-SEARCH-008 affiche le chargement puis les résultats après succès', a
   await expect(search.searchState).toBeHidden();
 });
 
-test('TC-SEARCH-009 affiche le chargement puis l’erreur après échec', async ({ page }) => {
+test('TC-SEARCH-009 @error affiche le chargement puis l’erreur après échec', async ({ page }) => {
   // Couvre US-SEARCH-01 / AC-08
   let releaseResponse: (() => void) | undefined;
   const responseCanResolve = new Promise<void>((resolve) => {

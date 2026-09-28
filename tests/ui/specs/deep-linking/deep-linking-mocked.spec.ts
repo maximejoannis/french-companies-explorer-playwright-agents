@@ -74,7 +74,7 @@ test.beforeEach(async ({ page }) => {
   await allure.story('US-DEEP-LINKING-01 — Restaurer une recherche depuis l’URL');
 });
 
-test('TC-DEEP-LINK-001 @regression restaure un deep link complet', async ({ page }) => {
+test('TC-DEEP-LINK-001 @positive @regression restaure un deep link complet', async ({ page }) => {
   // Couvre US-DEEP-LINKING-01 / AC-01, AC-02, AC-03, AC-04, AC-05, AC-10, AC-11, AC-12
   // Niveau : UI_MOCKED
   const independentStorage = {
@@ -162,7 +162,7 @@ test('TC-DEEP-LINK-001 @regression restaure un deep link complet', async ({ page
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-DEEP-LINK-002 @regression BUG-016 retire le code commune à la réinitialisation', async ({
+test('TC-DEEP-LINK-002 @positive @regression BUG-016 retire le code commune à la réinitialisation', async ({
   page,
 }) => {
   // Couvre US-DEEP-LINKING-01 / AC-10, AC-12
@@ -198,7 +198,7 @@ test('TC-DEEP-LINK-002 @regression BUG-016 retire le code commune à la réiniti
   await expect(page).toHaveURL((url) => url.search === '');
 });
 
-test('TC-DEEP-LINK-007 @regression synchronise les paramètres après interaction', async ({
+test('TC-DEEP-LINK-007 @positive @regression synchronise les paramètres après interaction', async ({
   page,
 }) => {
   // Couvre US-DEEP-LINKING-01 / AC-06, AC-10, AC-12
@@ -251,7 +251,7 @@ test('TC-DEEP-LINK-007 @regression synchronise les paramètres après interactio
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-DEEP-LINK-003 @regression conserve un état initial propre sans requête', async ({
+test('TC-DEEP-LINK-003 @positive @regression conserve un état initial propre sans requête', async ({
   browser,
 }) => {
   // Couvre US-DEEP-LINKING-01 / AC-08, AC-09, AC-10, AC-11
@@ -268,7 +268,7 @@ test('TC-DEEP-LINK-003 @regression conserve un état initial propre sans requêt
   expect(partitions).toEqual(['A — URL vide', 'B — paramètre inconnu sans q']);
 });
 
-test('TC-DEEP-LINK-004 @regression nettoie les options invalides et paramètres inconnus', async ({
+test('TC-DEEP-LINK-004 @negative @regression nettoie les options invalides et paramètres inconnus', async ({
   page,
 }) => {
   // Couvre US-DEEP-LINKING-01 / AC-01, AC-02, AC-04, AC-05, AC-09, AC-10, AC-12
@@ -309,7 +309,7 @@ test('TC-DEEP-LINK-004 @regression nettoie les options invalides et paramètres 
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-DEEP-LINK-005 @regression valide une requête URL avant tout appel API', async ({
+test('TC-DEEP-LINK-005 @negative @regression valide une requête URL avant tout appel API', async ({
   page,
 }) => {
   // Couvre US-DEEP-LINKING-01 / AC-01, AC-02, AC-09, AC-10, AC-11
@@ -345,7 +345,7 @@ test('TC-DEEP-LINK-005 @regression valide une requête URL avant tout appel API'
   expect(await storedValues(page, Object.keys(initialStorage))).toEqual(initialStorage);
 });
 
-test('TC-DEEP-LINK-006 @regression BUG-014 normalise une page URL non numérique', async ({
+test('TC-DEEP-LINK-006 @negative @regression BUG-014 normalise une page URL non numérique', async ({
   page,
 }) => {
   // Couvre US-DEEP-LINKING-01 / AC-01, AC-03, AC-09, AC-10, AC-12

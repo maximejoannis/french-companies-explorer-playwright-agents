@@ -41,7 +41,9 @@ test('TC-COMPARE-008 @positive compare deux entreprises', async ({ page }) => {
   await expect(search.compareTable.locator('thead th')).toHaveCount(3);
 });
 
-test('TC-COMPARE-009 @regression associe trois colonnes à trois entreprises', async ({ page }) => {
+test('TC-COMPARE-009 @positive @regression associe trois colonnes à trois entreprises', async ({
+  page,
+}) => {
   const search = await prepare(page);
   await add(search, 3);
   await search.openCompare();
@@ -64,7 +66,7 @@ test('TC-COMPARE-010 @negative refuse la quatrième avec feedback', async ({ pag
   await expect(search.comparePanel(compareCompanies[3].siren)).toHaveCount(0);
 });
 
-test('TC-COMPARE-011 @regression retire la colonne médiane sans désalignement', async ({
+test('TC-COMPARE-011 @positive @regression retire la colonne médiane sans désalignement', async ({
   page,
 }) => {
   const search = await prepare(page);
@@ -81,7 +83,9 @@ test('TC-COMPARE-011 @regression retire la colonne médiane sans désalignement'
   );
 });
 
-test('TC-COMPARE-012 @regression garde les données manquantes neutres', async ({ page }) => {
+test('TC-COMPARE-012 @positive @regression garde les données manquantes neutres', async ({
+  page,
+}) => {
   const search = await prepare(page);
   await search.companyCompareButton(compareCompanies[0].siren).click();
   await search.companyCompareButton(compareCompanies[3].siren).click();
@@ -92,7 +96,7 @@ test('TC-COMPARE-012 @regression garde les données manquantes neutres', async (
   await expect(search.compareView).not.toContainText(/undefined|null|Cessée/);
 });
 
-test('TC-COMPARE-013 @accessibility signale les différences sans couleur seule', async ({
+test('TC-COMPARE-013 @positive @accessibility signale les différences sans couleur seule', async ({
   page,
 }) => {
   const search = await prepare(page);
@@ -103,7 +107,7 @@ test('TC-COMPARE-013 @accessibility signale les différences sans couleur seule'
   );
 });
 
-test('TC-COMPARE-014 @regression persiste trois entreprises dans localStorage', async ({
+test('TC-COMPARE-014 @positive @regression persiste trois entreprises dans localStorage', async ({
   page,
 }) => {
   const search = await prepare(page);
@@ -120,7 +124,7 @@ test('TC-COMPARE-014 @regression persiste trois entreprises dans localStorage', 
   await expect(search.compareTable.locator('thead th')).toHaveCount(4);
 });
 
-test('TC-COMPARE-015 @accessibility nomme chaque bouton Retirer', async ({ page }) => {
+test('TC-COMPARE-015 @positive @accessibility nomme chaque bouton Retirer', async ({ page }) => {
   const search = await prepare(page);
   await add(search, 3);
   await search.openCompare();

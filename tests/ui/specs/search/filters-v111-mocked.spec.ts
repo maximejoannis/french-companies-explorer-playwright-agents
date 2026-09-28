@@ -90,7 +90,9 @@ test('TC-FILTERS-015 @positive transmet la tranche d’effectif', async ({ page 
   expect(requests[0].searchParams.get('tranche_effectif_salarie')).toBe('12');
 });
 
-test('TC-FILTERS-016 @regression supprime une chip et revient en page 1', async ({ page }) => {
+test('TC-FILTERS-016 @positive @regression supprime une chip et revient en page 1', async ({
+  page,
+}) => {
   // Couvre US-FILTERS-02 / AC-06 — UI_MOCKED
   const requests = await captureRequests(page);
   const search = new SearchPage(page);
@@ -105,7 +107,9 @@ test('TC-FILTERS-016 @regression supprime une chip et revient en page 1', async 
   expect(requests.at(-1)?.searchParams.has('activite_principale')).toBe(false);
 });
 
-test('TC-FILTERS-017 @regression efface les filtres sans effacer la requête', async ({ page }) => {
+test('TC-FILTERS-017 @positive @regression efface les filtres sans effacer la requête', async ({
+  page,
+}) => {
   // Couvre US-FILTERS-02 / AC-07 — UI_MOCKED
   await captureRequests(page);
   const search = new SearchPage(page);
@@ -120,7 +124,9 @@ test('TC-FILTERS-017 @regression efface les filtres sans effacer la requête', a
   await expect(search.workforceFilter).toHaveValue('');
 });
 
-test('TC-FILTERS-018 @regression restaure plusieurs filtres depuis l’URL', async ({ page }) => {
+test('TC-FILTERS-018 @positive @regression restaure plusieurs filtres depuis l’URL', async ({
+  page,
+}) => {
   // Couvre US-FILTERS-02 / AC-08 — UI_MOCKED
   const requests = await captureRequests(page);
   await page.goto('./?q=Alpha&naf=56.10A&department=2A&region=11&workforce=12');

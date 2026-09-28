@@ -13,7 +13,9 @@ test.beforeEach(async () => {
   await allure.story('US-FILTERS-01 — Filtrer les entreprises recherchées');
 });
 
-test('TC-FILTERS-009 @regression BUG-001 résout une commune en code INSEE', async ({ page }) => {
+test('TC-FILTERS-009 @positive @regression BUG-001 résout une commune en code INSEE', async ({
+  page,
+}) => {
   // Couvre US-FILTERS-01 / AC-02, AC-07 — Niveau : UI_MOCKED
   let companyRequest: URL | undefined;
   await page.route(GEO_API, (route) =>

@@ -120,7 +120,7 @@ test('TC-FAVORITES-002 @positive retire indépendamment plusieurs favoris jusqu�
   expectNoFavoriteApiActivity(apiRequests, requestsBeforeRemovals);
 });
 
-test('TC-FAVORITES-003 @regression restaure un favori après reload sans lecture API', async ({
+test('TC-FAVORITES-003 @positive @regression restaure un favori après reload sans lecture API', async ({
   page,
 }) => {
   // Couvre US-FAVORITES-01 / AC-03, AC-06, AC-07, AC-09
@@ -151,7 +151,7 @@ test('TC-FAVORITES-003 @regression restaure un favori après reload sans lecture
   expect(apiRequests).toEqual([]);
 });
 
-test('TC-FAVORITES-004 @regression BUG-005 synchronise immédiatement le cœur de la fiche', async ({
+test('TC-FAVORITES-004 @positive @regression BUG-005 synchronise immédiatement le cœur de la fiche', async ({
   page,
 }) => {
   // Couvre US-FAVORITES-01 / AC-01, AC-02, AC-03, AC-07, AC-09
@@ -192,7 +192,7 @@ test('TC-FAVORITES-004 @regression BUG-005 synchronise immédiatement le cœur d
   expectNoFavoriteApiActivity(apiRequests, requestsBeforeFavoriteActions);
 });
 
-test('TC-FAVORITES-005 @regression initialise proprement une collection absente ou vide', async ({
+test('TC-FAVORITES-005 @positive @regression initialise proprement une collection absente ou vide', async ({
   browser,
 }) => {
   // Couvre US-FAVORITES-01 / AC-08, AC-09
@@ -208,7 +208,9 @@ test('TC-FAVORITES-005 @regression initialise proprement une collection absente 
   expect(verifiedPartitions).toEqual(['clé absente', 'liste vide']);
 });
 
-test('TC-FAVORITES-006 @accessibility expose le nom et l’état du favori', async ({ page }) => {
+test('TC-FAVORITES-006 @positive @accessibility expose le nom et l’état du favori', async ({
+  page,
+}) => {
   // Couvre US-FAVORITES-01 / AC-01, AC-02, AC-09 — preuve BUG-006
   const { search } = await prepareSearch(page);
   const button = search.companyFavoriteButton(alphaCompany.siren);

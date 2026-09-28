@@ -71,7 +71,9 @@ test('TC-SHARE-002 @positive copie une combinaison de critères', async ({ page 
   });
 });
 
-test('TC-SHARE-003 @regression restaure la recherche depuis le lien', async ({ page }) => {
+test('TC-SHARE-003 @positive @regression restaure la recherche depuis le lien', async ({
+  page,
+}) => {
   const search = await prepare(page);
   await page.goto('./?q=Alpha&naf=56.10A&region=11');
   await expect(search.companyCards).not.toHaveCount(0);
@@ -80,7 +82,9 @@ test('TC-SHARE-003 @regression restaure la recherche depuis le lien', async ({ p
   await expect(search.regionFilter).toHaveValue('11');
 });
 
-test('TC-SHARE-004 @regression encode accents et espaces sans perte', async ({ page }) => {
+test('TC-SHARE-004 @positive @regression encode accents et espaces sans perte', async ({
+  page,
+}) => {
   const search = await prepare(page);
   await search.submit('École des métiers');
   await search.shareSearchButton.click();
@@ -88,7 +92,9 @@ test('TC-SHARE-004 @regression encode accents et espaces sans perte', async ({ p
   expect(url.searchParams.get('q')).toBe('École des métiers');
 });
 
-test('TC-SHARE-005 @regression utilise navigator.clipboard.writeText', async ({ page }) => {
+test('TC-SHARE-005 @positive @regression utilise navigator.clipboard.writeText', async ({
+  page,
+}) => {
   const search = await prepare(page);
   await search.submit('Clipboard');
   await search.shareSearchButton.click();
@@ -103,7 +109,9 @@ test('TC-SHARE-006 @error applique le fallback Clipboard sans crash', async ({ p
   await expect(search.searchView).toBeVisible();
 });
 
-test('TC-SHARE-007 @accessibility expose le feedback par live region', async ({ page }) => {
+test('TC-SHARE-007 @positive @accessibility expose le feedback par live region', async ({
+  page,
+}) => {
   const search = await prepare(page);
   await search.submit('Feedback');
   await search.shareSearchButton.click();

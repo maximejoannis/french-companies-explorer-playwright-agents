@@ -104,7 +104,9 @@ test('TC-PAGINATION-003 @positive remplace la page courante par la page suivante
   expect(requests[1].searchParams.get('q')).toBe('entreprise test');
 });
 
-test('TC-PAGINATION-004 retourne à la page précédente et à ses résultats', async ({ page }) => {
+test('TC-PAGINATION-004 @positive retourne à la page précédente et à ses résultats', async ({
+  page,
+}) => {
   // Couvre US-PAGINATION-01 / AC-03, contribution AC-08
   const requests: URL[] = [];
   await routeResponses(
@@ -132,7 +134,7 @@ test('TC-PAGINATION-004 retourne à la page précédente et à ses résultats', 
   expect(requests[2].searchParams.get('q')).toBe('entreprise test');
 });
 
-test('TC-PAGINATION-005 @regression BUG-002 change la taille depuis une page supérieure', async ({
+test('TC-PAGINATION-005 @positive @regression BUG-002 change la taille depuis une page supérieure', async ({
   page,
 }) => {
   // Couvre US-PAGINATION-01 / AC-05, AC-06, AC-08

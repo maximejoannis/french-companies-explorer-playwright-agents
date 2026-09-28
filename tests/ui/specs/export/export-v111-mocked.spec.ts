@@ -45,7 +45,7 @@ test('TC-EXPORT-007 @positive configure un export CSV', async ({ page }) => {
   await expect(search.confirmExportButton).toBeEnabled();
 });
 
-test('TC-EXPORT-008 @regression exporte le JSON sans ordre de propriétés imposé', async ({
+test('TC-EXPORT-008 @positive @regression exporte le JSON sans ordre de propriétés imposé', async ({
   page,
 }) => {
   const search = await prepare(page);
@@ -86,7 +86,7 @@ test('TC-EXPORT-009 @positive exporte uniquement les entreprises comparées', as
   ]);
 });
 
-test('TC-EXPORT-010 @regression échappe séparateur, guillemets, ligne et accents', async ({
+test('TC-EXPORT-010 @positive @regression échappe séparateur, guillemets, ligne et accents', async ({
   page,
 }) => {
   const special = { ...compareCompanies[0], nom_complet: 'École; "Alpha"\nLyon' };
@@ -96,7 +96,7 @@ test('TC-EXPORT-010 @regression échappe séparateur, guillemets, ligne et accen
   expect(text.startsWith('\uFEFF')).toBe(true);
 });
 
-test('TC-EXPORT-011 @regression neutralise les quatre préfixes CSV après espaces', async ({
+test('TC-EXPORT-011 @positive @regression neutralise les quatre préfixes CSV après espaces', async ({
   page,
 }) => {
   const dangerous = ['=1+1', ' +SUM(A1)', '  -10', '\t@cmd'].map((name, index) => ({
@@ -110,7 +110,7 @@ test('TC-EXPORT-011 @regression neutralise les quatre préfixes CSV après espac
     expect(text).toContain(`'${value}`);
 });
 
-test('TC-EXPORT-012 @regression exporte les valeurs manquantes de façon neutre', async ({
+test('TC-EXPORT-012 @positive @regression exporte les valeurs manquantes de façon neutre', async ({
   page,
 }) => {
   const missing = { siren: '900000099', nom_complet: 'Sans données', siege: {} };
@@ -120,7 +120,7 @@ test('TC-EXPORT-012 @regression exporte les valeurs manquantes de façon neutre'
   expect(text).not.toMatch(/undefined|null/);
 });
 
-test('TC-EXPORT-013 @regression produit un nom déterministe et la bonne extension', async ({
+test('TC-EXPORT-013 @positive @regression produit un nom déterministe et la bonne extension', async ({
   page,
 }) => {
   const search = await prepare(page);
@@ -144,7 +144,9 @@ test('TC-EXPORT-014 @negative désactive le téléchargement sans résultat', as
   await expect(search.exportHelp).toHaveText('Aucun résultat courant exportable.');
 });
 
-test('TC-EXPORT-015 @regression désactive l’export pendant une recherche', async ({ page }) => {
+test('TC-EXPORT-015 @negative @regression désactive l’export pendant une recherche', async ({
+  page,
+}) => {
   let release: (() => void) | undefined;
   const held = new Promise<void>((resolve) => {
     release = resolve;

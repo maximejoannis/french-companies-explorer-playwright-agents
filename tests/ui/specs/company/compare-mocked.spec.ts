@@ -202,7 +202,7 @@ test('TC-COMPARE-002 @positive unifie les surfaces et refuse une quatrième entr
   expectNoCompareApiActivity(apiRequests, requestsBeforeCompareActions);
 });
 
-test('TC-COMPARE-003 @regression associe les colonnes et retire uniquement Bêta', async ({
+test('TC-COMPARE-003 @positive @regression associe les colonnes et retire uniquement Bêta', async ({
   page,
 }) => {
   // Couvre US-COMPARE-01 / AC-02, AC-03, AC-07, AC-08
@@ -237,7 +237,7 @@ test('TC-COMPARE-003 @regression associe les colonnes et retire uniquement Bêta
   expectNoCompareApiActivity(apiRequests, requestsBeforeRemoval);
 });
 
-test('TC-COMPARE-004 @regression restaure la sélection après un vrai reload sans API', async ({
+test('TC-COMPARE-004 @positive @regression restaure la sélection après un vrai reload sans API', async ({
   page,
 }) => {
   // Couvre US-COMPARE-01 / AC-03, AC-09, AC-12
@@ -262,7 +262,7 @@ test('TC-COMPARE-004 @regression restaure la sélection après un vrai reload sa
   expect(apiRequests).toEqual([]);
 });
 
-test('TC-COMPARE-005 @regression initialise une comparaison absente ou vide', async ({
+test('TC-COMPARE-005 @positive @regression initialise une comparaison absente ou vide', async ({
   browser,
 }) => {
   // Couvre US-COMPARE-01 / AC-10, AC-12
@@ -278,7 +278,9 @@ test('TC-COMPARE-005 @regression initialise une comparaison absente ou vide', as
   expect(verifiedPartitions).toEqual(['clé absente', 'liste vide']);
 });
 
-test('TC-COMPARE-006 @regression BUG-008 neutralise les valeurs absentes', async ({ page }) => {
+test('TC-COMPARE-006 @positive @regression BUG-008 neutralise les valeurs absentes', async ({
+  page,
+}) => {
   // Couvre US-COMPARE-01 / AC-07, AC-11
   // Niveau : UI_MOCKED
   // Défaut connu : defects/BUG-008-missing-status-shown-as-closed-in-compare.md

@@ -42,7 +42,9 @@ test.beforeEach(async () => {
   await allure.story('US-SORT-01 — Trier les résultats');
 });
 
-test('TC-SORT-001 vérifie les options et l’ordre initial de pertinence', async ({ page }) => {
+test('TC-SORT-001 @positive vérifie les options et l’ordre initial de pertinence', async ({
+  page,
+}) => {
   // Couvre US-SORT-01 / AC-01, contribution AC-09
   await page.route(API_PATTERN, (route) => mockJson(route, sortSearchResponse(sortCompanies)));
   const search = new SearchPage(page);
@@ -128,7 +130,9 @@ test('TC-SORT-004 @positive trie les statuts A puis C de manière stable', async
     ]);
 });
 
-test('TC-SORT-005 @regression BUG-003 restaure l’ordre brut de pertinence', async ({ page }) => {
+test('TC-SORT-005 @positive @regression BUG-003 restaure l’ordre brut de pertinence', async ({
+  page,
+}) => {
   // Couvre US-SORT-01 / AC-02, contributions AC-07, AC-09
   // Défaut connu : defects/BUG-003-relevance-sort-does-not-restore-original-order.md
   let requestCount = 0;

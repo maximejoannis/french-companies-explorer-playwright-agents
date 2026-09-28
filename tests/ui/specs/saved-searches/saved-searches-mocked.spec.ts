@@ -126,7 +126,7 @@ test.beforeEach(async ({ page }) => {
   await allure.story('US-SAVED-SEARCH-01 — Sauvegarder et réutiliser une recherche');
 });
 
-test('TC-SAVED-001 @regression crée explicitement une recherche sous un nom exploitable', async ({
+test('TC-SAVED-001 @positive @regression crée explicitement une recherche sous un nom exploitable', async ({
   page,
 }) => {
   // Couvre US-SAVED-SEARCH-01 / AC-01, AC-02, AC-11, AC-12
@@ -165,7 +165,7 @@ test('TC-SAVED-001 @regression crée explicitement une recherche sous un nom exp
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-SAVED-002 @regression applique la règle d’identité indépendamment du nom', async ({
+test('TC-SAVED-002 @positive @regression applique la règle d’identité indépendamment du nom', async ({
   page,
 }) => {
   // Couvre US-SAVED-SEARCH-01 / AC-02, AC-03, AC-05, AC-06, AC-11, AC-12
@@ -218,7 +218,7 @@ test('TC-SAVED-002 @regression applique la règle d’identité indépendamment 
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-SAVED-003 @regression conserve les douze sauvegardes les plus récentes', async ({
+test('TC-SAVED-003 @positive @regression conserve les douze sauvegardes les plus récentes', async ({
   page,
 }) => {
   // Couvre US-SAVED-SEARCH-01 / AC-05, AC-06, AC-12
@@ -242,7 +242,9 @@ test('TC-SAVED-003 @regression conserve les douze sauvegardes les plus récentes
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-SAVED-004 @regression restaure et lance la bonne recherche complète', async ({ page }) => {
+test('TC-SAVED-004 @positive @regression restaure et lance la bonne recherche complète', async ({
+  page,
+}) => {
   // Couvre US-SAVED-SEARCH-01 / AC-03, AC-04, AC-07, AC-11, AC-12
   // Niveau : UI_MOCKED
   const { search, apiRequests } = await prepareSearch(page);
@@ -281,7 +283,9 @@ test('TC-SAVED-004 @regression restaure et lance la bonne recherche complète', 
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-SAVED-005 @regression persiste les sauvegardes après un vrai reload', async ({ page }) => {
+test('TC-SAVED-005 @positive @regression persiste les sauvegardes après un vrai reload', async ({
+  page,
+}) => {
   // Couvre US-SAVED-SEARCH-01 / AC-06, AC-08, AC-12
   // Niveau : UI_MOCKED
   const { search, apiRequests } = await prepareSearch(page);
@@ -309,7 +313,9 @@ test('TC-SAVED-005 @regression persiste les sauvegardes après un vrai reload', 
   expect(apiRequests).toEqual([]);
 });
 
-test('TC-SAVED-006 @regression supprime uniquement la sauvegarde ciblée', async ({ page }) => {
+test('TC-SAVED-006 @positive @regression supprime uniquement la sauvegarde ciblée', async ({
+  page,
+}) => {
   // Couvre US-SAVED-SEARCH-01 / AC-06, AC-09, AC-10, AC-11, AC-12
   // Niveau : UI_MOCKED
   // BUG-012 : le bouton × reste strictement scopé dans l’article fonctionnellement identifié.
@@ -350,7 +356,7 @@ test('TC-SAVED-006 @regression supprime uniquement la sauvegarde ciblée', async
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-SAVED-007 @regression initialise proprement une collection absente ou vide', async ({
+test('TC-SAVED-007 @positive @regression initialise proprement une collection absente ou vide', async ({
   browser,
 }) => {
   // Couvre US-SAVED-SEARCH-01 / AC-10, AC-12
@@ -362,7 +368,7 @@ test('TC-SAVED-007 @regression initialise proprement une collection absente ou v
   expect(partitions).toEqual(['A — clé absente', 'B — collection vide']);
 });
 
-test('TC-SAVED-008 @regression BUG-011 refuse un nom composé uniquement d’espaces', async ({
+test('TC-SAVED-008 @negative @regression BUG-011 refuse un nom composé uniquement d’espaces', async ({
   page,
 }) => {
   // Couvre US-SAVED-SEARCH-01 / AC-01, AC-02, AC-11, AC-12

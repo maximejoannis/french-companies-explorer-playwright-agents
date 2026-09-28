@@ -134,18 +134,14 @@ test.beforeEach(async ({ page }) => {
   await allure.story('US-HISTORY-01 — Consulter et réutiliser l’historique des recherches');
 });
 
-test('TC-HISTORY-001 @regression enregistre uniquement les recherches éligibles', async ({
+test('TC-HISTORY-001 @positive @regression enregistre les recherches réussies', async ({
   page,
 }) => {
-  // Couvre US-HISTORY-01 / AC-01, AC-10, AC-11
+  // Couvre US-HISTORY-01 / AC-01, AC-10
   // Niveau : UI_MOCKED
   const apiRequests = trackApiRequests(page);
   await page.route(API_PATTERN, async (route) => {
     const query = new URL(route.request().url()).searchParams.get('q');
-    if (query === 'recherche en erreur') {
-      await route.fulfill({ status: 500, body: 'server error' });
-      return;
-    }
     await mockJson(route, query === 'recherche vide' ? emptySearchResponse : mockedSearchResponse);
   });
   const search = new SearchPage(page);
@@ -157,14 +153,6 @@ test('TC-HISTORY-001 @regression enregistre uniquement les recherches éligibles
     .toEqual([{ query: 'recherche avec résultats', postalCode: '', city: '', status: '' }]);
   await submitAndWait(search, page, 'recherche vide');
   await expect(search.searchState).toHaveText('Aucune entreprise ne correspond à cette recherche.');
-
-  const requestsBeforeInvalid = apiRequests.length;
-  await search.submit('12345678');
-  await expect(search.searchState).toContainText('Identifiant invalide');
-  expect(apiRequests).toHaveLength(requestsBeforeInvalid);
-
-  await submitAndWait(search, page, 'recherche en erreur');
-  await expect(search.searchState).toContainText("Impossible de joindre l'API");
   await search.openHistory();
 
   await expect(search.historyEntry('recherche vide')).toHaveCount(1);
@@ -176,11 +164,50 @@ test('TC-HISTORY-001 @regression enregistre uniquement les recherches éligibles
     { query: 'recherche vide', postalCode: '', city: '', status: '' },
     { query: 'recherche avec résultats', postalCode: '', city: '', status: '' },
   ]);
-  expect(apiRequests.map(({ method }) => method)).toEqual(['GET', 'GET', 'GET']);
+  expect(apiRequests.map(({ method }) => method)).toEqual(['GET', 'GET']);
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-HISTORY-002 @regression BUG-009 distingue tous les critères d’identité', async ({
+test('TC-HISTORY-008 @negative @regression refuse d’historiser un identifiant invalide', async ({
+  page,
+}) => {
+  // Couvre US-HISTORY-01 / AC-10, AC-11
+  // Niveau : UI_MOCKED
+  const apiRequests = trackApiRequests(page);
+  await page.route(API_PATTERN, (route) => route.abort('blockedbyclient'));
+  const search = new SearchPage(page);
+  await search.goto();
+
+  await search.submit('12345678');
+
+  await expect(search.searchState).toContainText('Identifiant invalide');
+  await search.openHistory();
+  await expect(search.historyList.locator('article')).toHaveCount(0);
+  expect(await historyEntries(page)).toEqual([]);
+  expect(apiRequests).toEqual([]);
+});
+
+test('TC-HISTORY-009 @error @regression refuse d’historiser une recherche en erreur', async ({
+  page,
+}) => {
+  // Couvre US-HISTORY-01 / AC-10, AC-11
+  // Niveau : UI_MOCKED
+  const apiRequests = trackApiRequests(page);
+  await page.route(API_PATTERN, (route) => route.fulfill({ status: 500, body: 'server error' }));
+  const search = new SearchPage(page);
+  await search.goto();
+
+  await submitAndWait(search, page, 'recherche en erreur');
+
+  await expect(search.searchState).toContainText("Impossible de joindre l'API");
+  await search.openHistory();
+  await expect(search.historyList.locator('article')).toHaveCount(0);
+  expect(await historyEntries(page)).toEqual([]);
+  expect(apiRequests.map(({ method }) => method)).toEqual(['GET']);
+  expectNoApiWrites(apiRequests);
+});
+
+test('TC-HISTORY-002 @positive @regression BUG-009 distingue tous les critères d’identité', async ({
   page,
 }) => {
   // Couvre US-HISTORY-01 / AC-02, AC-03, AC-04
@@ -216,7 +243,7 @@ test('TC-HISTORY-002 @regression BUG-009 distingue tous les critères d’identi
   await expect(search.historyEntry('identité commune', 'Lyon')).toHaveCount(1);
 });
 
-test('TC-HISTORY-003 @regression conserve les douze recherches les plus récentes', async ({
+test('TC-HISTORY-003 @positive @regression conserve les douze recherches les plus récentes', async ({
   page,
 }) => {
   // Couvre US-HISTORY-01 / AC-03, AC-07
@@ -242,7 +269,7 @@ test('TC-HISTORY-003 @regression conserve les douze recherches les plus récente
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-HISTORY-004 @regression restaure et relance uniquement la recherche choisie', async ({
+test('TC-HISTORY-004 @positive @regression restaure et relance uniquement la recherche choisie', async ({
   page,
 }) => {
   // Couvre US-HISTORY-01 / AC-02, AC-03, AC-05, AC-11
@@ -277,7 +304,7 @@ test('TC-HISTORY-004 @regression restaure et relance uniquement la recherche cho
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-HISTORY-005 @regression persiste après un vrai reload sans lecture API', async ({
+test('TC-HISTORY-005 @positive @regression persiste après un vrai reload sans lecture API', async ({
   page,
 }) => {
   // Couvre US-HISTORY-01 / AC-03, AC-06, AC-11
@@ -304,7 +331,9 @@ test('TC-HISTORY-005 @regression persiste après un vrai reload sans lecture API
   expect(apiRequests).toEqual([]);
 });
 
-test('TC-HISTORY-006 @regression initialise et nettoie uniquement History', async ({ browser }) => {
+test('TC-HISTORY-006 @positive @regression initialise et nettoie uniquement History', async ({
+  browser,
+}) => {
   // Couvre US-HISTORY-01 / AC-08, AC-09, AC-11
   // Niveau : UI_MOCKED
   const emptyPartitions = [
@@ -320,7 +349,7 @@ test('TC-HISTORY-006 @regression initialise et nettoie uniquement History', asyn
   await verifyHistoryClearPartition(browser);
 });
 
-test('TC-HISTORY-007 @regression BUG-010 préserve la récence pendant la navigation', async ({
+test('TC-HISTORY-007 @positive @regression BUG-010 préserve la récence pendant la navigation', async ({
   page,
 }) => {
   // Couvre US-HISTORY-01 / AC-01, AC-03, AC-04, AC-11

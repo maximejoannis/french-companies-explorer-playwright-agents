@@ -57,7 +57,9 @@ test.beforeEach(async () => {
   await allure.story('US-THEME-01 — Choisir et conserver le thème d’affichage');
 });
 
-test('TC-THEME-001 @regression applique et persiste les deux thèmes', async ({ page }) => {
+test('TC-THEME-001 @positive @regression applique et persiste les deux thèmes', async ({
+  page,
+}) => {
   // Couvre US-THEME-01 / AC-01, AC-02, AC-03, AC-04, AC-09, AC-10, AC-12
   // Niveau : UI_MOCKED
   await page.addInitScript((values) => {
@@ -94,7 +96,7 @@ test('TC-THEME-001 @regression applique et persiste les deux thèmes', async ({ 
   expectNoApiActivity(apiRequests);
 });
 
-test('TC-THEME-002 @regression restaure le choix après reload et nouvelle visite', async ({
+test('TC-THEME-002 @positive @regression restaure le choix après reload et nouvelle visite', async ({
   page,
 }) => {
   // Couvre US-THEME-01 / AC-04, AC-05, AC-06, AC-09, AC-10, AC-11, AC-12
@@ -131,7 +133,7 @@ test('TC-THEME-002 @regression restaure le choix après reload et nouvelle visit
   expectNoApiActivity(apiRequests);
 });
 
-test('TC-THEME-003 @regression initialise le thème clair sans écrire de préférence', async ({
+test('TC-THEME-003 @positive @regression initialise le thème clair sans écrire de préférence', async ({
   page,
 }) => {
   // Couvre US-THEME-01 / AC-07, AC-10, AC-12

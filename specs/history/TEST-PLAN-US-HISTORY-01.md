@@ -123,21 +123,44 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 
 ## Cas de test
 
-### TC-HISTORY-001 — Enregistrer uniquement les recherches éligibles
+### TC-HISTORY-001 — Enregistrer les recherches réussies
 
-- **Question principale** : quels résultats d’une action de recherche créent réellement une entrée ?
-- **Objectif** : vérifier qu’une recherche réussie, avec ou sans résultat, est historisée et que les actions invalides ou en échec ne le sont pas.
-- **AC couverts** : `AC-01`, `AC-10`, `AC-11`.
-- **Préconditions** : `fce_history` absent ; réponses mockées successives non vide, vide puis erreur ; compteur ciblé sur `/search`.
+- **Question principale** : les recherches réussies créent-elles une entrée, avec ou sans résultat ?
+- **Objectif** : vérifier qu’une recherche réussie est historisée aussi bien avec une réponse non vide qu’avec une réponse vide.
+- **AC couverts** : `AC-01`, `AC-10`.
+- **Préconditions** : `fce_history` absent ; réponses mockées successives non vide puis vide ; compteur ciblé sur `/search`.
 - **Étapes essentielles** :
   1. Soumettre une recherche textuelle valide avec une réponse non vide.
   2. Ouvrir Historique et vérifier son entrée et `Sans filtre géographique`.
   3. Soumettre une autre recherche valide avec une réponse vide réussie.
-  4. Tenter un identifiant numérique invalide, puis une recherche dont la réponse est en erreur.
-- **Attendu** : seules les deux réponses réussies créent des entrées ; chacune représente la bonne requête ; aucun texte technique n’est visible ; l’invalide ne provoque aucun GET et l’erreur ne crée aucune entrée ; aucune écriture API n’est émise.
+- **Attendu** : les deux réponses réussies créent des entrées ; chacune représente la bonne requête ; aucun texte technique n’est visible et aucune écriture API n’est émise.
 - **Niveau** : `UI_MOCKED`.
 - **Priorité** : Haute.
-- **Justification du niveau** : l’éligibilité est décidée par le frontend après la réponse ; des réponses contrôlées isolent précisément chaque branche sans retester le contrat métier de l’API.
+- **Justification du niveau** : l’historisation est décidée par le frontend après la réponse ; des réponses contrôlées isolent les deux branches de succès sans retester le contrat métier de l’API.
+
+### TC-HISTORY-008 — Refuser d’historiser un identifiant invalide
+
+- **Question principale** : une saisie numérique invalide peut-elle créer une entrée d’historique ?
+- **Objectif** : vérifier que la validation frontend bloque la recherche et son historisation.
+- **AC couverts** : `AC-10`, `AC-11`.
+- **Préconditions** : `fce_history` absent ; API bloquée ; identifiant numérique de huit chiffres.
+- **Étapes essentielles** : soumettre `12345678`, contrôler la validation, puis ouvrir Historique.
+- **Attendu** : le message d’identifiant invalide est affiché ; aucun GET, aucune écriture API et aucune entrée d’historique ne sont produits.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+- **Justification du niveau** : le refus et l’absence de mutation sont exclusivement gérés par le frontend.
+
+### TC-HISTORY-009 — Refuser d’historiser une recherche en erreur
+
+- **Question principale** : une panne de l’API peut-elle créer une entrée d’historique ?
+- **Objectif** : vérifier qu’une réponse HTTP 500 est signalée et n’est pas historisée.
+- **AC couverts** : `AC-10`, `AC-11`.
+- **Préconditions** : `fce_history` absent ; réponse `/search` mockée en HTTP 500.
+- **Étapes essentielles** : soumettre une recherche valide, contrôler le message d’erreur, puis ouvrir Historique.
+- **Attendu** : l’erreur API est affichée ; le GET en échec ne crée aucune entrée et aucune écriture API n’est émise.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+- **Justification du niveau** : une panne déterministe permet d’isoler la gestion frontend de l’historique.
 
 ### TC-HISTORY-002 — Distinguer les critères et gérer une répétition
 
@@ -233,13 +256,15 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 
 | Cas de test      | Critères couverts                  | Niveau      | Priorité |
 | ---------------- | ---------------------------------- | ----------- | -------- |
-| `TC-HISTORY-001` | `AC-01`, `AC-10`, `AC-11`          | `UI_MOCKED` | Haute    |
+| `TC-HISTORY-001` | `AC-01`, `AC-10`                   | `UI_MOCKED` | Haute    |
 | `TC-HISTORY-002` | `AC-02`, `AC-03`, `AC-04`          | `UI_MOCKED` | Haute    |
 | `TC-HISTORY-003` | `AC-03`, `AC-07`                   | `UI_MOCKED` | Moyenne  |
 | `TC-HISTORY-004` | `AC-02`, `AC-03`, `AC-05`, `AC-11` | `UI_MOCKED` | Haute    |
 | `TC-HISTORY-005` | `AC-03`, `AC-06`, `AC-11`          | `UI_MOCKED` | Haute    |
 | `TC-HISTORY-006` | `AC-08`, `AC-09`, `AC-11`          | `UI_MOCKED` | Moyenne  |
 | `TC-HISTORY-007` | `AC-01`, `AC-03`, `AC-04`, `AC-11` | `UI_MOCKED` | Haute    |
+| `TC-HISTORY-008` | `AC-10`, `AC-11`                   | `UI_MOCKED` | Haute    |
+| `TC-HISTORY-009` | `AC-10`, `AC-11`                   | `UI_MOCKED` | Haute    |
 
 Tous les critères `AC-01` à `AC-11` sont couverts. Aucun scénario API ou E2E réel ne duplique les baselines Recherche, Filtres, Pagination ou Tri.
 
@@ -264,6 +289,6 @@ Tous les critères `AC-01` à `AC-11` sont couverts. Aucun scénario API ou E2E 
 ## Répartition finale
 
 - `API` : 0
-- `UI_MOCKED` : 7
+- `UI_MOCKED` : 9
 - `E2E_REAL` : 0
-- Total : 7 cas de test
+- Total : 9 cas de test

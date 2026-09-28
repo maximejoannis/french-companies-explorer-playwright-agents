@@ -26,7 +26,9 @@ test.beforeEach(async () => {
   await allure.story('US-FILTERS-01 — Filtrer les entreprises recherchées');
 });
 
-test('TC-FILTERS-020 @e2e filtre réellement avec une commune sélectionnée', async ({ page }) => {
+test('TC-FILTERS-020 @positive @e2e filtre réellement avec une commune sélectionnée', async ({
+  page,
+}) => {
   // Couvre US-FILTERS-02 / AC-10 — Niveau : E2E_REAL
   const search = new SearchPage(page);
   await search.goto();

@@ -97,7 +97,7 @@ test('TC-STATS-001 @positive calcule les indicateurs sur la page affichée', asy
   expect(requests).toHaveLength(1);
 });
 
-test('TC-STATS-002 @regression remplace complètement les statistiques après une nouvelle recherche', async ({
+test('TC-STATS-002 @positive @regression remplace complètement les statistiques après une nouvelle recherche', async ({
   page,
 }) => {
   // Couvre US-STATS-01 / AC-03
@@ -167,7 +167,9 @@ test('TC-STATS-003 @positive recalcule les statistiques sur la réponse filtrée
   expect(requests).toHaveLength(2);
 });
 
-test('TC-STATS-004 @regression suit la page courante sans varier lors du tri', async ({ page }) => {
+test('TC-STATS-004 @positive @regression suit la page courante sans varier lors du tri', async ({
+  page,
+}) => {
   // Couvre US-STATS-01 / AC-05, AC-06
   // Niveau : UI_MOCKED
   const requests: URL[] = [];
@@ -220,7 +222,7 @@ test('TC-STATS-004 @regression suit la page courante sans varier lors du tri', a
   expect(requests).toHaveLength(requestsBeforeSort);
 });
 
-test('TC-STATS-005 @regression masque les statistiques après une réponse vide', async ({
+test('TC-STATS-005 @positive @regression masque les statistiques après une réponse vide', async ({
   page,
 }) => {
   // Couvre US-STATS-01 / AC-07
@@ -247,7 +249,7 @@ test('TC-STATS-005 @regression masque les statistiques après une réponse vide'
   expect(requests).toHaveLength(2);
 });
 
-test('TC-STATS-006 @regression BUG-007 exclut les valeurs absentes des indicateurs', async ({
+test('TC-STATS-006 @positive @regression BUG-007 exclut les valeurs absentes des indicateurs', async ({
   page,
 }) => {
   // Couvre US-STATS-01 / AC-02, AC-08

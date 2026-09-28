@@ -28,7 +28,7 @@ test.beforeEach(async () => {
   await allure.story('US-AUTOCOMPLETE-01 — Recevoir des suggestions accessibles');
 });
 
-test('TC-AUTO-001 @regression respecte le seuil minimum', async ({ page }) => {
+test('TC-AUTO-001 @negative @regression respecte le seuil minimum', async ({ page }) => {
   const queries = await mockSuggestions(page);
   const search = new SearchPage(page);
   await search.goto();
@@ -37,7 +37,7 @@ test('TC-AUTO-001 @regression respecte le seuil minimum', async ({ page }) => {
   expect(queries).toHaveLength(0);
 });
 
-test('TC-AUTO-002 @regression applique le debounce sans requêtes intermédiaires', async ({
+test('TC-AUTO-002 @positive @regression applique le debounce sans requêtes intermédiaires', async ({
   page,
 }) => {
   const queries = await mockSuggestions(page);
@@ -59,7 +59,9 @@ test('TC-AUTO-003 @positive affiche nom, SIREN et ville', async ({ page }) => {
   await expect(option).toContainText('Paris');
 });
 
-test('TC-AUTO-004 @accessibility expose navigation clavier et états ARIA', async ({ page }) => {
+test('TC-AUTO-004 @positive @accessibility expose navigation clavier et états ARIA', async ({
+  page,
+}) => {
   await mockSuggestions(page);
   const search = new SearchPage(page);
   await search.goto();
@@ -85,7 +87,7 @@ test('TC-AUTO-005 @positive sélectionne une suggestion avec Entrée', async ({ 
   await expect(search.companyCard(alpha.siren)).toBeVisible();
 });
 
-test('TC-AUTO-006 @accessibility Escape ferme la liste', async ({ page }) => {
+test('TC-AUTO-006 @positive @accessibility Escape ferme la liste', async ({ page }) => {
   await mockSuggestions(page);
   const search = new SearchPage(page);
   await search.goto();
@@ -96,7 +98,7 @@ test('TC-AUTO-006 @accessibility Escape ferme la liste', async ({ page }) => {
   await expect(search.companySuggestions).toBeHidden();
 });
 
-test('TC-AUTO-007 @regression annonce une absence de suggestion', async ({ page }) => {
+test('TC-AUTO-007 @positive @regression annonce une absence de suggestion', async ({ page }) => {
   await mockSuggestions(page, []);
   const search = new SearchPage(page);
   await search.goto();
@@ -127,7 +129,9 @@ test('TC-AUTO-008 @error laisse la recherche classique disponible après erreur 
   await expect(search.companyCard(alpha.siren)).toBeVisible();
 });
 
-test('TC-AUTO-009 @regression conserve B quand A répond tardivement', async ({ page }) => {
+test('TC-AUTO-009 @positive @regression conserve B quand A répond tardivement', async ({
+  page,
+}) => {
   let releaseA: (() => void) | undefined;
   const aHeld = new Promise<void>((resolve) => {
     releaseA = resolve;

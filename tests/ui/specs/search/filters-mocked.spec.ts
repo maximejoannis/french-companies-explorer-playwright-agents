@@ -110,7 +110,9 @@ test('TC-FILTERS-006 @positive combine les filtres et remplace les anciens résu
   expect(requests[1].searchParams.get('etat_administratif')).toBe('A');
 });
 
-test('TC-FILTERS-007 conserve et présente les filtres actifs après succès', async ({ page }) => {
+test('TC-FILTERS-007 @positive conserve et présente les filtres actifs après succès', async ({
+  page,
+}) => {
   // Couvre US-FILTERS-01 / AC-05
   await page.route(API_PATTERN, (route) => mockJson(route, mockedSearchResponse));
   const search = new SearchPage(page);
@@ -139,7 +141,9 @@ test('TC-FILTERS-007 conserve et présente les filtres actifs après succès', a
   ).toBeVisible();
 });
 
-test('TC-FILTERS-008 conserve le filtre dans un état vide fonctionnel', async ({ page }) => {
+test('TC-FILTERS-008 @positive conserve le filtre dans un état vide fonctionnel', async ({
+  page,
+}) => {
   // Couvre US-FILTERS-01 / AC-06, contribution AC-05
   let filteredRequest: URL | undefined;
   await page.route(API_PATTERN, async (route) => {

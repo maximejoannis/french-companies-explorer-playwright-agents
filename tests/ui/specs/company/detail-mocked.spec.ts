@@ -65,7 +65,7 @@ test('TC-DETAIL-001 @positive associe la carte choisie à sa fiche complète', a
   await expect(search.detailContent).not.toContainText(alphaCompany.nature_juridique!);
 });
 
-test('TC-DETAIL-002 @regression BUG-004 neutralise les informations facultatives absentes', async ({
+test('TC-DETAIL-002 @positive @regression BUG-004 neutralise les informations facultatives absentes', async ({
   page,
 }) => {
   // Couvre US-DETAIL-01 / AC-03, AC-05
@@ -137,7 +137,7 @@ test('TC-DETAIL-003 @positive conserve le contexte après retour depuis la fiche
   await expect(search.sortSelect).toHaveValue(sortBefore);
 });
 
-test('TC-DETAIL-004 @regression utilise uniquement la réponse de recherche courante', async ({
+test('TC-DETAIL-004 @positive @regression utilise uniquement la réponse de recherche courante', async ({
   page,
 }) => {
   // Couvre US-DETAIL-01 / AC-04, AC-08

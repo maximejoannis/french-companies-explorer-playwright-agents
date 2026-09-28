@@ -155,7 +155,9 @@ test.beforeEach(async () => {
   await allure.story('US-EXPORT-01 — Exporter les résultats de recherche en JSON ou CSV');
 });
 
-test('TC-EXPORT-001 @regression exporte la représentation JSON normalisée', async ({ page }) => {
+test('TC-EXPORT-001 @positive @regression exporte la représentation JSON normalisée', async ({
+  page,
+}) => {
   // Couvre US-EXPORT-01 / AC-01, AC-02, AC-08, AC-09, AC-10, AC-11
   // Niveau : UI_MOCKED
   const response = { results: [alphaCompany, betaCompany], total_results: 2 };
@@ -232,7 +234,7 @@ test('TC-EXPORT-001 @regression exporte la représentation JSON normalisée', as
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-EXPORT-002 @regression produit un CSV structuré et correctement associé', async ({
+test('TC-EXPORT-002 @positive @regression produit un CSV structuré et correctement associé', async ({
   page,
 }) => {
   // Couvre US-EXPORT-01 / AC-01, AC-03, AC-08, AC-09, AC-10, AC-11
@@ -268,7 +270,7 @@ test('TC-EXPORT-002 @regression produit un CSV structuré et correctement associ
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-EXPORT-003 @regression échappe les caractères complexes et neutralise les formules', async ({
+test('TC-EXPORT-003 @positive @regression échappe les caractères complexes et neutralise les formules', async ({
   page,
 }) => {
   // Couvre US-EXPORT-01 / AC-04, AC-05, AC-08, AC-09, AC-10
@@ -316,7 +318,7 @@ test('TC-EXPORT-003 @regression échappe les caractères complexes et neutralise
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-EXPORT-004 @regression exporte uniquement la page courante dans l’ordre du tri', async ({
+test('TC-EXPORT-004 @positive @regression exporte uniquement la page courante dans l’ordre du tri', async ({
   page,
 }) => {
   // Couvre US-EXPORT-01 / AC-06, AC-08, AC-09, AC-10, AC-11
@@ -364,7 +366,9 @@ test('TC-EXPORT-004 @regression exporte uniquement la page courante dans l’ord
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-EXPORT-005 @regression refuse un export vide sans créer de fichier', async ({ page }) => {
+test('TC-EXPORT-005 @negative @regression refuse un export vide sans créer de fichier', async ({
+  page,
+}) => {
   // Couvre US-EXPORT-01 / AC-07, AC-08, AC-09, AC-10, AC-11
   // Niveau : UI_MOCKED
   await page.route(API_PATTERN, (route) => mockJson(route, emptySearchResponse));
@@ -385,7 +389,7 @@ test('TC-EXPORT-005 @regression refuse un export vide sans créer de fichier', a
   expectNoApiWrites(apiRequests);
 });
 
-test('TC-EXPORT-006 @regression BUG-013 refuse d’exporter une collection précédente', async ({
+test('TC-EXPORT-006 @negative @regression BUG-013 refuse d’exporter une collection précédente', async ({
   page,
 }) => {
   // Couvre US-EXPORT-01 / AC-01, AC-06, AC-08, AC-09, AC-11
