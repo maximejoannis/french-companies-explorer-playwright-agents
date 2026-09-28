@@ -29,8 +29,9 @@
       <section class="metrics" aria-label="Indicateurs de couverture">
         <article><strong id="featuresMetric">—</strong><span>Features automatisées</span></article>
         <article><strong id="testsMetric">—</strong><span>TC automatisés</span></article>
-        <article><strong id="activeMetric">—</strong><span>TC actifs</span></article>
-        <article><strong id="fixmeMetric">—</strong><span>fixme connus</span></article>
+        <article><strong id="activeMetric">—</strong><span>TC actifs ordinaires</span></article>
+        <article><strong id="testFailMetric">—</strong><span>TC avec test.fail()</span></article>
+        <article><strong id="fixmeMetric">—</strong><span>TC avec test.fixme()</span></article>
       </section>
       <section class="panel">
         <div class="heading">
@@ -57,8 +58,9 @@
                 <th>Feature</th>
                 <th>User Story</th>
                 <th>TC</th>
-                <th>Actifs</th>
-                <th>Fixme</th>
+                <th>Ordinaires</th>
+                <th>test.fail()</th>
+                <th>test.fixme()</th>
                 <th>Niveaux</th>
               </tr>
             </thead>
@@ -72,6 +74,9 @@
           <h2>Plans et automatisation</h2>
           <dl id="traceability"></dl>
           <div id="traceabilityWarnings" class="notice"></div>
+          <h3>Dernière exécution disponible</h3>
+          <dl id="execution"></dl>
+          <p id="executionNotice" class="notice"></p>
         </article>
         <article class="panel">
           <p class="eyebrow">Tags et défauts</p>
@@ -82,8 +87,8 @@
         </article>
       </section>
       <p class="generated">
-        Généré le <span id="generatedAt">—</span>. Un TC actif n’est pas présenté comme passé sans
-        résultat runtime.
+        Généré le <span id="generatedAt">—</span>. Les annotations présentes dans le code et les
+        résultats de la dernière exécution disponible sont comptés séparément.
       </p>
     </main>
   </body>

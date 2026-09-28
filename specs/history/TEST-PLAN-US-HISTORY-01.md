@@ -76,7 +76,9 @@ L’historique est conservé dans `localStorage` sous la clé `fce_history`, sou
 
 Un vrai reload dans le même contexte restaure les entrées sans requête API. Une clé absente et une valeur `[]` produisent le même état vide.
 
-Les entrées créées par le produit contiennent toujours les propriétés attendues, avec des chaînes vides pour les critères facultatifs absents. Le cas normal sans géographie est déjà rendu par `Sans filtre géographique`, sans `undefined`, `null` ni `[object Object]`. Fabriquer une structure arbitrairement corrompue ne représenterait pas un état produit observé et n’est donc pas retenu comme scénario distinct pour `AC-10`.
+Les entrées créées par le produit contiennent normalement les propriétés attendues, avec des chaînes vides pour les critères facultatifs absents. Le cas normal sans géographie est rendu par `Sans filtre géographique`, sans `undefined`, `null` ni `[object Object]`.
+
+> Mise à jour du 2026-09-28 — Une entrée persistée peut néanmoins provenir d’une version antérieure ou d’un stockage partiel. `TC-HISTORY-010` injecte donc une entrée ne contenant que `query` et vérifie le rendu neutre et utilisable exigé par `AC-10`. Cette partition complète la couverture historique sans modifier les constats d’exploration initiaux.
 
 ### Suppression
 
@@ -162,6 +164,16 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 - **Priorité** : Haute.
 - **Justification du niveau** : une panne déterministe permet d’isoler la gestion frontend de l’historique.
 
+### TC-HISTORY-010 — Rendre une entrée persistée incomplète sans artefact technique
+
+- **Objectif** : vérifier la robustesse du rendu History face à une entrée locale qui ne contient que sa requête.
+- **AC couvert** : `AC-10`.
+- **Préconditions** : initialiser `fce_history` avant le chargement avec `[{ "query": "Historique incomplet" }]` ; bloquer toute lecture de l’API Entreprises.
+- **Étapes essentielles** : charger l’application, ouvrir Historique et inspecter l’article et son action `Relancer`.
+- **Attendu** : l’entrée est visible, les critères absents sont présentés de façon neutre, l’action reste utilisable, aucun texte `undefined`, `null` ou `[object Object]` n’apparaît et aucune requête API n’est émise.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+
 ### TC-HISTORY-002 — Distinguer les critères et gérer une répétition
 
 - **Question principale** : l’identité et la déduplication conservent-elles chaque recherche fonctionnellement distincte ?
@@ -176,7 +188,8 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 - **Attendu** : chaque combinaison de requête, code postal, commune et statut subsiste exactement une fois ; la répétition exacte ne crée pas de doublon et replace seulement l’identité concernée en tête ; aucun critère d’une entrée n’écrase une autre identité.
 - **Niveau** : `UI_MOCKED`.
 - **Priorité** : Haute.
-- **Justification du niveau** : l’identité et l’ordre sont exclusivement locaux. Le scénario conserve l’attendu fonctionnel correct malgré `BUG-009` et devra être placé derrière `test.fixme` tant que le défaut reste ouvert.
+- **Justification historique du niveau** : l’identité et l’ordre sont exclusivement locaux ; le scénario devait conserver l’attendu correct derrière `test.fixme` tant que `BUG-009` restait ouvert.
+- **Mise à jour du 2026-09-28 :** `BUG-009` est résolu ; `TC-HISTORY-002` est automatisé, actif et ne porte pas `test.fixme`.
 
 ### TC-HISTORY-003 — Conserver les douze recherches les plus récentes
 
@@ -250,7 +263,8 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 - **Attendu** : le tri, la pagination et la taille de page ne créent pas d’entrée et ne modifient ni la récence ni l’ordre des recherches formulées par l’utilisateur ; les requêtes de résultats restent des GET ; aucune écriture API n’est émise.
 - **Niveau** : `UI_MOCKED`.
 - **Priorité** : Haute.
-- **Justification du niveau** : le scénario porte sur la mutation locale de History, pas sur les contrats Pagination ou Tri. Il conserve l’attendu fonctionnel correct malgré `BUG-010` et devra être placé derrière `test.fixme` tant que le défaut reste ouvert.
+- **Justification historique du niveau** : le scénario porte sur la mutation locale de History ; il devait conserver l’attendu correct derrière `test.fixme` tant que `BUG-010` restait ouvert.
+- **Mise à jour du 2026-09-28 :** `BUG-010` est résolu ; `TC-HISTORY-007` est automatisé, actif et ne porte pas `test.fixme`.
 
 ## Matrice de traçabilité
 
@@ -265,6 +279,7 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 | `TC-HISTORY-007` | `AC-01`, `AC-03`, `AC-04`, `AC-11` | `UI_MOCKED` | Haute    |
 | `TC-HISTORY-008` | `AC-10`, `AC-11`                   | `UI_MOCKED` | Haute    |
 | `TC-HISTORY-009` | `AC-10`, `AC-11`                   | `UI_MOCKED` | Haute    |
+| `TC-HISTORY-010` | `AC-10`                            | `UI_MOCKED` | Haute    |
 
 Tous les critères `AC-01` à `AC-11` sont couverts. Aucun scénario API ou E2E réel ne duplique les baselines Recherche, Filtres, Pagination ou Tri.
 
@@ -275,7 +290,7 @@ Tous les critères `AC-01` à `AC-11` sont couverts. Aucun scénario API ou E2E 
 - **Observation** : deux recherches partageant requête, code postal et commune, mais utilisant respectivement les statuts `A` et `C`, produisent une seule entrée. La seconde remplace la première.
 - **Écart** : le statut est un critère réellement exécuté, persisté et restauré. Le fusionner fait perdre une recherche distincte et contredit `AC-02` et `AC-04`.
 - **Attendu conservé** : les deux identités doivent subsister ; seule une répétition de tous les critères doit dédupliquer et actualiser la récence.
-- **Couverture proposée** : `TC-HISTORY-002`, `UI_MOCKED`, scénario complet derrière `test.fixme` tant que le défaut reste ouvert.
+- **Couverture initialement proposée** : `TC-HISTORY-002`, `UI_MOCKED`, scénario complet derrière `test.fixme` tant que le défaut restait ouvert. Depuis la résolution de `BUG-009`, le test est actif sans `test.fixme` (statut vérifié le 2026-09-28).
 - **Suite recommandée** : documenter `BUG-009` avant automatisation.
 
 ### BUG-010 — La pagination actualise artificiellement la récence de l’historique
@@ -283,12 +298,12 @@ Tous les critères `AC-01` à `AC-11` sont couverts. Aucun scénario API ou E2E 
 - **Observation** : passer à la page suivante, et de manière équivalente changer la taille de page, exécute `/search` puis remplace l’entrée courante avec une nouvelle valeur de récence.
 - **Écart** : ces actions naviguent au sein des résultats d’une recherche existante ; elles ne représentent pas une nouvelle formulation utilisateur. Elles peuvent donc déplacer artificiellement cette recherche devant des recherches réellement plus récentes, contrairement à `AC-01`, `AC-03` et `AC-04`.
 - **Attendu conservé** : la pagination, la taille de page et le tri ne doivent ni créer d’entrée ni modifier la récence ou l’ordre History.
-- **Couverture proposée** : `TC-HISTORY-007`, `UI_MOCKED`, scénario complet derrière `test.fixme` tant que le défaut reste ouvert.
+- **Couverture initialement proposée** : `TC-HISTORY-007`, `UI_MOCKED`, scénario complet derrière `test.fixme` tant que le défaut restait ouvert. Depuis la résolution de `BUG-010`, le test est actif sans `test.fixme` (statut vérifié le 2026-09-28).
 - **Suite recommandée** : documenter `BUG-010` avant automatisation.
 
 ## Répartition finale
 
 - `API` : 0
-- `UI_MOCKED` : 9
+- `UI_MOCKED` : 10
 - `E2E_REAL` : 0
-- Total : 9 cas de test
+- Total : 10 cas de test

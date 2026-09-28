@@ -23,7 +23,7 @@ async function expectSuccessfulOutcome(search: SearchPage, companies: ApiCompany
 test.beforeEach(async () => {
   await allure.epic('French Companies Explorer');
   await allure.feature('Filters');
-  await allure.story('US-FILTERS-01 — Filtrer les entreprises recherchées');
+  await allure.story('US-FILTERS-02 — Affiner une recherche avec des critères enrichis');
 });
 
 test('TC-FILTERS-020 @real-api @positive @e2e filtre réellement avec une commune sélectionnée', async ({

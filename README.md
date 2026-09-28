@@ -12,10 +12,10 @@
 ![ESLint](https://img.shields.io/badge/ESLint-10.x-4B32C3?logo=eslint&logoColor=white)
 ![Prettier](https://img.shields.io/badge/Prettier-3.x-F7B93E?logo=prettier&logoColor=black)
 ![Functional Scope](https://img.shields.io/badge/Functional%20Scope-100%25-brightgreen)
-![Tests](https://img.shields.io/badge/Playwright%20Tests-133-blue)
+![Tests](https://img.shields.io/badge/Playwright%20Tests-136-blue)
 ![E2E Real](https://img.shields.io/badge/E2E%20Real-3%20tests-brightgreen)
 
-> État v1.1.1 documenté dans le dépôt : Playwright découvre 133 tests et aucun n’est désactivé avec `test.fixme`. BUG-005, BUG-015 et BUG-016 utilisent `test.fail()` : leur assertion défaillante est attendue tant que l’anomalie reste ouverte. Le portail n’affiche « CI conforme avec anomalies connues » que lorsque les contrôles du run publié réussissent sans résultat inattendu. Cela ne signifie pas que l’application est dépourvue d’anomalies.
+> État v1.1.1 documenté dans le dépôt : Playwright découvre 136 tests et aucun n’est désactivé avec `test.fixme`. BUG-005, BUG-015 et BUG-016 utilisent `test.fail()` : leur assertion défaillante est attendue tant que l’anomalie reste ouverte. Le portail n’affiche « CI conforme avec anomalies connues » que lorsque les contrôles du run publié réussissent sans résultat inattendu. Cela ne signifie pas que l’application est dépourvue d’anomalies.
 
 Ce dépôt est le projet d’automatisation QA de [French Companies Explorer](https://maximejoannis.github.io/french-companies-explorer-qa/). Fondée sur **Playwright Test** et **TypeScript**, la suite combine tests de l’API réelle, tests UI avec API mockée et quelques tests E2E réels. Le portail QA publie séparément les rapports d’exécution, de couverture et de qualité produits par cette suite.
 
@@ -55,26 +55,26 @@ Le projet met en œuvre une démarche QA Automation complète :
 
 ## État v1.1.1
 
-| Indicateur                                  |            Résultat |
-| ------------------------------------------- | ------------------: |
-| User Stories couvertes                      | **13 / 13 (100 %)** |
-| TC planifiés                                |             **133** |
-| Tests Playwright automatisés                |             **133** |
-| Tests actifs                                |             **133** |
-| `test.fixme`                                |               **0** |
-| Échecs attendus (BUG-005, BUG-015, BUG-016) |               **3** |
-| Échecs inattendus                           |               **0** |
-| Succès inattendus                           |               **0** |
-| Tests instables                             |               **0** |
-| Tests ignorés                               |               **0** |
-| Tests API réels                             |               **6** |
-| Tests UI mockés                             |             **124** |
-| Tests E2E réels                             |               **3** |
-| Fiches de défaut historiques                |              **16** |
-| Anomalies encore ouvertes                   |               **3** |
-| Défauts résolus                             |              **13** |
+| Indicateur                      |            Résultat |
+| ------------------------------- | ------------------: |
+| User Stories couvertes          | **18 / 18 (100 %)** |
+| TC planifiés                    |             **136** |
+| Tests Playwright automatisés    |             **136** |
+| Tests actifs ordinaires         |             **133** |
+| `test.fixme`                    |               **0** |
+| Scénarios annotés `test.fail()` |               **3** |
+| Échecs inattendus               |               **0** |
+| Succès inattendus               |               **0** |
+| Tests instables                 |               **0** |
+| Tests ignorés                   |               **0** |
+| Tests API réels                 |               **6** |
+| Tests UI mockés                 |             **127** |
+| Tests E2E réels                 |               **3** |
+| Fiches de défaut historiques    |              **16** |
+| Anomalies encore ouvertes       |               **3** |
+| Défauts résolus                 |              **13** |
 
-Le résultat Chromium disponible dans `test-results/results.json` indique 133 résultats attendus, aucun résultat inattendu, aucun test ignoré et aucun test instable. Trois assertions fonctionnelles utilisent `test.fail()` pour signaler les anomalies temporairement acceptées sans masquer un autre échec du scénario. Le document [`AUDIT-CI-KNOWN-DEFECTS.md`](./AUDIT-CI-KNOWN-DEFECTS.md) consigne une campagne locale Firefox/WebKit de 6 exécutions conformes. Cette preuve historique ne doit pas être interprétée comme le statut d’un run CI plus récent.
+Le rapport de couverture distingue les 133 tests actifs ordinaires, les trois scénarios associés à `test.fail()` et les éventuels `test.fixme()`. Le résultat Chromium disponible dans `test-results/results.json` est présenté séparément : un scénario annoté `test.fail()` n’est compté comme échec attendu que si le run l’observe effectivement ; un passage devient un succès inattendu bloquant. Les retries ne créent pas de doublons dans ces totaux.
 
 ## Baseline historique v1.0.0
 
@@ -98,7 +98,7 @@ Cette baseline est conservée à titre historique. Sa couverture fonctionnelle d
 
 ## Périmètre fonctionnel v1.1.1
 
-Les 133 Test Cases se répartissent sur 15 domaines fonctionnels. Certains domaines ajoutés en v1.1.1, comme Autocomplete et Share, enrichissent une User Story existante ; c’est pourquoi le dépôt compte 13 User Stories pour 15 lignes fonctionnelles ci-dessous.
+Les 136 Test Cases se répartissent sur 15 domaines fonctionnels et 18 User Stories. Cinq de ces US sont définies directement dans `specs/v1.1.1/REQUIREMENTS.md` plutôt que dans un fichier `US-*.md` autonome.
 
 | Feature        | Test Cases |
 | -------------- | ---------: |
@@ -110,14 +110,14 @@ Les 133 Test Cases se répartissent sur 15 domaines fonctionnels. Certains domai
 | Favorites      |          6 |
 | Stats          |          6 |
 | Compare        |         15 |
-| History        |          7 |
+| History        |         10 |
 | Saved Searches |          8 |
 | Export         |         15 |
 | Deep Linking   |          7 |
 | Autocomplete   |         10 |
 | Share          |          7 |
 | Theme          |          3 |
-| **Total**      |    **133** |
+| **Total**      |    **136** |
 
 Les cas détaillés et leurs arbitrages sont disponibles sous [`specs/`](./specs/) et dans la [Sprint Review](./SPRINT-REVIEW.md).
 
@@ -128,7 +128,7 @@ Les cas détaillés et leurs arbitrages sont disponibles sous [`specs/`](./specs
 | Niveau      |  Nombre | Responsabilité                                                                                                                                   |
 | ----------- | ------: | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `API`       |   **6** | Réponses de l’API réelle : statut HTTP, structure JSON, pagination et paramètres envoyés                                                         |
-| `UI_MOCKED` | **124** | Interface testée avec des réponses API simulées : succès, erreurs, lenteurs et requêtes concurrentes dont les réponses arrivent dans le désordre |
+| `UI_MOCKED` | **127** | Interface testée avec des réponses API simulées : succès, erreurs, lenteurs et requêtes concurrentes dont les réponses arrivent dans le désordre |
 | `E2E_REAL`  |   **3** | Parcours de bout en bout entre le navigateur, la Geo API et l’API Entreprises                                                                    |
 
 ### API réelle
@@ -187,7 +187,7 @@ Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Le
 │   ├── coverage/                  # Interface du rapport de couverture
 │   ├── qa-portal/                 # Portail consolidé HTML/CSS/JavaScript
 │   └── scripts/                   # Générateurs couverture et qualité
-├── specs/                         # 13 User Stories, 13 plans associés et 1 plan transverse v1.1.1
+├── specs/                         # 18 User Stories recensées, plans par domaine et plan transverse v1.1.1
 ├── tests/
 │   ├── api/
 │   │   └── search/                # APIRequestContext et API réelle
@@ -312,9 +312,9 @@ Le rapport final est généré dans `allure-report/`. Allure y regroupe les rés
 npm run coverage:report
 ```
 
-Le rapport `coverage-report/` calcule depuis les User Stories, plans, tests et fiches de défaut les User Stories couvertes, TC planifiés et automatisés, niveaux de test, tags, anomalies ouvertes et défauts résolus. Un statut de fiche absent ou ambigu est signalé « à clarifier » ; une anomalie associée à `test.fail()` reste classée ouverte.
+Le rapport `coverage-report/` calcule depuis les User Stories, plans, tests et fiches de défaut les User Stories couvertes, TC planifiés et automatisés, niveaux de test, tags, anomalies ouvertes et défauts résolus. Il recense les US autonomes et celles de `specs/v1.1.1/REQUIREMENTS.md`, conserve un lien vers chaque source et contrôle les rattachements des TC. Les annotations statiques (`test.fail()`, `test.fixme()`) sont séparées des résultats du dernier `test-results/results.json`.
 
-Les exécutions Firefox et WebKit rejouent des TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 133 et ne modifient pas la répartition 6 `API` / 124 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts téléchargeables séparés.
+Les exécutions Firefox et WebKit rejouent des TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 136 et ne modifient pas la répartition 6 `API` / 127 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts téléchargeables séparés.
 
 ### Qualité
 

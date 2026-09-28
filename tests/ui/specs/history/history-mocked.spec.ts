@@ -207,6 +207,29 @@ test('TC-HISTORY-009 @error @regression refuse d’historiser une recherche en e
   expectNoApiWrites(apiRequests);
 });
 
+test('TC-HISTORY-010 @positive @regression rend une entrée persistée incomplète sans artefact technique', async ({
+  page,
+}) => {
+  // Couvre US-HISTORY-01 / AC-10
+  // Niveau : UI_MOCKED
+  await page.addInitScript(() => {
+    localStorage.setItem('fce_history', JSON.stringify([{ query: 'Historique incomplet' }]));
+  });
+  const apiRequests = trackApiRequests(page);
+  await page.route(API_PATTERN, (route) => route.abort('blockedbyclient'));
+  const search = new SearchPage(page);
+  await search.goto();
+
+  await search.openHistory();
+
+  const incompleteEntry = search.historyEntry('Historique incomplet');
+  await expect(incompleteEntry).toBeVisible();
+  await expect(incompleteEntry).toContainText('Sans filtre');
+  await expect(incompleteEntry).not.toContainText(/undefined|null|\[object Object\]/i);
+  await expect(search.historyRelaunchButton('Historique incomplet')).toBeEnabled();
+  expect(apiRequests).toEqual([]);
+});
+
 test('TC-HISTORY-002 @positive @regression BUG-009 distingue tous les critères d’identité', async ({
   page,
 }) => {

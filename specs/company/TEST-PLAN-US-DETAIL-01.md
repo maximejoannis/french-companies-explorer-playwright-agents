@@ -95,7 +95,8 @@ Leurs noms, identifiants, adresses et codes seront volontairement différents. L
 - **Résultat attendu :** la fiche reste exploitable et toutes les absences sont exprimées de manière neutre ; aucun état métier non fourni n’est inventé.
 - **Niveau :** `UI_MOCKED`.
 - **Priorité :** Haute.
-- **Justification du niveau :** les valeurs manquantes sont difficiles à stabiliser dans l’API publique et leur présentation est une responsabilité frontend. Ce cas est le test de non-régression de `BUG-004`. Tant que le défaut reste ouvert, le futur scénario automatisé complet devra conserver l’attendu et être déclaré avec `test.fixme`. Ce choix conserve l’exigence fonctionnelle, trace le défaut connu, évite une CI volontairement rouge en permanence et permet de réactiver immédiatement le scénario après correction en retirant `test.fixme`.
+- **Justification du niveau :** les valeurs manquantes sont difficiles à stabiliser dans l’API publique et leur présentation est une responsabilité frontend. Historiquement, ce test de non-régression devait conserver l’attendu derrière `test.fixme` tant que `BUG-004` restait ouvert.
+- **Mise à jour du 2026-09-28 :** `BUG-004` est résolu ; `TC-DETAIL-002` est automatisé, actif et ne porte pas `test.fixme`.
 
 ### TC-DETAIL-003 — Retour et conservation d’un contexte non trivial
 

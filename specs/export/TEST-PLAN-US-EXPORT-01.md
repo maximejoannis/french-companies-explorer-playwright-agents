@@ -169,7 +169,7 @@ Si la nouvelle requête est encore en cours ou échoue :
 
 Ce comportement semble contredire `AC-06`, puisque le fichier ne correspond plus aux résultats actuellement affichés. Le produit ne doit pas présenter une ancienne collection comme celle de l’état courant.
 
-Le défaut n’est pas créé à ce stade. `TC-EXPORT-006` conservera l’oracle fonctionnel correct et devra rester en `test.fixme` tant que le défaut est ouvert.
+À ce stade historique, le défaut n’était pas encore créé et `TC-EXPORT-006` devait conserver l’oracle correct derrière `test.fixme`. Il a ensuite été tracé comme `BUG-013`. Mise à jour du 2026-09-28 : `BUG-013` est résolu et `TC-EXPORT-006` est actif sans `test.fixme`.
 
 ## Stratégie de couverture
 
@@ -325,7 +325,7 @@ Le plan évite :
 - **Critères couverts** : `AC-01`, `AC-06`, `AC-08`, `AC-09`, `AC-11`.
 - **Niveau** : `UI_MOCKED`.
 - **Priorité** : Haute.
-- **Statut proposé** : `test.fixme`.
+- **Statut initialement proposé** : `test.fixme`. **Mise à jour du 2026-09-28 :** scénario actif sans `test.fixme` depuis la résolution de `BUG-013`.
 - **Préconditions** : première recherche réussie avec Alpha ; seconde recherche dont la réponse est différée ; ancien résultat absent de la grille pendant le chargement.
 - **Données** : réponse initiale Alpha ; seconde réponse Bêta maintenue en attente de façon déterministe, sans `waitForTimeout`.
 - **Étapes** :
@@ -350,7 +350,7 @@ Le plan évite :
 - **Important pour la future implémentation Playwright** :
   - ne pas concevoir un scénario conditionnel permissif où un bouton désactivé permettrait de réussir une branche et un téléchargement une autre ;
   - tant que `BUG-013` est ouvert, le test doit rester déterministe et reproduire le comportement actuellement observé : Alpha réussit, Bêta démarre avec une réponse différée, Alpha disparaît de la grille, le contrôle `Exporter JSON` reste actuellement utilisable, le téléchargement est déclenché, puis l’oracle correct vérifie qu’Alpha ne devrait pas être présent ;
-  - le test doit rester en `test.fixme` tant que le bug existe ;
+  - historiquement, le test devait rester en `test.fixme` tant que le bug existait ; depuis la résolution de `BUG-013`, il est actif sans cette annotation ;
   - après une correction produit, le TC pourra être réévalué selon la solution effectivement choisie.
 - **Réseau attendu** : exactement les deux GET légitimes des recherches Alpha et Bêta ; aucun troisième GET ; aucune écriture API.
 - **Défaut associé** : `BUG-013 — L’export conserve les résultats précédents pendant un chargement ou après une erreur`.

@@ -54,7 +54,7 @@ function documentedDefectStatus(source) {
   return { status: 'clarify', value: value || null };
 }
 
-const userStories = walk(specsRoot)
+const standaloneUserStories = walk(specsRoot)
   .filter((file) => path.basename(file).startsWith('US-') && file.endsWith('.md'))
   .map((file) => {
     const source = fs.readFileSync(file, 'utf8');
@@ -63,6 +63,29 @@ const userStories = walk(specsRoot)
     return { id: heading[1], title: heading[2].trim(), file: relative(file) };
   })
   .sort((left, right) => left.id.localeCompare(right.id));
+
+const requirementsFile = path.join(specsRoot, 'v1.1.1', 'REQUIREMENTS.md');
+const requirementsSource = fs.readFileSync(requirementsFile, 'utf8');
+const requirementsUserStories = [
+  ...requirementsSource.matchAll(/^##\s+(FEAT-[A-Z0-9-]+)\s+—\s+(US-[A-Z0-9-]+)\s*$/gmu),
+].map((match, index, matches) => {
+  const sectionEnd = matches[index + 1]?.index ?? requirementsSource.length;
+  const section = requirementsSource.slice(match.index + match[0].length, sectionEnd);
+  const statement = section.match(/^En tant qu[^\r\n]+/mu)?.[0]?.replace(/\.$/u, '') ?? match[1];
+  return {
+    id: match[2],
+    title: statement,
+    file: relative(requirementsFile),
+    anchor: match[1].toLowerCase(),
+  };
+});
+
+const storyDefinitions = [...standaloneUserStories, ...requirementsUserStories];
+const duplicateStoryIds = duplicates(storyDefinitions.map(({ id }) => id));
+if (duplicateStoryIds.length) {
+  throw new Error(`User Stories définies plusieurs fois : ${duplicateStoryIds.join(', ')}`);
+}
+const userStories = storyDefinitions.sort((left, right) => left.id.localeCompare(right.id));
 
 const plannedOccurrences = [];
 for (const file of walk(specsRoot).filter((item) => path.basename(item).startsWith('TEST-PLAN-'))) {
@@ -77,9 +100,6 @@ const testCases = [];
 const expectedFailureDefectIds = new Set();
 for (const file of walk(testsRoot).filter((item) => item.endsWith('.spec.ts'))) {
   const source = fs.readFileSync(file, 'utf8');
-  for (const annotation of source.matchAll(/test\.fail\([\s\S]{0,500}?\);/gu)) {
-    for (const id of annotation[0].match(/BUG-\d+/gu) ?? []) expectedFailureDefectIds.add(id);
-  }
   const feature = source.match(/allure\.feature\(['"]([^'"]+)['"]\)/u)?.[1] ?? 'Non renseignée';
   const story = source.match(/allure\.story\(['"]([^'"]+)['"]\)/u)?.[1] ?? 'Non renseignée';
   const storyId = story.match(/^US-[A-Z-]+-\d+/u)?.[0] ?? null;
@@ -90,16 +110,28 @@ for (const file of walk(testsRoot).filter((item) => item.endsWith('.spec.ts'))) 
       ? 'E2E_REAL'
       : 'UI_MOCKED';
   const declaration = /test(?<fixme>\.fixme)?\(\s*['"](?<title>TC-[A-Z-]+-\d+[^'"]*)['"]/gu;
-  for (const match of source.matchAll(declaration)) {
+  const declarations = [...source.matchAll(declaration)];
+  for (const [index, match] of declarations.entries()) {
     const title = match.groups.title;
+    const body = source.slice(match.index, declarations[index + 1]?.index ?? source.length);
+    const expectedFailure = /\btest\.fail\s*\(/u.test(body);
+    const defectIds = [...new Set(body.match(/BUG-\d+/gu) ?? [])];
+    const tracedStoryId = body.match(/Couvre\s+(US-[A-Z0-9-]+-\d+)/u)?.[1] ?? null;
+    if (expectedFailure) defectIds.forEach((id) => expectedFailureDefectIds.add(id));
+    if (expectedFailure && match.groups.fixme) {
+      throw new Error(`${title} combine test.fail() et test.fixme() dans ${normalizedFile}`);
+    }
     testCases.push({
       id: title.match(/^TC-[A-Z-]+-\d+/u)[0],
       title,
       feature,
       story,
       storyId,
+      tracedStoryId,
       level,
       fixme: Boolean(match.groups.fixme),
+      expectedFailure,
+      defectIds,
       tags: [...title.matchAll(/@[\w-]+/gu)].map((tag) => tag[0]),
       file: normalizedFile,
     });
@@ -114,6 +146,13 @@ const automatedSet = new Set(automatedIds);
 const plannedSet = new Set(plannedIds);
 const missingAutomated = plannedIds.filter((id) => !automatedSet.has(id));
 const automatedOutsidePlans = [...new Set(automatedIds.filter((id) => !plannedSet.has(id)))].sort();
+const knownStoryIds = new Set(userStories.map(({ id }) => id));
+const unknownStoryIds = [
+  ...new Set(testCases.map(({ storyId }) => storyId).filter((id) => !knownStoryIds.has(id))),
+].sort();
+const mismatchedStoryTestCases = testCases
+  .filter(({ storyId, tracedStoryId }) => tracedStoryId && tracedStoryId !== storyId)
+  .map(({ id, storyId, tracedStoryId }) => ({ id, allureStoryId: storyId, tracedStoryId }));
 
 const features = userStories.map((story) => {
   const related = testCases.filter((testCase) => testCase.storyId === story.id);
@@ -121,10 +160,12 @@ const features = userStories.map((story) => {
     name: related[0]?.feature ?? story.id,
     story: `${story.id} — ${story.title}`,
     storyId: story.id,
+    source: story.anchor ? `${story.file}#${story.anchor}` : story.file,
     defined: true,
     automated: related.length > 0,
     testCases: related.length,
-    active: related.filter(({ fixme }) => !fixme).length,
+    ordinary: related.filter(({ fixme, expectedFailure }) => !fixme && !expectedFailure).length,
+    expectedFailure: related.filter(({ expectedFailure }) => expectedFailure).length,
     fixme: related.filter(({ fixme }) => fixme).length,
     levels: Object.fromEntries(
       ['API', 'UI_MOCKED', 'E2E_REAL'].map((level) => [
@@ -146,6 +187,55 @@ const tags = Object.fromEntries(
   tagNames.map((tag) => [tag, testCases.filter((testCase) => testCase.tags.includes(tag)).length]),
 );
 const fixme = testCases.filter((testCase) => testCase.fixme);
+const expectedFailure = testCases.filter((testCase) => testCase.expectedFailure);
+const ordinary = testCases.filter((testCase) => !testCase.fixme && !testCase.expectedFailure);
+
+function executionSummary() {
+  const resultsFile = path.join(root, 'test-results', 'results.json');
+  if (!fs.existsSync(resultsFile)) return { available: false };
+  const report = JSON.parse(fs.readFileSync(resultsFile, 'utf8'));
+  const executions = [];
+  const visit = (suite) => {
+    for (const spec of suite.specs ?? []) {
+      for (const item of spec.tests ?? []) {
+        const finalResult = item.results?.at(-1);
+        executions.push({
+          key: `${item.projectName ?? item.projectId}:${spec.file}:${spec.title}`,
+          expectedStatus: item.expectedStatus,
+          status: item.status,
+          resultStatus: finalResult?.status ?? null,
+        });
+      }
+    }
+    for (const child of suite.suites ?? []) visit(child);
+  };
+  for (const suite of report.suites ?? []) visit(suite);
+  const unique = [...new Map(executions.map((item) => [item.key, item])).values()];
+  return {
+    available: true,
+    generatedAt: report.stats?.startTime ?? null,
+    total: unique.length,
+    ordinaryPassed: unique.filter(
+      ({ expectedStatus, status }) => expectedStatus === 'passed' && status === 'expected',
+    ).length,
+    expectedFailures: unique.filter(
+      ({ expectedStatus, status }) => expectedStatus === 'failed' && status === 'expected',
+    ).length,
+    unexpectedSuccesses: unique.filter(
+      ({ expectedStatus, status, resultStatus }) =>
+        expectedStatus === 'failed' && status === 'unexpected' && resultStatus === 'passed',
+    ).length,
+    unexpectedFailures: unique.filter(
+      ({ expectedStatus, status, resultStatus }) =>
+        expectedStatus !== 'failed' && status === 'unexpected' && resultStatus !== 'passed',
+    ).length,
+    skipped: unique.filter(
+      ({ expectedStatus, resultStatus }) =>
+        expectedStatus === 'skipped' || resultStatus === 'skipped',
+    ).length,
+    flaky: unique.filter(({ status }) => status === 'flaky').length,
+  };
+}
 const defectFiles = walk(defectsRoot).filter((file) =>
   /^BUG-\d+.*\.md$/u.test(path.basename(file)),
 );
@@ -166,7 +256,7 @@ const documentedDefects = defectFiles
   })
   .sort((left, right) => left.id.localeCompare(right.id));
 const data = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   generatedAt: new Date().toISOString(),
   features: {
     defined: features.length,
@@ -177,14 +267,19 @@ const data = {
   testCases: {
     planned: plannedIds.length,
     automated: testCases.length,
-    active: testCases.filter(({ fixme: knownFixme }) => !knownFixme).length,
+    ordinary: ordinary.length,
+    expectedFailure: expectedFailure.length,
+    active: ordinary.length + expectedFailure.length,
     fixme: fixme.length,
     missingAutomated,
     automatedOutsidePlans,
     duplicateAutomatedIds,
     duplicatePlannedIds,
+    unknownStoryIds,
+    mismatchedStoryTestCases,
     items: testCases,
   },
+  execution: executionSummary(),
   levels,
   tags,
   defects: {
@@ -224,7 +319,7 @@ console.log(
   `Features : ${data.features.automated}/${data.features.defined} (${data.features.rate} %)`,
 );
 console.log(
-  `TC : ${data.testCases.automated} automatisés, ${data.testCases.active} actifs, ${data.testCases.fixme} fixme`,
+  `TC : ${data.testCases.automated} automatisés (${data.testCases.ordinary} ordinaires, ${data.testCases.expectedFailure} avec test.fail(), ${data.testCases.fixme} avec test.fixme())`,
 );
 console.log(
   `Niveaux : API ${levels.API}, UI_MOCKED ${levels.UI_MOCKED}, E2E_REAL ${levels.E2E_REAL}`,
@@ -236,6 +331,16 @@ if (automatedOutsidePlans.length)
   console.warn(`TC automatisés hors plans : ${automatedOutsidePlans.join(', ')}`);
 if (missingAutomated.length)
   console.warn(`TC planifiés non automatisés : ${missingAutomated.join(', ')}`);
+if (unknownStoryIds.length) {
+  console.error(`US inconnues référencées par les tests : ${unknownStoryIds.join(', ')}`);
+  process.exitCode = 1;
+}
+if (mismatchedStoryTestCases.length) {
+  console.error(
+    `Rattachements US incohérents : ${mismatchedStoryTestCases.map(({ id, allureStoryId, tracedStoryId }) => `${id} (${allureStoryId} ≠ ${tracedStoryId})`).join(', ')}`,
+  );
+  process.exitCode = 1;
+}
 if (duplicateAutomatedIds.length) {
   console.error(`IDs TC automatisés dupliqués : ${duplicateAutomatedIds.join(', ')}`);
   process.exitCode = 1;

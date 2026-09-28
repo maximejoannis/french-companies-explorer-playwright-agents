@@ -178,7 +178,8 @@ Comportements constatés :
 - **Niveau :** `E2E_REAL`
 - **Priorité :** Haute
 - **Justification du niveau :** `TC-SEARCH-010` prouve l’intégration générale pour `q`, mais pas la compatibilité de format du paramètre `commune`. L’exploration a révélé une rupture réelle à cette jointure ; un seul E2E ciblé est donc justifié. Le résultat attendu reste strictement celui de `AC-02` et ne doit pas être affaibli pour refléter le défaut actuel.
-- **Traitement du défaut connu lors de l’automatisation :** tant que l’incompatibilité commune textuelle → API n’est pas corrigée, le test doit être déclaré explicitement avec `test.fixme`, accompagné d’un motif mentionnant le défaut connu. Cette neutralisation temporaire conserve la spécification, évite une CI volontairement rouge et permet de réactiver immédiatement le scénario après correction du produit. Le corps et les assertions du test doivent continuer à exprimer le résultat fonctionnel attendu ci-dessus.
+- **Traitement historique du défaut :** tant que l’incompatibilité commune textuelle → API subsistait (`BUG-001`), le test devait être déclaré avec `test.fixme` sans modifier l’attendu.
+- **Mise à jour du 2026-09-28 :** `BUG-001` est résolu ; `TC-FILTERS-009` est automatisé, actif et ne porte pas `test.fixme`.
 
 ## Matrice de traçabilité
 
@@ -207,7 +208,7 @@ Comportements constatés :
 
 ### Trou de couverture et critère actuellement non satisfait
 
-`AC-02` dispose d’une couverture planifiée complète (`TC-FILTERS-002`, `005` et `009`), mais n’est pas satisfait par le comportement déployé au moment de l’exploration. Le backend accepte un identifiant de commune, tandis que l’interface suggère et transmet un libellé. Tant que ce défaut connu subsiste, l’automatisation de `TC-FILTERS-009` doit porter un `test.fixme` explicite plutôt que rendre volontairement la CI rouge ; son résultat fonctionnel attendu reste inchangé et le scénario devra être réactivé dès la correction. Par conséquence, une combinaison contenant la valeur textuelle de commune est également en échec réel ; le plan ne modifie pas silencieusement `AC-02` ou `AC-04` pour adopter le comportement actuel.
+`AC-02` disposait d’une couverture planifiée complète (`TC-FILTERS-002`, `005` et `009`), mais n’était pas satisfait par le comportement déployé au moment de l’exploration. Ce constat historique est conservé. Depuis la résolution de `BUG-001`, `TC-FILTERS-009` est actif sans `test.fixme` et vérifie la résolution de la commune en code INSEE (statut vérifié le 2026-09-28).
 
 ### Doublons volontairement évités
 

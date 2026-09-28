@@ -29,21 +29,22 @@ Les catégories `@positive`, `@negative` et `@error` décrivent la situation tes
 
 ### Résultat global
 
-| Mesure                                              |                                                           Résultat |
-| --------------------------------------------------- | -----------------------------------------------------------------: |
-| AC applicables avec au moins une trace vers un test |                                                    171/171 — 100 % |
-| AC entièrement prouvés par des assertions conformes |                                               168/171 — **98,2 %** |
-| AC partiellement couverts ou non validés            |                                                                  3 |
-| AC non applicables                                  |                                                                  2 |
-| Tests Playwright conformes                          |                                                                132 |
-| Tests en échec attendu avec `test.fail()`           |                                                                  3 |
-| Résumé Playwright brut                              | 135 « passed », car les échecs attendus sont comptés comme réussis |
+| Mesure                                              |                                                                Résultat |
+| --------------------------------------------------- | ----------------------------------------------------------------------: |
+| AC applicables avec au moins une trace vers un test |                                                         171/171 — 100 % |
+| AC entièrement prouvés par des assertions conformes |                                                    169/171 — **98,8 %** |
+| AC partiellement couverts ou non validés            |                                                                       2 |
+| AC non applicables                                  |                                                                       2 |
+| Tests Playwright actifs ordinaires                  |                                                                     133 |
+| Tests en échec attendu avec `test.fail()`           |                                                                       3 |
+| Tests désactivés avec `test.fixme()`                |                                                                       0 |
+| Total de tests Playwright                           |                                                                     136 |
+| Dernière exécution Chromium                         | 133 succès ordinaires, 3 échecs attendus observés, 0 résultat inattendu |
 
-Les trois AC qui empêchent une validation effective à 100 % sont :
+Les deux AC qui empêchent encore une validation effective à 100 % sont :
 
 - `US-DEEP-LINKING-01 / AC-06` : reset incomplet de l’URL, `BUG-016`, `test.fail()` ;
 - `US-FAVORITES-01 / AC-07` : état de la carte non rafraîchi après modification depuis la fiche, `BUG-005`, `test.fail()` ;
-- `US-HISTORY-01 / AC-10` : aucune entrée History réellement incomplète n’est injectée par les tests actuels.
 
 ## Légende des preuves
 
@@ -164,19 +165,19 @@ Résultats : `P` = passant conforme, `XF` = échec attendu, `NA` = non applicabl
 
 ### US-HISTORY-01 — 10/11, 90,9 %
 
-| AC    | Comportement attendu                   | TC            | Catégorie                          | Résultat | Preuve                                                      | Statut                                             |
-| ----- | -------------------------------------- | ------------- | ---------------------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------- |
-| AC-01 | Enregistrer les recherches éligibles   | 001, 007      | `@positive`                        | P        | `HIST` : succès avec/sans résultat                          | Complète                                           |
-| AC-02 | Conserver l’identité des critères      | 002, 004      | `@positive`                        | P        | Requête, CP, commune, statut                                | Complète                                           |
-| AC-03 | Respecter la récence                   | 002–005, 007  | `@positive`                        | P        | Ordre avant/après replay/reload                             | Complète                                           |
-| AC-04 | Gérer la répétition                    | 002, 007      | `@positive`                        | P        | Déduplication et navigation interne                         | Complète                                           |
-| AC-05 | Réutiliser une entrée                  | 004           | `@positive`                        | P        | Critères restaurés et GET relancé                           | Complète                                           |
-| AC-06 | Persister l’historique                 | 005           | `@positive`                        | P        | Vrai reload sans lecture API                                | Complète                                           |
-| AC-07 | Respecter la capacité de 12            | 003           | `@positive`                        | P        | Plus ancienne entrée évincée                                | Complète                                           |
-| AC-08 | Gérer l’état vide                      | 006           | `@positive`                        | P        | Clé absente et liste vide                                   | Complète                                           |
-| AC-09 | Nettoyer uniquement History            | 006           | `@positive`                        | P        | Autres stockages inchangés                                  | Complète                                           |
-| AC-10 | Rester robuste aux entrées incomplètes | 001, 008, 009 | `@positive`, `@negative`, `@error` | P        | Entrées normales sans artefact ; invalides/erreurs absentes | **Partielle : aucune entrée persistée incomplète** |
-| AC-11 | Éviter les opérations API inutiles     | 004–009       | `@positive`, `@negative`, `@error` | P        | Aucun write ; GET seulement au replay                       | Complète                                           |
+| AC    | Comportement attendu                   | TC           | Catégorie                          | Résultat | Preuve                                                                                                                     | Statut   |
+| ----- | -------------------------------------- | ------------ | ---------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- | -------- |
+| AC-01 | Enregistrer les recherches éligibles   | 001, 007     | `@positive`                        | P        | `HIST` : succès avec/sans résultat                                                                                         | Complète |
+| AC-02 | Conserver l’identité des critères      | 002, 004     | `@positive`                        | P        | Requête, CP, commune, statut                                                                                               | Complète |
+| AC-03 | Respecter la récence                   | 002–005, 007 | `@positive`                        | P        | Ordre avant/après replay/reload                                                                                            | Complète |
+| AC-04 | Gérer la répétition                    | 002, 007     | `@positive`                        | P        | Déduplication et navigation interne                                                                                        | Complète |
+| AC-05 | Réutiliser une entrée                  | 004          | `@positive`                        | P        | Critères restaurés et GET relancé                                                                                          | Complète |
+| AC-06 | Persister l’historique                 | 005          | `@positive`                        | P        | Vrai reload sans lecture API                                                                                               | Complète |
+| AC-07 | Respecter la capacité de 12            | 003          | `@positive`                        | P        | Plus ancienne entrée évincée                                                                                               | Complète |
+| AC-08 | Gérer l’état vide                      | 006          | `@positive`                        | P        | Clé absente et liste vide                                                                                                  | Complète |
+| AC-09 | Nettoyer uniquement History            | 006          | `@positive`                        | P        | Autres stockages inchangés                                                                                                 | Complète |
+| AC-10 | Rester robuste aux entrées incomplètes | 001, 008–010 | `@positive`, `@negative`, `@error` | P        | `TC-HISTORY-010` injecte une entrée ne contenant que `query` ; rendu neutre, action utilisable et aucun artefact technique | Complète |
+| AC-11 | Éviter les opérations API inutiles     | 004–009      | `@positive`, `@negative`, `@error` | P        | Aucun write ; GET seulement au replay                                                                                      | Complète |
 
 ### US-PAGINATION-01 — 8/8, 100 %
 
@@ -357,7 +358,7 @@ Ces tests sont correctement classés par type de situation, mais leur présence 
 | US-EXPORT-01       |        11 |                  0 |                      11 |                       0 |                   11/11 |                 100 % | Oui     |
 | US-FAVORITES-01    |         9 |                  0 |                       8 |                       1 |                     9/9 |                88,9 % | **Non** |
 | US-FILTERS-01      |         7 |                  0 |                       7 |                       0 |                     7/7 |                 100 % | Oui     |
-| US-HISTORY-01      |        11 |                  0 |                      10 |                       1 |                   11/11 |                90,9 % | **Non** |
+| US-HISTORY-01      |        11 |                  0 |                      11 |                       0 |                   11/11 |                 100 % | Oui     |
 | US-PAGINATION-01   |         8 |                  0 |                       8 |                       0 |                     8/8 |                 100 % | Oui     |
 | US-SAVED-SEARCH-01 |        12 |                  0 |                      12 |                       0 |                   12/12 |                 100 % | Oui     |
 | US-SEARCH-01       |         8 |                  0 |                       8 |                       0 |                     8/8 |                 100 % | Oui     |
@@ -369,41 +370,40 @@ Ces tests sont correctement classés par type de situation, mais leur présence 
 | US-SHARE-01        |         7 |                  0 |                       7 |                       0 |                     7/7 |                 100 % | Oui     |
 | US-COMPARE-02      |         9 |                  0 |                       9 |                       0 |                     9/9 |                 100 % | Oui     |
 | US-EXPORT-02       |         9 |                  0 |                       9 |                       0 |                     9/9 |                 100 % | Oui     |
-| **Total**          |   **173** |              **2** |                 **168** |                   **3** | **171/171 applicables** |            **98,2 %** | **Non** |
+| **Total**          |   **173** |              **2** |                 **169** |                   **2** | **171/171 applicables** |            **98,8 %** | **Non** |
 
 ## Distinction entre tests existants et validation du produit
 
 | Axe                          | Conclusion                                                                                                                                                         |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Présence de tests            | Chaque AC applicable possède au moins une trace vers un test existant : 171/171.                                                                                   |
-| Couverture des comportements | 168 AC sont entièrement prouvés ; History AC-10 reste seulement partiel. Deux autres AC disposent d’un oracle complet mais placé derrière `test.fail()`.           |
-| Validation effective         | 168/171 AC applicables sont confirmés. Deep Linking AC-06 et Favorites AC-07 ne sont pas conformes ; History AC-10 ne peut pas être confirmé dans sa totalité.     |
+| Couverture des comportements | 169 AC sont entièrement prouvés. Deux autres AC disposent d’un oracle complet mais placé derrière `test.fail()`.                                                   |
+| Validation effective         | 169/171 AC applicables sont confirmés. Deep Linking AC-06 et Favorites AC-07 restent non conformes ; ils ne sont pas traités par cette mise à jour.                |
 | Catégories                   | L’absence de `@negative` ou `@error` sur de nombreux AC est normale : ces catégories ne s’appliquent pas lorsque le critère ne décrit ni refus ni panne technique. |
 
 ## Divergences entre exigences, plans, tests et rapports
 
-1. Le rapport de couverture ne connaît que 13 US. Les cinq US de [`specs/v1.1.1/REQUIREMENTS.md`](specs/v1.1.1/REQUIREMENTS.md) ne possèdent pas de fichiers `US-*.md` autonomes et ne sont donc pas comptées comme features.
-2. Le rapport affiche `135 actifs` et `0 fixme`, sans distinguer les trois `test.fail()`. Les IDs de défauts apparaissent seulement dans `expectedFailureIds`.
-3. Le résumé Playwright `135 passed` inclut 132 tests conformes et trois échecs attendus.
+1. **Résolu le 2026-09-28** — Le rapport recense désormais 18 US, dont les cinq US définies dans [`specs/v1.1.1/REQUIREMENTS.md`](specs/v1.1.1/REQUIREMENTS.md), sans doublon et avec un lien vers leur source.
+2. **Résolu le 2026-09-28** — Le rapport sépare 133 tests actifs ordinaires, trois scénarios annotés `test.fail()` et zéro `test.fixme()`. Les résultats d’exécution sont présentés séparément des annotations du code.
+3. **Résolu le 2026-09-28 pour la présentation du rapport** — Le JSON Playwright est analysé sans double comptage et distingue réussites ordinaires, échecs attendus observés, succès inattendus, échecs inattendus, tests ignorés et instables. La campagne Chromium de validation contient 136 exécutions uniques : 133 succès ordinaires, trois échecs attendus observés et aucun résultat inattendu, ignoré ou instable.
 4. Le plan Deep Linking associe encore `TC-DEEP-LINK-002` à AC-06 comme test actif, alors que le test porte `BUG-016` et `test.fail()`.
-5. Plusieurs plans parlent encore de futurs `test.fixme` pour des défauts désormais résolus, notamment Pagination, Sort, Stats, Filters, Compare, History, Saved Searches et Export.
-6. [`specs/v1.1.1/TEST-PLAN-V111.md`](specs/v1.1.1/TEST-PLAN-V111.md) décrit `TC-SAVED-008` comme une suppression accessible. Le test actuel vérifie le refus d’un nom vide ou blanc ; la suppression accessible est réellement couverte dans `TC-SAVED-006`.
-7. La matrice History surdéclare AC-10 : aucun test ne prépare une entrée locale réellement incomplète.
+5. **Résolu le 2026-09-28** — Les plans concernés qualifient maintenant les futurs `test.fixme` comme décisions historiques et indiquent le statut actuel daté des défauts résolus.
+6. **Résolu le 2026-09-28** — [`specs/v1.1.1/TEST-PLAN-V111.md`](specs/v1.1.1/TEST-PLAN-V111.md) décrit désormais `TC-SAVED-008` comme le refus d’un nom vide ou blanc et attribue la suppression accessible à `TC-SAVED-006`.
+7. **Résolu le 2026-09-28** — `TC-HISTORY-010` prépare une entrée locale réellement incomplète et complète la preuve d’AC-10.
 8. `TC-SEARCH-011 / BUG-015` porte une exigence de contenu Compare v1.1.1 qui n’est formulée dans aucun AC actuel.
 
 ## Informations impossibles à confirmer depuis le dépôt
 
 - La date et la version exacte du produit déployé auxquelles chaque plan historique se réfère ne sont pas formalisées de manière uniforme.
 - Le rapport ne conserve pas un statut d’exécution par AC ; il faut le reconstruire depuis les tests, les `test.fail()` et l’exécution Playwright.
-- Aucun résultat ne permet de confirmer le comportement de History face à une entrée persistée incomplète, puisque cette donnée n’est pas injectée.
 - Pour les AC explicitement conditionnels et non applicables (`DEEP-LINKING AC-07`, `THEME AC-08`), aucune validation produit positive n’est revendiquée : le dépôt documente l’absence du contrat correspondant.
 
 ## Écarts concrets à traiter
 
 1. Corriger `BUG-005`, retirer `test.fail()` de `TC-FAVORITES-004` et obtenir la synchronisation carte/fiche/favoris attendue.
 2. Corriger `BUG-016`, retirer `test.fail()` de `TC-DEEP-LINK-002` et vérifier que le reset supprime réellement `cityCode` de l’URL.
-3. Ajouter une partition déterministe pour `US-HISTORY-01 / AC-10` : initialiser `fce_history` avec une entrée incomplète, ouvrir History et vérifier un rendu neutre sans artefact technique.
+3. **Résolu le 2026-09-28** — `TC-HISTORY-010` initialise `fce_history` avec une entrée incomplète, puis vérifie un rendu neutre, l’action `Relancer`, l’absence d’artefact technique et l’absence d’appel API.
 4. Corriger `BUG-015` ou formaliser le texte d’accueil dans une AC appropriée de la comparaison v1.1.1.
-5. Faire recenser les 18 US par le générateur de couverture, y compris les cinq US v1.1.1.
-6. Exposer séparément dans le rapport les tests conformes, `test.fail()` et `test.fixme()`.
-7. Aligner les plans historiques sur les défauts résolus et sur les TC effectivement implémentés, notamment `TC-SAVED-008`.
+5. **Résolu le 2026-09-28** — Le générateur recense 18/18 US, conserve leur source et rejette les doublons ou rattachements vers une US inconnue.
+6. **Résolu le 2026-09-28** — Le rapport sépare les annotations statiques et les statuts runtime, y compris les succès inattendus, sans compter les retries comme des tests supplémentaires.
+7. **Résolu le 2026-09-28** — Les plans des défauts résolus portent une mise à jour datée ; `TC-SAVED-008` et `TC-SAVED-006` ont retrouvé leurs responsabilités réelles.

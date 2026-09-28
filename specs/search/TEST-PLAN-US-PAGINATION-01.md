@@ -113,7 +113,8 @@ Les réponses mockées devront contenir des entreprises synthétiques distinctes
 - **Niveau :** `UI_MOCKED`.
 - **Priorité :** Haute.
 - **Justification du niveau :** les options, l'événement de changement, la réinitialisation et le rendu sont exclusivement frontend. Le mock isole le défaut observé de toute volatilité API. **Ce cas échouerait sur la version explorée, qui ne déclenche aucune requête au changement de sélection ; l'attendu ne doit pas être affaibli pour refléter ce comportement.**
-- **Traitement du défaut connu lors de l’automatisation :** tant que `BUG-002` reste ouvert, l’implémentation de `TC-PAGINATION-005` devra être déclarée explicitement avec `test.fixme`, tout en conservant le corps et les assertions du résultat fonctionnel attendu. Ce choix maintient la spécification, rend le défaut visible dans la suite, évite une CI volontairement rouge en permanence et permet de réactiver immédiatement le scénario après correction du produit.
+- **Traitement historique du défaut :** lors de la rédaction, `BUG-002` était ouvert et l’implémentation de `TC-PAGINATION-005` devait être déclarée avec `test.fixme` tout en conservant l’oracle fonctionnel.
+- **Mise à jour du 2026-09-28 :** `BUG-002` est résolu ; `TC-PAGINATION-005` est automatisé, actif et ne porte pas `test.fixme`.
 
 ### TC-PAGINATION-006 — Réinitialisation après changement des critères
 
@@ -156,7 +157,7 @@ Les réponses mockées devront contenir des entreprises synthétiques distinctes
 
 ### Trous de couverture
 
-Aucun critère n'est laissé sans cas planifié. En revanche, `AC-05` et `AC-06` ne sont actuellement pas satisfaits par le produit. Cette situation est tracée par `BUG-002`, et `TC-PAGINATION-005` constitue le test de non-régression associé. Tant que le défaut reste ouvert, son automatisation devra porter un `test.fixme` explicite ; le plan conserve les critères et le résultat attendu inchangés.
+Aucun critère n'est laissé sans cas planifié. Lors de l’exploration initiale, `AC-05` et `AC-06` n’étaient pas satisfaits ; cette situation historique est tracée par `BUG-002`. Depuis sa résolution, `TC-PAGINATION-005` est le test actif de non-régression, sans `test.fixme` (statut vérifié le 2026-09-28).
 
 ### Doublons volontairement évités
 

@@ -158,7 +158,8 @@ Les réponses synthétiques Recherche existantes suffisent. Une réponse minimal
 - **Attendu** : avant une recherche éligible, le message `Aucune recherche à sauvegarder.` est affiché ; la recherche seule et l’annulation ne créent rien ; les noms vide ou composé uniquement d’espaces sont refusés ; le nom normal crée exactement une entrée associée aux critères courants ; la sauvegarde ne modifie pas davantage History et ne produit aucun GET supplémentaire ni écriture API.
 - **Niveau** : `UI_MOCKED`.
 - **Priorité** : Haute.
-- **Justification du niveau** : le dialogue, la validation et les deux stockages sont des responsabilités navigateur. Le scénario conserve l’attendu fonctionnel correct malgré `BUG-011` et devra être placé derrière `test.fixme` tant que le défaut reste ouvert.
+- **Justification historique du niveau** : le dialogue, la validation et les deux stockages sont des responsabilités navigateur ; le scénario devait conserver l’attendu correct derrière `test.fixme` tant que `BUG-011` restait ouvert.
+- **Mise à jour du 2026-09-28 :** `BUG-011` est résolu. La partition nom vide ou composé d’espaces est automatisée par `TC-SAVED-008`, active et sans `test.fixme`.
 
 ### TC-SAVED-002 — Appliquer la règle d’identité indépendamment du nom
 
@@ -236,7 +237,8 @@ Les réponses synthétiques Recherche existantes suffisent. Une réponse minimal
 - **Attendu** : le contrôle de chaque entrée est compréhensible et contextualisable ; Bêta seule disparaît d’abord, Alpha reste inchangée et `fce_history` reste strictement identique ; après suppression d’Alpha, `fce_saved` vaut `[]` et `Aucune recherche sauvegardée.` est affiché ; aucune requête ou écriture API n’est émise.
 - **Niveau** : `UI_MOCKED`.
 - **Priorité** : Haute.
-- **Justification du niveau** : rendu accessible, suppression et isolation sont locaux. Le scénario fonctionnel complet devra rester derrière `test.fixme` tant que `BUG-012` empêche d’identifier sémantiquement l’action et sa cible.
+- **Justification historique du niveau** : rendu accessible, suppression et isolation sont locaux ; le scénario devait rester derrière `test.fixme` tant que `BUG-012` empêchait d’identifier l’action et sa cible.
+- **Mise à jour du 2026-09-28 :** `BUG-012` est résolu ; la suppression ciblée et accessible est couverte par `TC-SAVED-006`, actif et sans `test.fixme`.
 
 ### TC-SAVED-007 — Initialiser proprement une collection absente ou vide
 
@@ -261,6 +263,7 @@ Les réponses synthétiques Recherche existantes suffisent. Une réponse minimal
 | `TC-SAVED-005` | `AC-06`, `AC-08`, `AC-12`                            | `UI_MOCKED` | Haute    |
 | `TC-SAVED-006` | `AC-06`, `AC-09`, `AC-10`, `AC-11`, `AC-12`          | `UI_MOCKED` | Haute    |
 | `TC-SAVED-007` | `AC-10`, `AC-12`                                     | `UI_MOCKED` | Moyenne  |
+| `TC-SAVED-008` | `AC-01`, `AC-02`                                     | `UI_MOCKED` | Haute    |
 
 Tous les critères `AC-01` à `AC-12` sont couverts. Aucun scénario ne duplique le contrat backend de Recherche/Filtres ni les responsabilités propres à History.
 
@@ -271,20 +274,20 @@ Tous les critères `AC-01` à `AC-12` sont couverts. Aucun scénario ne duplique
 - **Observation** : une valeur telle que trois espaces crée une recherche sauvegardée dont le nom est visuellement vide. Les espaces autour d’un nom normal sont également conservés.
 - **Écart** : `AC-02` exige un nom permettant d’identifier la recherche et `AC-01` prévoit la gestion d’un nom absent ou invalide. Une valeur uniquement composée d’espaces ne remplit pas ce besoin.
 - **Attendu conservé** : annulation, chaîne vide et espaces uniquement ne doivent créer ni mettre à jour une sauvegarde ; un nom contenant des caractères significatifs reste accepté sans imposer ici une politique exhaustive de normalisation.
-- **Couverture proposée** : `TC-SAVED-001`, `UI_MOCKED`, scénario complet derrière `test.fixme` tant que le défaut reste ouvert.
-- **Suite recommandée** : documenter `BUG-011` avant automatisation.
+- **Couverture initialement proposée** : `TC-SAVED-001`, `UI_MOCKED`, derrière `test.fixme` tant que `BUG-011` restait ouvert. La partition invalide est désormais portée par `TC-SAVED-008`, actif sans `test.fixme` (statut vérifié le 2026-09-28).
+- **Suite réalisée** : `BUG-011` a été documenté puis résolu ; `TC-SAVED-008` protège désormais cette validation (statut vérifié le 2026-09-28).
 
 ### BUG-012 — Le bouton de suppression n’expose que `×` comme nom accessible
 
 - **Observation** : chaque bouton de suppression a pour nom accessible `×`, sans `aria-label`, `title` ni référence à la recherche concernée.
 - **Écart** : l’utilisateur d’une technologie d’assistance ne peut pas comprendre l’action ni distinguer la cible, alors que `AC-06` exige des contrôles suffisamment identifiables et `AC-09` une suppression ciblée.
 - **Attendu conservé** : le contrôle doit exposer un nom accessible compréhensible pour la suppression et permettre d’identifier la sauvegarde concernée. La portée fonctionnelle reste une seule entrée.
-- **Couverture proposée** : `TC-SAVED-006`, `UI_MOCKED`, scénario complet derrière `test.fixme` tant que le défaut reste ouvert.
-- **Suite recommandée** : documenter `BUG-012` avant automatisation ; avant correction, tout locator d’exploration doit scoper `×` dans l’article ciblé.
+- **Couverture initialement proposée** : `TC-SAVED-006`, `UI_MOCKED`, derrière `test.fixme` tant que `BUG-012` restait ouvert. Le test est désormais actif sans `test.fixme` (statut vérifié le 2026-09-28).
+- **Suite réalisée** : `BUG-012` a été documenté puis résolu ; `TC-SAVED-006` vérifie désormais le nom accessible et la cible de suppression (statut vérifié le 2026-09-28).
 
 ## Répartition finale
 
 - `API` : 0
-- `UI_MOCKED` : 7
+- `UI_MOCKED` : 8
 - `E2E_REAL` : 0
-- Total : 7 cas de test
+- Total : 8 cas de test

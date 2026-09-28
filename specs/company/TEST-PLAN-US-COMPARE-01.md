@@ -175,7 +175,8 @@ Un mock Compare dédié est recommandé avec quatre entreprises synthétiques et
 - **Résultats attendus** : chaque absence est affichée par une présentation neutre telle que `—` ou une formulation non renseignée, sans imposer une microcopie unique ; le statut absent de Delta n'est ni `En activité` ni `Cessée` ; les valeurs Alpha ne migrent pas dans la colonne Delta ; aucun `undefined`, `null` ou `[object Object]` et aucune erreur technique ne sont visibles.
 - **Niveau** : `UI_MOCKED`.
 - **Priorité** : Haute.
-- **Justification** : ce cas limite doit être construit de manière déterministe. Il conserve l'attendu fonctionnel correct malgré `BUG-008` et devra être déclaré avec un corps complet derrière `test.fixme` tant que le défaut reste ouvert.
+- **Justification historique** : ce cas limite devait conserver l’attendu correct derrière `test.fixme` tant que `BUG-008` restait ouvert.
+- **Mise à jour du 2026-09-28 :** `BUG-008` est résolu ; `TC-COMPARE-006` est automatisé, actif et ne porte pas `test.fixme`.
 
 ## Matrice de traçabilité
 
@@ -197,7 +198,7 @@ Tous les critères `AC-01` à `AC-12` sont couverts. Aucun scénario ne duplique
 - **Observation** : dans la ligne `Statut`, une entreprise sans statut administratif exploitable est affichée comme `Cessée`.
 - **Écart** : `AC-07` exige une association fidèle aux données et `AC-11` une présentation robuste des valeurs absentes. Seul un statut explicitement cessé peut porter cette information métier.
 - **Attendu conservé** : le statut manquant doit être présenté de manière neutre, sans être classé actif ou cessé.
-- **Couverture proposée** : `TC-COMPARE-006`, `UI_MOCKED`, scénario complet derrière `test.fixme` tant que `BUG-008` reste ouvert.
+- **Couverture initialement proposée** : `TC-COMPARE-006`, `UI_MOCKED`, scénario complet derrière `test.fixme` tant que `BUG-008` restait ouvert. Depuis sa résolution, le scénario est actif sans `test.fixme` (statut vérifié le 2026-09-28).
 - **Suite recommandée** : documenter `BUG-008` avant l'implémentation automatisée ; ne pas aligner l'oracle sur le comportement observé.
 
 ## Répartition finale

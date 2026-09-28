@@ -132,7 +132,8 @@ Les assertions d’intégrité compareront la liste complète des identifiants a
 - **Niveau :** `UI_MOCKED`.
 - **Priorité :** Haute.
 - **Justification du niveau :** restaurer une copie de l’ordre reçu est une responsabilité frontend. Le mock fournit l’unique ordre de pertinence attendu sans recalculer la sémantique de l’API. **Ce cas échoue sur la version explorée et constitue le test de non-régression associé à `BUG-003` ; l’attendu ne doit pas être affaibli pour refléter le défaut.**
-- **Traitement du défaut connu lors de l’automatisation :** tant que `BUG-003` reste ouvert, l’implémentation complète de `TC-SORT-005` devra être déclarée avec `test.fixme`. Ce choix conserve l’exigence fonctionnelle, trace le défaut connu, évite une CI volontairement rouge en permanence et permet de réactiver immédiatement le scénario après correction. Le test ne devra être ni vidé, ni remplacé par un placeholder ou par une assertion du comportement défectueux.
+- **Traitement historique du défaut :** lors de la rédaction, `BUG-003` était ouvert et `TC-SORT-005` devait être déclaré avec `test.fixme` sans affaiblir son oracle.
+- **Mise à jour du 2026-09-28 :** `BUG-003` est résolu ; `TC-SORT-005` est automatisé, actif et ne porte pas `test.fixme`.
 
 ### TC-SORT-006 — Intégrité de l’ensemble et tri purement local
 

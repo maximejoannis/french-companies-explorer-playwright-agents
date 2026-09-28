@@ -169,7 +169,8 @@ Les pages et réponses successives utiliseront des sous-ensembles incompatibles 
 - **Niveau :** `UI_MOCKED`.
 - **Priorité :** Haute.
 - **Justification du niveau :** les absences sont difficiles à stabiliser avec les données publiques et leur traitement statistique est purement frontend. Ce cas est le test de non-régression proposé pour `BUG-007`.
-- **Condition avant implémentation :** documenter `BUG-007`. Tant que le défaut reste ouvert, conserver le scénario complet avec l’attendu fonctionnel et le déclarer avec `test.fixme`. Ne pas compter une absence comme une cessation pour aligner l’oracle sur le comportement défectueux.
+- **Condition historique avant implémentation :** `BUG-007` devait être documenté et le scénario complet conservé avec `test.fixme`, sans aligner l’oracle sur le défaut.
+- **Mise à jour du 2026-09-28 :** `BUG-007` est résolu ; `TC-STATS-006` est automatisé, actif et ne porte pas `test.fixme`.
 
 ## Matrice de traçabilité
 
@@ -201,7 +202,7 @@ Avec une page contenant une entreprise sans statut administratif, le panneau inc
 
 Ce comportement présente une information métier non fournie et contredit `AC-02` et `AC-08`. Le résultat attendu est de compter comme cessées uniquement les entreprises dont le statut vaut explicitement `C`, sans imposer ici l’ajout d’un nouvel indicateur pour les statuts inconnus.
 
-Documenter `BUG-007` avant l’implémentation de `TC-STATS-006`. Tant que le défaut reste ouvert, le futur test doit conserver l’attendu correct derrière `test.fixme`. Aucune correction du produit n’est incluse dans ce plan.
+Historiquement, `BUG-007` devait être documenté avant l’implémentation de `TC-STATS-006`, avec l’attendu correct derrière `test.fixme`. Le défaut est désormais résolu et le test est actif sans `test.fixme` (statut vérifié le 2026-09-28). Aucune correction du produit n’est incluse dans ce plan.
 
 ## Fichiers probablement concernés par l’implémentation future
 

@@ -202,6 +202,8 @@ AC-09 · `UI_MOCKED` · Haute. Après Alpha réussi puis Beta en cours, Alpha ne
 
 US-FAVORITES-01 / AC-01 à AC-03 · `UI_MOCKED` · Haute. Le bouton doit nommer l'action et l'entreprise, puis refléter son état avec `aria-pressed`.
 
-### TC-SAVED-008 — Suppression accessible
+### TC-SAVED-008 — Refus d’un nom vide ou composé d’espaces
 
-US-SAVED-01 / AC-06 · `UI_MOCKED` · Haute. Le bouton doit exposer l'action de suppression et le nom de la recherche ciblée.
+US-SAVED-SEARCH-01 / AC-01, AC-02 · `UI_MOCKED` · Haute. Une chaîne vide ou composée uniquement d’espaces ne doit créer ni modifier une recherche sauvegardée.
+
+> Mise à jour du 2026-09-28 — L’intitulé historique associait par erreur `TC-SAVED-008` à la suppression accessible. Cette responsabilité est couverte par `TC-SAVED-006` (`AC-06`, `AC-09`, `AC-10`, `AC-11`, `AC-12`). La présente correction aligne le plan sur les tests implémentés sans modifier les anciens résultats d’exécution.
