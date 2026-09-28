@@ -185,7 +185,7 @@ Les IDs `US-*`, `AC-*` et `TC-*` relient les spécifications, plans et tests. Le
 │       └── playwright.yml         # CI/CD et publication GitHub Pages
 ├── defects/                       # BUG-001 à BUG-016
 ├── reporting/
-│   ├── coverage/                  # Interface du rapport de couverture
+│   ├── coverage/                  # Source de la vue de validation fonctionnelle
 │   ├── qa-portal/                 # Portail consolidé HTML/CSS/JavaScript
 │   └── scripts/                   # Générateurs couverture et qualité
 ├── specs/                         # 18 User Stories recensées, plans par domaine et plan transverse v1.1.1
@@ -267,15 +267,15 @@ Le job `Real API integration (chromium)` reste bloquant : une rupture réelle du
 
 ## Quality Gates
 
-| Commande                  | Contrôle                                            |
-| ------------------------- | --------------------------------------------------- |
-| `npm run typecheck`       | Typage TypeScript sans émission de fichiers         |
-| `npm run lint`            | Analyse ESLint et règles Playwright                 |
-| `npm run lint:fix`        | Corrections ESLint automatiques disponibles         |
-| `npm run format:check`    | Conformité Prettier                                 |
-| `npm run format`          | Application du formatage Prettier                   |
-| `npm run quality:report`  | Rapport consolidé Prettier, ESLint et TypeScript    |
-| `npm run coverage:report` | Rapport de couverture QA calculé depuis les sources |
+| Commande                  | Contrôle                                                          |
+| ------------------------- | ----------------------------------------------------------------- |
+| `npm run typecheck`       | Typage TypeScript sans émission de fichiers                       |
+| `npm run lint`            | Analyse ESLint et règles Playwright                               |
+| `npm run lint:fix`        | Corrections ESLint automatiques disponibles                       |
+| `npm run format:check`    | Conformité Prettier                                               |
+| `npm run format`          | Application du formatage Prettier                                 |
+| `npm run quality:report`  | Rapport consolidé Prettier, ESLint et TypeScript                  |
+| `npm run coverage:report` | Validation fonctionnelle calculée depuis les sources et résultats |
 
 Pour reproduire les contrôles principaux :
 
@@ -307,13 +307,17 @@ npm run allure:open
 
 Le rapport final est généré dans `allure-report/`. Allure y regroupe les résultats et leur rattachement aux Features et User Stories.
 
-### Couverture QA
+### Validation fonctionnelle
 
 ```powershell
 npm run coverage:report
 ```
 
-Le rapport `coverage-report/` calcule depuis les User Stories, plans, tests et fiches de défaut les User Stories couvertes, TC planifiés et automatisés, niveaux de test, tags, anomalies ouvertes et défauts résolus. Il recense les US autonomes et celles de `specs/v1.1.1/REQUIREMENTS.md`, conserve un lien vers chaque source et contrôle les rattachements des TC. Les annotations statiques (`test.fail()`, `test.fixme()`) sont séparées des résultats du dernier `test-results/results.json`.
+Le rapport interne `coverage-report/`, publié sous `/validation/`, construit une vue US → AC → TC depuis les User Stories, les exigences v1.1.1, les plans et les commentaires de traçabilité des tests. Il rapproche ces données du dernier `test-results/results.json` et expose séparément la présence d’un test, son résultat et la validation effective du critère.
+
+Un critère est **couvert** dès qu’au moins un TC automatisé lui est relié. Il est **validé** uniquement si tous ses TC reliés ont réussi dans l’exécution publiée. Un `test.fail()` observé, un succès ou échec inattendu, un test instable, ignoré ou non exécuté empêche donc la validation. Une catégorie `@positive`, `@negative` ou `@error` absente n’est pas considérée manquante : seules les catégories réellement applicables et tracées sont affichées. Les données absentes restent « non déterminées ».
+
+Les KPIs indiquent le commit et la date de l’exécution. Ils comptent les critères applicables, couverts et validés, puis les tests réussis, échecs attendus, échecs inattendus, succès inattendus, instables et ignorés. « Validation complète » n’est affiché pour une fonctionnalité que lorsque tous ses critères applicables sont validés. La vue ne conclut jamais à une release entièrement validée tant qu’une anomalie ouverte compromet un critère.
 
 Les exécutions Firefox et WebKit rejouent des TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 136 et ne modifient pas la répartition 6 `API` / 127 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts téléchargeables séparés.
 
@@ -327,7 +331,7 @@ Le rapport `quality-report/` consolide Prettier, ESLint et TypeScript.
 
 ### Portail QA
 
-Le [portail QA public](https://maximejoannis.github.io/french-companies-explorer-playwright-agents/) est une interface de consultation générée par ce dépôt. Il réunit les rapports Playwright, Allure, couverture et qualité ; il ne s’agit ni de l’application testée ni d’un second lanceur de tests.
+Le [portail QA public](https://maximejoannis.github.io/french-companies-explorer-playwright-agents/) est une interface de consultation générée par ce dépôt. Il réunit les rapports Playwright, Allure, validation fonctionnelle et qualité ; il ne s’agit ni de l’application testée ni d’un second lanceur de tests.
 
 Le portail distingue les réussites, échecs attendus, échecs inattendus, succès inattendus, tests ignorés et tests instables. Un succès inattendu sur un test annoté `test.fail()` fait échouer Playwright afin d’imposer le retrait de l’annotation lorsque le produit est corrigé.
 
@@ -339,9 +343,9 @@ Le workflow [`.github/workflows/playwright.yml`](./.github/workflows/playwright.
 Push main / PR / workflow_dispatch
 → npm ci
 → qualité
-→ couverture QA
 → installation Chromium
 → suite Playwright complète sur Chromium
+→ validation fonctionnelle depuis les résultats
 → génération Allure
 → validation des rapports
 → archive qa-reports

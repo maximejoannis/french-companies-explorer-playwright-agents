@@ -48,11 +48,6 @@ jobs:
         continue-on-error: true
         run: npm run quality:report
 
-      - name: Generate QA coverage report
-        id: coverage
-        continue-on-error: true
-        run: npm run coverage:report
-
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
@@ -60,6 +55,14 @@ jobs:
         id: functional
         continue-on-error: true
         run: npm run test:ci
+
+      - name: Generate functional validation report
+        id: coverage
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: npm run coverage:report
 
       - name: Generate Allure report
         id: allure
@@ -111,12 +114,12 @@ jobs:
           FUNCTIONAL_OUTCOME: ${{ steps.functional.outcome }}
           ALLURE_OUTCOME: ${{ steps.allure.outcome }}
         run: |
-          mkdir -p pages-site/allure pages-site/functional pages-site/quality pages-site/coverage
+          mkdir -p pages-site/allure pages-site/functional pages-site/quality pages-site/validation
           cp -R reporting/qa-portal/. pages-site/
           cp -R allure-report/. pages-site/allure/
           cp -R playwright-report/. pages-site/functional/
           cp -R quality-report/. pages-site/quality/
-          cp -R coverage-report/. pages-site/coverage/
+          cp -R coverage-report/. pages-site/validation/
           node reporting/scripts/generate-build-info.mjs pages-site/build-info.json
           touch pages-site/.nojekyll
 

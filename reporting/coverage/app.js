@@ -1,91 +1,109 @@
 (() => {
   const data = window.COVERAGE_DATA;
   if (!data) return;
-  const text = (id, value) => {
+  const text = (id, value, fallback = 'Non déterminé') => {
     const node = document.getElementById(id);
-    if (node) node.textContent = String(value);
+    if (node) node.textContent = value === null || value === undefined ? fallback : String(value);
   };
-  text('featuresMetric', `${data.features.automated} / ${data.features.defined}`);
-  text('testsMetric', data.testCases.automated);
-  text('activeMetric', data.testCases.ordinary);
-  text('testFailMetric', data.testCases.expectedFailure);
-  text('fixmeMetric', data.testCases.fixme);
+  const escape = (value) =>
+    String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  const date = (value) =>
+    value
+      ? new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeStyle: 'short' }).format(
+          new Date(value),
+        )
+      : null;
+
+  text('applicableMetric', data.validation.applicableCriteria);
+  text('coveredMetric', data.validation.coveredCriteria);
+  text('validatedMetric', data.validation.validatedCriteria);
+  text('passedMetric', data.execution.available ? data.execution.passed : null);
+  text('expectedFailedMetric', data.execution.available ? data.execution.expectedFailures : null);
   text(
-    'coverageSummary',
-    `${data.features.automated}/${data.features.defined} US possèdent au moins un TC automatisé. Cet indicateur ne mesure pas la couverture de chaque AC.`,
+    'unexpectedFailedMetric',
+    data.execution.available ? data.execution.unexpectedFailures : null,
   );
   text(
-    'generatedAt',
-    new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeStyle: 'short' }).format(
-      new Date(data.generatedAt),
-    ),
+    'unexpectedPassedMetric',
+    data.execution.available ? data.execution.unexpectedSuccesses : null,
   );
-  document.getElementById('levels').innerHTML = Object.entries(data.levels)
-    .map(
-      ([level, count]) =>
-        `<article class="level"><strong>${count}</strong><span>${level}</span></article>`,
-    )
+  text('flakyMetric', data.execution.available ? data.execution.flaky : null);
+  text('skippedMetric', data.execution.available ? data.execution.skipped : null);
+  text('commit', data.execution.commit ? data.execution.commit.slice(0, 7) : null);
+  text('executedAt', date(data.execution.generatedAt));
+  text('generatedAt', date(data.generatedAt));
+  text('validationRule', data.validation.statusRule);
+  text(
+    'featureSummary',
+    `${data.validation.completeFeatures}/${data.validation.totalFeatures} fonctionnalités ont tous leurs critères applicables effectivement validés.`,
+  );
+  text(
+    'defectNotice',
+    `${data.defects.open} anomalie(s) ouverte(s), dont ${data.defects.expectedFailureIds.length} reliée(s) à test.fail(). Aucune conclusion de release entièrement validée n’est produite tant qu’elles compromettent un critère.`,
+  );
+
+  const status = {
+    validated: ['Validé', 'success'],
+    'known-defect': ['Non validé · anomalie connue', 'danger'],
+    'not-validated': ['Non validé', 'warning'],
+    'not-covered': ['Non couvert', 'unknown'],
+  };
+  const testCase = (item) => {
+    const tags = item.categories.map((tag) => `<span class="tag">${escape(tag)}</span>`).join('');
+    const defects = item.defectIds
+      .map((id) => `<span class="defect">${escape(id)}</span>`)
+      .join('');
+    const evidence = item.evidence
+      ? `<a href="${escape(item.evidence)}" aria-label="Preuve Playwright pour ${escape(item.id)}">Preuve Playwright</a>`
+      : '<span class="muted">Preuve non disponible</span>';
+    return `<li class="test-case"><div><a href="${escape(item.sourceUrl)}"><strong>${escape(item.id)}</strong></a>${tags}${defects}<p>${escape(item.title)}</p></div><div class="test-result"><span class="outcome outcome--${escape(item.outcome)}">${escape(item.outcomeLabel)}</span><small>${escape(item.level)}</small>${evidence}</div></li>`;
+  };
+  document.getElementById('features').innerHTML = data.features.items
+    .map((feature) => {
+      const badge = feature.complete
+        ? '<span class="badge badge--success">Validation complète</span>'
+        : `<span class="badge badge--warning">${feature.validatedCriteria}/${feature.applicableCriteria} critères validés</span>`;
+      const criteria = feature.criteria
+        .map((criterion) => {
+          const [label, kind] = status[criterion.validationStatus];
+          const categories = criterion.categories.length
+            ? criterion.categories.map((tag) => `<span class="tag">${escape(tag)}</span>`).join('')
+            : '<span class="muted">Aucune catégorie applicable déterminée</span>';
+          const tests = criterion.testCases.length
+            ? `<ul class="test-cases">${criterion.testCases.map(testCase).join('')}</ul>`
+            : '<p class="empty">Aucun Test Case automatisé rattaché.</p>';
+          return `<article class="criterion"><header><div><span class="criterion-id">${escape(criterion.id)}</span><h3>${escape(criterion.title)}</h3></div><span class="badge badge--${kind}">${label}</span></header><div class="criterion-meta"><span>${criterion.covered ? 'Couvert par un test' : 'Sans test couvrant'}</span><span>${criterion.validated ? 'Comportement validé' : 'Comportement non validé'}</span><span class="categories">${categories}</span></div>${tests}</article>`;
+        })
+        .join('');
+      return `<section class="feature panel"><header class="feature-header"><div><p class="eyebrow">${escape(feature.name)}</p><h2><a href="${escape(feature.sourceUrl)}">${escape(feature.story)}</a></h2><p>${feature.coveredCriteria}/${feature.applicableCriteria} critères couverts · ${feature.testCases} TC associés</p></div>${badge}</header><div class="criteria">${criteria || '<p class="empty">Critères non déterminés dans les spécifications.</p>'}</div></section>`;
+    })
     .join('');
-  document.getElementById('featuresTable').innerHTML = data.features.items
-    .map(
-      (feature) =>
-        `<tr><td><strong>${feature.name}</strong></td><td><a href="https://github.com/maximejoannis/french-companies-explorer-playwright-agents/blob/main/${feature.source}">${feature.story}</a></td><td>${feature.testCases}</td><td>${feature.ordinary}</td><td>${feature.expectedFailure}</td><td>${feature.fixme}</td><td>API ${feature.levels.API} · UI ${feature.levels.UI_MOCKED} · E2E ${feature.levels.E2E_REAL}</td></tr>`,
-    )
-    .join('');
-  const entries = [
-    ['TC définis dans les plans', data.testCases.planned],
+
+  const traceability = [
+    ['TC planifiés', data.testCases.planned],
     ['TC automatisés', data.testCases.automated],
     ['TC planifiés manquants', data.testCases.missingAutomated.length],
-    ['IDs automatisés dupliqués', data.testCases.duplicateAutomatedIds.length],
-    ['US inconnues référencées', data.testCases.unknownStoryIds.length],
+    ['TC sans AC déterminable', data.testCases.untracedTestCases.length],
+    ['Références AC inconnues', data.testCases.unknownCriteria.length],
     ['Rattachements US incohérents', data.testCases.mismatchedStoryTestCases.length],
   ];
-  document.getElementById('traceability').innerHTML = entries
-    .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
+  document.getElementById('traceability').innerHTML = traceability
+    .map(([label, value]) => `<div><dt>${escape(label)}</dt><dd>${escape(value)}</dd></div>`)
     .join('');
   const warnings = [];
-  if (data.testCases.automatedOutsidePlans.length)
-    warnings.push(`Automatisés hors plans : ${data.testCases.automatedOutsidePlans.join(', ')}`);
-  if (data.testCases.missingAutomated.length)
-    warnings.push(`Planifiés non automatisés : ${data.testCases.missingAutomated.join(', ')}`);
-  if (data.testCases.unknownStoryIds.length)
-    warnings.push(`US inconnues référencées : ${data.testCases.unknownStoryIds.join(', ')}`);
-  if (data.testCases.mismatchedStoryTestCases.length)
+  if (data.testCases.untracedTestCases.length)
+    warnings.push(`TC sans AC : ${data.testCases.untracedTestCases.join(', ')}`);
+  if (data.testCases.unknownCriteria.length)
     warnings.push(
-      `Rattachements US incohérents : ${data.testCases.mismatchedStoryTestCases.map(({ id }) => id).join(', ')}`,
+      `AC inconnus : ${data.testCases.unknownCriteria.map(({ testCase, criterion }) => `${testCase}/${criterion}`).join(', ')}`,
     );
-  document.getElementById('traceabilityWarnings').textContent =
-    warnings.join(' · ') || 'Aucun écart de traçabilité détecté.';
-  const executionEntries = data.execution.available
-    ? [
-        ['Exécutions uniques', data.execution.total],
-        ['Tests ordinaires réussis', data.execution.ordinaryPassed],
-        ['Échecs attendus observés', data.execution.expectedFailures],
-        ['Succès inattendus', data.execution.unexpectedSuccesses],
-        ['Échecs inattendus', data.execution.unexpectedFailures],
-        ['Tests ignorés', data.execution.skipped],
-        ['Tests instables', data.execution.flaky],
-      ]
-    : [];
-  document.getElementById('execution').innerHTML = executionEntries
-    .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
-    .join('');
   text(
-    'executionNotice',
-    data.execution.available
-      ? 'Ces nombres proviennent de test-results/results.json. Un test.fail() réussi est un succès inattendu, pas un échec attendu.'
-      : 'Aucun résultat d’exécution disponible : seuls les statuts statiques du code sont affichés.',
+    'traceabilityWarnings',
+    warnings.join(' · ') || 'Aucune référence US → AC → TC invalide détectée.',
   );
-  document.getElementById('tags').innerHTML = Object.entries(data.tags)
-    .map(([tag, count]) => `<span class="chip">${tag} · ${count}</span>`)
-    .join('');
-  document.getElementById('defects').innerHTML = [
-    ['Fiches de défaut historiques', data.defects.documented],
-    ['Anomalies encore ouvertes', data.defects.open],
-    ['Défauts résolus', data.defects.resolved],
-    ['Statuts à clarifier', data.defects.toClarify],
-  ]
-    .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
-    .join('');
-  text('defectStatusRule', data.defects.statusRule);
 })();

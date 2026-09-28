@@ -38,7 +38,7 @@
         <div class="container hero__grid">
           <div>
             <p class="eyebrow">Pilotage qualité automatisé</p>
-            <h1>Un point d’entrée unique vers les preuves QA.</h1>
+            <h1>Un point d’entrée unique vers la validation fonctionnelle.</h1>
             <p class="lead">
               Suivez les résultats Playwright, la traçabilité métier, la qualité du code et les
               rapports Allure du projet.
@@ -85,16 +85,16 @@
       </section>
       <section class="container metrics" aria-label="Indicateurs principaux">
         <article>
-          <span aria-hidden="true">F</span>
-          <div><strong id="featuresValue">—</strong><small>User Stories avec tests</small></div>
+          <span aria-hidden="true">AC</span>
+          <div><strong id="applicableCriteria">—</strong><small>critères applicables</small></div>
         </article>
         <article>
-          <span aria-hidden="true">TC</span>
-          <div><strong id="testsValue">—</strong><small>tests Playwright</small></div>
+          <span aria-hidden="true">C</span>
+          <div><strong id="coveredCriteria">—</strong><small>critères couverts</small></div>
         </article>
         <article>
-          <span aria-hidden="true">L</span>
-          <div><strong id="levelsValue">—</strong><small>niveaux de test</small></div>
+          <span aria-hidden="true">V</span>
+          <div><strong id="validatedCriteria">—</strong><small>critères validés</small></div>
         </article>
         <article>
           <span aria-hidden="true">!</span>
@@ -134,15 +134,18 @@
               <p id="runtimeSummary">Résultats runtime, traces et diagnostics Playwright.</p>
               <a href="./functional/" data-report-link>Ouvrir Playwright →</a>
             </article>
-            <article class="report" data-report="coverage">
+            <article class="report" data-report="validation">
               <header>
                 <span class="report__icon">%</span
                 ><span class="status status--unknown" data-report-status>Indisponible</span>
               </header>
-              <p class="category">Traçabilité statique</p>
-              <h3>Couverture QA</h3>
-              <p id="coverageSummary">Features, TC, niveaux, tags et défauts issus des sources.</p>
-              <a href="./coverage/" data-report-link>Ouvrir la couverture →</a>
+              <p class="category">Traçabilité et résultats</p>
+              <h3>Validation fonctionnelle</h3>
+              <p id="validationSummary">
+                Critères, Test Cases, résultats et preuves issus des sources et de la dernière
+                exécution.
+              </p>
+              <a href="./validation/" data-report-link>Ouvrir la validation →</a>
             </article>
             <article class="report" data-report="quality">
               <header>
@@ -202,7 +205,7 @@
               <strong id="skippedTests">—</strong> test(s) ignoré(s).
             </p>
           </div>
-          <a class="button secondary" href="./coverage/">Voir la traçabilité</a>
+          <a class="button secondary" href="./validation/">Voir la validation fonctionnelle</a>
         </div>
       </section>
     </main>

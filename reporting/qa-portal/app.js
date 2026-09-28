@@ -51,9 +51,10 @@
       if (data.workflowUrl) workflow.href = data.workflowUrl;
       Object.entries(data.reports ?? {}).forEach(([name, report]) => updateReport(name, report));
       const coverage = data.coverage ?? {};
-      setText('featuresValue', coverage.features?.defined);
-      setText('testsValue', coverage.testCases?.automated);
-      setText('levelsValue', coverage.levels ? Object.keys(coverage.levels).length : null);
+      const validation = data.validation ?? {};
+      setText('applicableCriteria', validation.applicableCriteria);
+      setText('coveredCriteria', validation.coveredCriteria);
+      setText('validatedCriteria', validation.validatedCriteria);
       setText('fixmeValue', coverage.testCases?.fixme);
       setText('apiCount', coverage.levels?.API === undefined ? null : `${coverage.levels.API} TC`);
       setText(
@@ -79,11 +80,11 @@
         'Résultats runtime indisponibles.',
       );
       setText(
-        'coverageSummary',
-        coverage.features
-          ? `${coverage.features.automated}/${coverage.features.defined} US avec au moins un TC · ${coverage.testCases.automated} TC automatisés. Cette mesure ne vaut pas couverture complète des AC.`
+        'validationSummary',
+        validation.applicableCriteria !== undefined
+          ? `${validation.coveredCriteria}/${validation.applicableCriteria} critères couverts · ${validation.validatedCriteria} effectivement validés. Couverture et validation sont distinctes.`
           : null,
-        'Données de couverture indisponibles.',
+        'Données de validation indisponibles.',
       );
       const quality = data.quality;
       setText(

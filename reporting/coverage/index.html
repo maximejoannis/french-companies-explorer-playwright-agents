@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="Couverture QA automatisée de French Companies Explorer." />
-    <title>Couverture QA — French Companies Explorer</title>
+    <meta name="description" content="Validation fonctionnelle de French Companies Explorer." />
+    <title>Validation fonctionnelle — French Companies Explorer</title>
     <link rel="stylesheet" href="./styles.css" />
     <script src="./coverage-data.js" defer></script>
     <script src="./app.js" defer></script>
@@ -19,76 +19,85 @@
     </header>
     <main id="content" class="container">
       <section class="hero">
-        <p class="eyebrow">Traçabilité dynamique</p>
-        <h1>Couverture QA</h1>
+        <p class="eyebrow">US → AC → TC → résultat</p>
+        <h1>Validation fonctionnelle</h1>
         <p>
-          Mesure statique des User Stories, Test Cases, niveaux et défauts documentés à partir des
-          sources du dépôt.
+          La présence d’un test, son résultat d’exécution et la validation du comportement produit
+          sont présentés séparément.
         </p>
-      </section>
-      <section class="metrics" aria-label="Indicateurs de couverture">
-        <article><strong id="featuresMetric">—</strong><span>US avec au moins un TC</span></article>
-        <article><strong id="testsMetric">—</strong><span>TC automatisés</span></article>
-        <article><strong id="activeMetric">—</strong><span>TC actifs ordinaires</span></article>
-        <article><strong id="testFailMetric">—</strong><span>TC avec test.fail()</span></article>
-        <article><strong id="fixmeMetric">—</strong><span>TC avec test.fixme()</span></article>
-      </section>
-      <section class="panel">
-        <div class="heading">
-          <div>
-            <p class="eyebrow">Niveaux</p>
-            <h2>Répartition de la stratégie</h2>
-          </div>
-          <p>Chaque TC est compté une seule fois selon sa frontière principale.</p>
-        </div>
-        <div id="levels" class="levels"></div>
-      </section>
-      <section class="panel">
-        <div class="heading">
-          <div>
-            <p class="eyebrow">US → TC</p>
-            <h2>Présence de tests par User Story</h2>
-          </div>
-          <p id="coverageSummary"></p>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Feature</th>
-                <th>User Story</th>
-                <th>TC</th>
-                <th>Ordinaires</th>
-                <th>test.fail()</th>
-                <th>test.fixme()</th>
-                <th>Niveaux</th>
-              </tr>
-            </thead>
-            <tbody id="featuresTable"></tbody>
-          </table>
+        <div class="run-context">
+          <span>Commit <strong id="commit">Non déterminé</strong></span
+          ><span>Exécution <strong id="executedAt">Non déterminée</strong></span>
         </div>
       </section>
+      <section class="metrics" aria-label="Indicateurs globaux">
+        <article><strong id="applicableMetric">—</strong><span>critères applicables</span></article>
+        <article>
+          <strong id="coveredMetric">—</strong><span>critères couverts par des tests</span>
+        </article>
+        <article>
+          <strong id="validatedMetric">—</strong><span>critères effectivement validés</span>
+        </article>
+        <article><strong id="passedMetric">—</strong><span>tests réussis</span></article>
+        <article><strong id="expectedFailedMetric">—</strong><span>échecs attendus</span></article>
+        <article>
+          <strong id="unexpectedFailedMetric">—</strong><span>échecs inattendus</span>
+        </article>
+        <article>
+          <strong id="unexpectedPassedMetric">—</strong><span>succès inattendus</span>
+        </article>
+        <article><strong id="flakyMetric">—</strong><span>tests instables</span></article>
+        <article><strong id="skippedMetric">—</strong><span>tests ignorés</span></article>
+      </section>
+      <section class="panel legend" aria-labelledby="reading-title">
+        <div>
+          <p class="eyebrow">Clés de lecture</p>
+          <h2 id="reading-title">Trois notions, trois statuts</h2>
+        </div>
+        <div class="legend-grid">
+          <p>
+            <strong>Couvert</strong><span>Au moins un TC automatisé est relié au critère.</span>
+          </p>
+          <p>
+            <strong>Résultat</strong
+            ><span>Issue observée lors de la dernière exécution disponible.</span>
+          </p>
+          <p>
+            <strong>Validé</strong
+            ><span>Tous les TC reliés ont réussi ; une donnée absente ne vaut jamais succès.</span>
+          </p>
+        </div>
+        <p id="validationRule" class="notice"></p>
+      </section>
+      <section class="functional-heading">
+        <div>
+          <p class="eyebrow">Par fonctionnalité</p>
+          <h2>Critères et preuves</h2>
+        </div>
+        <p id="featureSummary"></p>
+      </section>
+      <div id="features" class="features"></div>
       <section class="split">
         <article class="panel">
-          <p class="eyebrow">Traçabilité TC</p>
-          <h2>Plans et automatisation</h2>
+          <p class="eyebrow">Traçabilité</p>
+          <h2>Contrôles des sources</h2>
           <dl id="traceability"></dl>
-          <div id="traceabilityWarnings" class="notice"></div>
-          <h3>Dernière exécution disponible</h3>
-          <dl id="execution"></dl>
-          <p id="executionNotice" class="notice"></p>
+          <p id="traceabilityWarnings" class="notice"></p>
         </article>
         <article class="panel">
-          <p class="eyebrow">Tags et défauts</p>
-          <h2>Indicateurs documentés</h2>
-          <div id="tags" class="chips"></div>
-          <dl id="defects"></dl>
-          <p id="defectStatusRule" class="notice"></p>
+          <p class="eyebrow">Limites</p>
+          <h2>Ce que ces chiffres signifient</h2>
+          <p>
+            Les catégories absentes d’un critère sont non applicables et ne sont pas affichées comme
+            des manques. Les résultats ne couvrent que le fichier Playwright JSON publié avec ce
+            portail ; un TC non exécuté reste non déterminé.
+          </p>
+          <p id="defectNotice" class="notice"></p>
         </article>
       </section>
       <p class="generated">
-        Généré le <span id="generatedAt">—</span>. Les annotations présentes dans le code et les
-        résultats de la dernière exécution disponible sont comptés séparément.
+        Vue générée le <span id="generatedAt">—</span> depuis les spécifications, la traçabilité des
+        tests et les résultats Playwright.
       </p>
     </main>
   </body>

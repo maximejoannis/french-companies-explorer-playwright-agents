@@ -72,7 +72,7 @@ const buildInfo = {
     functional: report('functional', 'playwright-report'),
     allure: report('allure', 'allure-report'),
     quality: report('quality', 'quality-report'),
-    coverage: report('coverage', 'coverage-report'),
+    validation: report('coverage', 'coverage-report'),
   },
   coverage: {
     features: coverage.features,
@@ -86,6 +86,7 @@ const buildInfo = {
     tags: coverage.tags,
     defects: coverage.defects,
   },
+  validation: coverage.validation,
   runtime,
   quality: {
     overallStatus: quality.overallStatus,
