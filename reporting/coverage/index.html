@@ -72,11 +72,80 @@
       <section class="functional-heading">
         <div>
           <p class="eyebrow">Par fonctionnalité</p>
-          <h2>Critères et preuves</h2>
+          <h2>Explorer la validation</h2>
         </div>
         <p id="featureSummary"></p>
       </section>
-      <div id="features" class="features"></div>
+      <section class="panel explorer" aria-labelledby="filters-title">
+        <div class="explorer-heading">
+          <div>
+            <p class="eyebrow">Filtres</p>
+            <h2 id="filters-title">Trouver une exigence ou une preuve</h2>
+          </div>
+          <nav class="proof-links" aria-label="Rapports de preuve">
+            <a href="../functional/">Tests fonctionnels Playwright</a>
+            <a href="../allure/">Allure</a>
+          </nav>
+        </div>
+        <form id="filters" class="filters" role="search">
+          <label class="search-field" for="searchFilter">
+            <span>Rechercher dans les US, AC et TC</span>
+            <input
+              id="searchFilter"
+              name="query"
+              type="search"
+              placeholder="Ex. US-SEARCH, AC-04, export…"
+              autocomplete="off"
+            />
+          </label>
+          <label for="featureFilter"
+            ><span>Fonctionnalité ou User Story</span
+            ><select id="featureFilter" name="feature">
+              <option value="">Toutes les fonctionnalités</option>
+            </select></label
+          >
+          <label for="categoryFilter"
+            ><span>Catégorie de scénario</span
+            ><select id="categoryFilter" name="category">
+              <option value="">Toutes les catégories</option>
+            </select></label
+          >
+          <label for="statusFilter"
+            ><span>Statut de validation</span
+            ><select id="statusFilter" name="status">
+              <option value="">Tous les statuts</option>
+            </select></label
+          >
+          <label for="defectFilter"
+            ><span>Anomalie connue</span
+            ><select id="defectFilter" name="defect">
+              <option value="">Avec ou sans anomalie</option>
+              <option value="with">Avec anomalie connue</option>
+              <option value="without">Sans anomalie connue</option>
+            </select></label
+          >
+          <button id="clearFilters" type="reset">Effacer les filtres</button>
+        </form>
+        <p id="visibleCount" class="visible-count" role="status" aria-live="polite"></p>
+      </section>
+      <section aria-labelledby="overview-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Vue synthétique</p>
+            <h2 id="overview-title">Statut des fonctionnalités</h2>
+          </div>
+          <p>Sélectionnez une carte pour afficher ou masquer ses critères.</p>
+        </div>
+        <div id="featureOverview" class="feature-overview"></div>
+      </section>
+      <div id="emptyState" class="panel empty-state" hidden>
+        <h2>Aucun résultat</h2>
+        <p>
+          Aucun critère ne correspond à ces filtres. Modifiez la recherche ou effacez les filtres.
+        </p>
+        <button type="button" data-clear-filters>Effacer les filtres</button>
+      </div>
+      <div id="features" class="features" aria-label="Détails des fonctionnalités"></div>
       <section class="split">
         <article class="panel">
           <p class="eyebrow">Traçabilité</p>

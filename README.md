@@ -319,6 +319,8 @@ Un critère est **couvert** dès qu’au moins un TC automatisé lui est relié.
 
 Les KPIs indiquent le commit et la date de l’exécution. Ils comptent les critères applicables, couverts et validés, puis les tests réussis, échecs attendus, échecs inattendus, succès inattendus, instables et ignorés. « Validation complète » n’est affiché pour une fonctionnalité que lorsque tous ses critères applicables sont validés. La vue ne conclut jamais à une release entièrement validée tant qu’une anomalie ouverte compromet un critère.
 
+La vue commence par une synthèse repliable des fonctionnalités. Elle peut être filtrée par User Story, catégorie de scénario, statut ou présence d’une anomalie connue, et recherchée par identifiant ou mot-clé US, AC ou TC. Les filtres sont combinables, annoncent le nombre de critères visibles et donnent accès aux preuves Playwright et Allure depuis chaque détail.
+
 Les exécutions Firefox et WebKit rejouent des TC existants. Elles ne portent donc pas le total fonctionnel au-delà de 136 et ne modifient pas la répartition 6 `API` / 127 `UI_MOCKED` / 3 `E2E_REAL`. En CI, leurs rapports Playwright et résultats Allure bruts sont conservés dans des artefacts téléchargeables séparés.
 
 ### Qualité
