@@ -328,9 +328,12 @@ dd {
 }
 .filters {
   display: grid;
-  grid-template-columns: minmax(240px, 1.6fr) repeat(2, minmax(170px, 1fr));
+  grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin-top: 18px;
+}
+.filters > * {
+  min-width: 0;
 }
 .filters label {
   display: grid;
@@ -343,6 +346,8 @@ dd {
 .filters select,
 .filters button,
 .empty-state button {
+  width: 100%;
+  max-width: 100%;
   min-height: 44px;
   padding: 10px 12px;
   border: 1px solid var(--border);
@@ -350,6 +355,11 @@ dd {
   background: var(--surface);
   color: var(--text);
   font: inherit;
+}
+.filters select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .filters button,
 .empty-state button {
@@ -552,6 +562,14 @@ a:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 4px;
   border-radius: 4px;
+}
+.filters input:focus-visible,
+.filters select:focus-visible,
+.filters button:focus-visible,
+.empty-state button:focus-visible,
+.feature-summary:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
 }
 @media (max-width: 800px) {
   .metrics {
