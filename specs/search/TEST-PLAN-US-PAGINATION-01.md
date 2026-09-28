@@ -132,6 +132,14 @@ Les réponses mockées devront contenir des entreprises synthétiques distinctes
 - **Priorité :** Haute.
 - **Justification du niveau :** la remise à 1 est une règle d'état frontend. Deux partitions dans un même cas suffisent, car elles répondent à la même question métier ; `US-SEARCH-01` et `US-FILTERS-01` couvrent déjà la validité et le mapping détaillé des critères.
 
+### TC-PAGINATION-007 — Erreur pendant un changement de page
+
+- **Objectif** : vérifier qu’un échec de la requête de page affiche une erreur sans associer les anciens résultats à la page demandée.
+- **Critère couvert** : `AC-09`.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+- **Statut** : à automatiser.
+
 ## Matrice de traçabilité
 
 | Cas de test         | Critère(s)                                                | Niveau      | Priorité |
@@ -142,6 +150,7 @@ Les réponses mockées devront contenir des entreprises synthétiques distinctes
 | `TC-PAGINATION-004` | `AC-03`, contribution `AC-08`                             | `UI_MOCKED` | Moyenne  |
 | `TC-PAGINATION-005` | `AC-05`, `AC-06`, `AC-08`                                 | `UI_MOCKED` | Haute    |
 | `TC-PAGINATION-006` | `AC-07`, contribution `AC-08`                             | `UI_MOCKED` | Haute    |
+| `TC-PAGINATION-007` | `AC-09`                                                   | `UI_MOCKED` | Haute    |
 
 ## Analyse de couverture
 
@@ -154,6 +163,7 @@ Les réponses mockées devront contenir des entreprises synthétiques distinctes
 - `AC-05` et `AC-06` : le comportement attendu est spécifié par `TC-PAGINATION-005`, qui révélera l'écart actuellement observé tant qu'il n'est pas corrigé.
 - `AC-07` : `TC-PAGINATION-006` couvre les deux catégories de changement avec des partitions, sans multiplier les tests par filtre.
 - `AC-08` : la cohérence est vérifiée au fil des transitions qui peuvent la rompre (`TC-PAGINATION-002`, `003`, `004`, `005`, `006`) plutôt que par un doublon générique supplémentaire.
+- `AC-09` : nouvel AC spécifié ; `TC-PAGINATION-007` reste à automatiser.
 
 ### Trous de couverture
 

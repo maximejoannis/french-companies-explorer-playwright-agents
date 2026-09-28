@@ -171,7 +171,7 @@ test('TC-HISTORY-001 @positive @regression enregistre les recherches réussies',
 test('TC-HISTORY-008 @negative @regression refuse d’historiser un identifiant invalide', async ({
   page,
 }) => {
-  // Couvre US-HISTORY-01 / AC-10, AC-11
+  // Couvre US-HISTORY-01 / AC-10, AC-11, AC-12
   // Niveau : UI_MOCKED
   const apiRequests = trackApiRequests(page);
   await page.route(API_PATTERN, (route) => route.abort('blockedbyclient'));
@@ -190,7 +190,7 @@ test('TC-HISTORY-008 @negative @regression refuse d’historiser un identifiant 
 test('TC-HISTORY-009 @error @regression refuse d’historiser une recherche en erreur', async ({
   page,
 }) => {
-  // Couvre US-HISTORY-01 / AC-10, AC-11
+  // Couvre US-HISTORY-01 / AC-10, AC-11, AC-12
   // Niveau : UI_MOCKED
   const apiRequests = trackApiRequests(page);
   await page.route(API_PATTERN, (route) => route.fulfill({ status: 500, body: 'server error' }));

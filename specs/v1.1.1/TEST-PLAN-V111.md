@@ -6,7 +6,7 @@ Ce plan complète les plans historiques sans dupliquer leurs scénarios. Sauf me
 
 ### TC-FILTERS-010 — Erreur Geo API
 
-AC-10 · `UI_MOCKED` · Haute. Saisir une commune lorsque Geo API échoue ; l'erreur doit être annoncée et l'API Entreprises ne doit pas recevoir de code inventé.
+AC-11 · `UI_MOCKED` · Haute. Saisir une commune lorsque Geo API échoue ; l'erreur doit être annoncée, les critères doivent rester corrigeables et l'API Entreprises ne doit pas recevoir de code inventé. Ce nouvel AC est déjà vérifié par le test existant.
 
 ### TC-FILTERS-011 — Code NAF valide
 

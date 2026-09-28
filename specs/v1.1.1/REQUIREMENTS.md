@@ -14,6 +14,7 @@ En tant qu’utilisateur, je souhaite affiner une recherche avec davantage de cr
 - `AC-08` Les filtres valides sont restaurables depuis l’URL.
 - `AC-09` Les filtres URL invalides sont ignorés ou normalisés.
 - `AC-10` Une commune est résolue par Geo API puis envoyée en code INSEE.
+- `AC-11` Si Geo API ne peut pas valider une commune saisie, l’interface annonce une erreur technique compréhensible, conserve les critères saisis pour correction ou nouvelle tentative et n’appelle pas l’API Entreprises avec un code commune inventé.
 
 ## FEAT-AUTOCOMPLETE-V111 — US-AUTOCOMPLETE-01
 
@@ -72,4 +73,4 @@ En tant qu’utilisateur, je souhaite choisir le format et le périmètre de mon
 
 ## Traçabilité
 
-Les identifiants `TC-FILTERS-011..020`, `TC-AUTO-001..010`, `TC-SHARE-001..007`, `TC-COMPARE-007..015` et `TC-EXPORT-007..015` reprennent le même ordinal que les AC ci-dessus. Chaque test contient le niveau `UI_MOCKED` dans son commentaire ou son plan normatif ; seul `TC-FILTERS-020` est `E2E_REAL`.
+Les identifiants `TC-FILTERS-010..020`, `TC-AUTO-001..010`, `TC-SHARE-001..007`, `TC-COMPARE-007..015` et `TC-EXPORT-007..015` assurent la traçabilité de ce périmètre. Chaque test contient le niveau `UI_MOCKED` dans son commentaire ou son plan normatif ; seul `TC-FILTERS-020` est `E2E_REAL`. `TC-FILTERS-010` vérifie spécifiquement le nouvel `AC-11` d’erreur Geo API.

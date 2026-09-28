@@ -7,11 +7,11 @@ Ce document enregistre les conclusions de l’audit de couverture réalisé à p
 Le périmètre contient :
 
 - 18 User Stories ;
-- 173 critères d’acceptation ;
-- 128 AC dans les 13 US historiques ;
-- 45 AC dans les 5 US v1.1.1 ;
+- 183 critères d’acceptation ;
+- 137 AC dans les 13 US historiques ;
+- 46 AC dans les 5 US v1.1.1 ;
 - 2 AC explicitement non applicables ;
-- 171 AC applicables.
+- 181 AC applicables.
 
 L’audit n’assimile pas la présence d’un identifiant AC dans un commentaire ou un tableau à une preuve. La couverture n’est retenue que lorsque les actions, données et assertions du test vérifient effectivement le comportement attendu.
 
@@ -31,9 +31,9 @@ Les catégories `@positive`, `@negative` et `@error` décrivent la situation tes
 
 | Mesure                                              |                                                                Résultat |
 | --------------------------------------------------- | ----------------------------------------------------------------------: |
-| AC applicables avec au moins une trace vers un test |                                                         171/171 — 100 % |
-| AC entièrement prouvés par des assertions conformes |                                                    169/171 — **98,8 %** |
-| AC partiellement couverts ou non validés            |                                                                       2 |
+| AC applicables avec au moins un test automatisé     |                                                    174/181 — **96,1 %** |
+| AC entièrement prouvés par des assertions conformes |                                                    172/181 — **95,0 %** |
+| AC partiellement couverts ou non validés            |                                                                       9 |
 | AC non applicables                                  |                                                                       2 |
 | Tests Playwright actifs ordinaires                  |                                                                     133 |
 | Tests en échec attendu avec `test.fail()`           |                                                                       3 |
@@ -41,35 +41,71 @@ Les catégories `@positive`, `@negative` et `@error` décrivent la situation tes
 | Total de tests Playwright                           |                                                                     136 |
 | Dernière exécution Chromium                         | 133 succès ordinaires, 3 échecs attendus observés, 0 résultat inattendu |
 
-Les deux AC qui empêchent encore une validation effective à 100 % sont :
+Les neuf AC qui empêchent une validation effective à 100 % sont :
 
 - `US-DEEP-LINKING-01 / AC-06` : reset incomplet de l’URL, `BUG-016`, `test.fail()` ;
 - `US-FAVORITES-01 / AC-07` : état de la carte non rafraîchi après modification depuis la fiche, `BUG-005`, `test.fail()` ;
+- `US-FILTERS-01 / AC-08`, `US-PAGINATION-01 / AC-09`, `US-SAVED-SEARCH-01 / AC-14`, `US-EXPORT-01 / AC-12`, `US-DEEP-LINKING-01 / AC-13`, `US-STATS-01 / AC-09` et `US-THEME-01 / AC-13` : critères nouvellement spécifiés, avec TC planifiés mais sans assertions automatisées.
+
+### Validation de la revue du 2026-09-28
+
+- les quatre tests apportant une preuve directe aux nouveaux rattachements (`TC-FILTERS-010`, `TC-HISTORY-008`, `TC-HISTORY-009`, `TC-SAVED-008`) passent : 4/4 ;
+- la campagne Chromium complète obtient 135 succès sur 136 ;
+- `TC-SORT-006`, non modifié et hors des nouveaux critères, échoue parce qu'une sélection de tri provoque une deuxième requête alors que le contrat en attend une seule ; le rerun isolé reproduit l'échec ;
+- la validation effective courante du produit ne peut donc pas être déclarée entièrement conforme, même si cet échec ne remet pas en cause les dix nouveaux critères ni leur traçabilité ;
+- le rapport régénéré recense 18 US, 143 TC planifiés, 136 automatisés, aucun doublon ni rattachement vers une US inconnue, et exactement sept TC planifiés non automatisés.
 
 ## Légende des preuves
 
-| Code       | Fichier de preuve                                                                                                                                                                                                                                                                        |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CMP1`     | [`tests/ui/specs/company/compare-mocked.spec.ts`](tests/ui/specs/company/compare-mocked.spec.ts)                                                                                                                                                                                         |
-| `CMP2`     | [`tests/ui/specs/company/compare-v111-mocked.spec.ts`](tests/ui/specs/company/compare-v111-mocked.spec.ts)                                                                                                                                                                               |
-| `DL`       | [`tests/ui/specs/deep-linking/deep-linking-mocked.spec.ts`](tests/ui/specs/deep-linking/deep-linking-mocked.spec.ts)                                                                                                                                                                     |
-| `DETAIL`   | [`tests/ui/specs/company/detail-mocked.spec.ts`](tests/ui/specs/company/detail-mocked.spec.ts), [`tests/ui/specs/company/detail-real.spec.ts`](tests/ui/specs/company/detail-real.spec.ts)                                                                                               |
-| `EXP1`     | [`tests/ui/specs/export/export-mocked.spec.ts`](tests/ui/specs/export/export-mocked.spec.ts)                                                                                                                                                                                             |
-| `EXP2`     | [`tests/ui/specs/export/export-v111-mocked.spec.ts`](tests/ui/specs/export/export-v111-mocked.spec.ts)                                                                                                                                                                                   |
-| `FAV`      | [`tests/ui/specs/favorites/favorites-mocked.spec.ts`](tests/ui/specs/favorites/favorites-mocked.spec.ts)                                                                                                                                                                                 |
-| `FILTERS1` | [`tests/api/search/filters-api.spec.ts`](tests/api/search/filters-api.spec.ts), [`tests/ui/specs/search/filters-mocked.spec.ts`](tests/ui/specs/search/filters-mocked.spec.ts), [`tests/ui/specs/search/filters-city-mocked.spec.ts`](tests/ui/specs/search/filters-city-mocked.spec.ts) |
-| `FILTERS2` | [`tests/ui/specs/search/filters-v111-mocked.spec.ts`](tests/ui/specs/search/filters-v111-mocked.spec.ts), [`tests/ui/specs/search/filters-real.spec.ts`](tests/ui/specs/search/filters-real.spec.ts)                                                                                     |
-| `HIST`     | [`tests/ui/specs/history/history-mocked.spec.ts`](tests/ui/specs/history/history-mocked.spec.ts)                                                                                                                                                                                         |
-| `PAG`      | [`tests/api/search/pagination-api.spec.ts`](tests/api/search/pagination-api.spec.ts), [`tests/ui/specs/search/pagination-mocked.spec.ts`](tests/ui/specs/search/pagination-mocked.spec.ts)                                                                                               |
-| `SAVED`    | [`tests/ui/specs/saved-searches/saved-searches-mocked.spec.ts`](tests/ui/specs/saved-searches/saved-searches-mocked.spec.ts)                                                                                                                                                             |
-| `SEARCH`   | [`tests/api/search/search-api.spec.ts`](tests/api/search/search-api.spec.ts), [`tests/ui/specs/search/search-mocked.spec.ts`](tests/ui/specs/search/search-mocked.spec.ts), [`tests/ui/specs/search/search-real.spec.ts`](tests/ui/specs/search/search-real.spec.ts)                     |
-| `AUTO`     | [`tests/ui/specs/search/autocomplete-v111-mocked.spec.ts`](tests/ui/specs/search/autocomplete-v111-mocked.spec.ts)                                                                                                                                                                       |
-| `SHARE`    | [`tests/ui/specs/search/share-v111-mocked.spec.ts`](tests/ui/specs/search/share-v111-mocked.spec.ts)                                                                                                                                                                                     |
-| `SORT`     | [`tests/ui/specs/search/sort-mocked.spec.ts`](tests/ui/specs/search/sort-mocked.spec.ts)                                                                                                                                                                                                 |
-| `STATS`    | [`tests/ui/specs/stats/stats-mocked.spec.ts`](tests/ui/specs/stats/stats-mocked.spec.ts)                                                                                                                                                                                                 |
-| `THEME`    | [`tests/ui/specs/theme/theme-mocked.spec.ts`](tests/ui/specs/theme/theme-mocked.spec.ts)                                                                                                                                                                                                 |
+| Code       | Fichier de preuve                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CMP1`     | [`tests/ui/specs/company/compare-mocked.spec.ts`](tests/ui/specs/company/compare-mocked.spec.ts)                                                                                                                                                                                                                                     |
+| `CMP2`     | [`tests/ui/specs/company/compare-v111-mocked.spec.ts`](tests/ui/specs/company/compare-v111-mocked.spec.ts)                                                                                                                                                                                                                           |
+| `DL`       | [`tests/ui/specs/deep-linking/deep-linking-mocked.spec.ts`](tests/ui/specs/deep-linking/deep-linking-mocked.spec.ts)                                                                                                                                                                                                                 |
+| `DETAIL`   | [`tests/ui/specs/company/detail-mocked.spec.ts`](tests/ui/specs/company/detail-mocked.spec.ts), [`tests/ui/specs/company/detail-real.spec.ts`](tests/ui/specs/company/detail-real.spec.ts)                                                                                                                                           |
+| `EXP1`     | [`tests/ui/specs/export/export-mocked.spec.ts`](tests/ui/specs/export/export-mocked.spec.ts)                                                                                                                                                                                                                                         |
+| `EXP2`     | [`tests/ui/specs/export/export-v111-mocked.spec.ts`](tests/ui/specs/export/export-v111-mocked.spec.ts)                                                                                                                                                                                                                               |
+| `FAV`      | [`tests/ui/specs/favorites/favorites-mocked.spec.ts`](tests/ui/specs/favorites/favorites-mocked.spec.ts)                                                                                                                                                                                                                             |
+| `FILTERS1` | [`tests/api/search/filters-api.spec.ts`](tests/api/search/filters-api.spec.ts), [`tests/ui/specs/search/filters-mocked.spec.ts`](tests/ui/specs/search/filters-mocked.spec.ts), [`tests/ui/specs/search/filters-city-mocked.spec.ts`](tests/ui/specs/search/filters-city-mocked.spec.ts)                                             |
+| `FILTERS2` | [`tests/ui/specs/search/filters-v111-mocked.spec.ts`](tests/ui/specs/search/filters-v111-mocked.spec.ts), [`tests/ui/specs/search/filters-city-error-v111-mocked.spec.ts`](tests/ui/specs/search/filters-city-error-v111-mocked.spec.ts), [`tests/ui/specs/search/filters-real.spec.ts`](tests/ui/specs/search/filters-real.spec.ts) |
+| `HIST`     | [`tests/ui/specs/history/history-mocked.spec.ts`](tests/ui/specs/history/history-mocked.spec.ts)                                                                                                                                                                                                                                     |
+| `PAG`      | [`tests/api/search/pagination-api.spec.ts`](tests/api/search/pagination-api.spec.ts), [`tests/ui/specs/search/pagination-mocked.spec.ts`](tests/ui/specs/search/pagination-mocked.spec.ts)                                                                                                                                           |
+| `SAVED`    | [`tests/ui/specs/saved-searches/saved-searches-mocked.spec.ts`](tests/ui/specs/saved-searches/saved-searches-mocked.spec.ts)                                                                                                                                                                                                         |
+| `SEARCH`   | [`tests/api/search/search-api.spec.ts`](tests/api/search/search-api.spec.ts), [`tests/ui/specs/search/search-mocked.spec.ts`](tests/ui/specs/search/search-mocked.spec.ts), [`tests/ui/specs/search/search-real.spec.ts`](tests/ui/specs/search/search-real.spec.ts)                                                                 |
+| `AUTO`     | [`tests/ui/specs/search/autocomplete-v111-mocked.spec.ts`](tests/ui/specs/search/autocomplete-v111-mocked.spec.ts)                                                                                                                                                                                                                   |
+| `SHARE`    | [`tests/ui/specs/search/share-v111-mocked.spec.ts`](tests/ui/specs/search/share-v111-mocked.spec.ts)                                                                                                                                                                                                                                 |
+| `SORT`     | [`tests/ui/specs/search/sort-mocked.spec.ts`](tests/ui/specs/search/sort-mocked.spec.ts)                                                                                                                                                                                                                                             |
+| `STATS`    | [`tests/ui/specs/stats/stats-mocked.spec.ts`](tests/ui/specs/stats/stats-mocked.spec.ts)                                                                                                                                                                                                                                             |
+| `THEME`    | [`tests/ui/specs/theme/theme-mocked.spec.ts`](tests/ui/specs/theme/theme-mocked.spec.ts)                                                                                                                                                                                                                                             |
 
 Résultats : `P` = passant conforme, `XF` = échec attendu, `NA` = non applicable.
+
+## Matrice des catégories par User Story
+
+Cette matrice qualifie les situations explicitement décrites par les AC. Un même AC peut contribuer à plusieurs catégories lorsqu'il décrit à la fois une panne et ses conséquences métier. « Nouveau » signifie spécifié lors de la revue du 2026-09-28 ; cela ne signifie pas automatiquement vérifié.
+
+| User Story           | Fonctionnement normal               | Cas non passant            | Erreur technique | Catégorie non applicable ou justification                                                                                                     | Nouveaux critères et état                                                         |
+| -------------------- | ----------------------------------- | -------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `US-SEARCH-01`       | AC-01 à AC-03, AC-05, AC-06, AC-08  | AC-04                      | AC-07, AC-08     | —                                                                                                                                             | Aucun                                                                             |
+| `US-FILTERS-01`      | AC-01 à AC-07                       | —                          | AC-08            | Le contrat de base n'expose pas de valeur utilisateur interdite distincte à refuser.                                                          | AC-08, `TC-FILTERS-021` planifié, non automatisé                                  |
+| `US-PAGINATION-01`   | AC-01 à AC-03, AC-05 à AC-08        | AC-04                      | AC-09            | —                                                                                                                                             | AC-09, `TC-PAGINATION-007` planifié, non automatisé                               |
+| `US-SORT-01`         | AC-01 à AC-09                       | —                          | —                | Les choix sont bornés par l'interface et le tri est local : ni entrée invalide ni dépendance technique externe propre à cette US.             | Aucun                                                                             |
+| `US-DETAIL-01`       | AC-01 à AC-04, AC-06 à AC-09        | AC-05                      | —                | La fiche est construite depuis le résultat courant ; la panne de recherche amont relève de `US-SEARCH-01`. AC-05 couvre les données absentes. | Aucun                                                                             |
+| `US-FAVORITES-01`    | AC-01 à AC-09                       | AC-04, AC-08               | —                | Fonction locale sans API ni opération technique faillible définie.                                                                            | Aucun                                                                             |
+| `US-COMPARE-01`      | AC-01 à AC-05, AC-07 à AC-09, AC-12 | AC-04, AC-06, AC-10, AC-11 | —                | Fonction locale ; doublon, limite, état vide et données manquantes couvrent les dégradations pertinentes.                                     | Aucun                                                                             |
+| `US-HISTORY-01`      | AC-01 à AC-11                       | AC-07, AC-08, AC-10, AC-12 | AC-12            | —                                                                                                                                             | AC-12 vérifié par `TC-HISTORY-008` et `TC-HISTORY-009`                            |
+| `US-SAVED-SEARCH-01` | AC-01 à AC-12                       | AC-05, AC-10, AC-13        | AC-14            | —                                                                                                                                             | AC-13 vérifié par `TC-SAVED-008` ; AC-14, `TC-SAVED-009` planifié, non automatisé |
+| `US-EXPORT-01`       | AC-01 à AC-06, AC-08 à AC-11        | AC-07                      | AC-12            | —                                                                                                                                             | AC-12, `TC-EXPORT-016` planifié, non automatisé                                   |
+| `US-DEEP-LINKING-01` | AC-01 à AC-06, AC-08, AC-10 à AC-12 | AC-09                      | AC-13            | AC-07 est non applicable : aucun contrat Back/Forward spécifique n'est exigé.                                                                 | AC-13, `TC-DEEP-LINK-008` planifié, non automatisé                                |
+| `US-STATS-01`        | AC-01 à AC-08                       | AC-07, AC-08               | AC-09            | —                                                                                                                                             | AC-09, `TC-STATS-007` planifié, non automatisé                                    |
+| `US-THEME-01`        | AC-01 à AC-07, AC-09 à AC-12        | AC-13                      | —                | AC-08 est non applicable faute de contrat de préférence système ; le thème est local et sans API.                                             | AC-13, `TC-THEME-004` planifié, non automatisé                                    |
+| `US-FILTERS-02`      | AC-01, AC-03 à AC-08, AC-10         | AC-02, AC-09               | AC-11            | —                                                                                                                                             | AC-11 vérifié par `TC-FILTERS-010`                                                |
+| `US-AUTOCOMPLETE-01` | AC-02 à AC-07, AC-09                | AC-01, AC-07, AC-10        | AC-08, AC-09     | —                                                                                                                                             | Aucun                                                                             |
+| `US-SHARE-01`        | AC-01 à AC-05, AC-07                | —                          | AC-06            | Aucun refus ou limite métier n'est défini pour une action de copie valide.                                                                    | Aucun                                                                             |
+| `US-COMPARE-02`      | AC-01 à AC-03, AC-05 à AC-09        | AC-04, AC-06               | —                | Extension locale de la comparaison, sans dépendance technique externe.                                                                        | Aucun                                                                             |
+| `US-EXPORT-02`       | AC-01 à AC-07                       | AC-08, AC-09               | —                | Les erreurs de la recherche source relèvent d'`US-EXPORT-01 / AC-12`; format et périmètre d'export sont locaux.                               | Aucun                                                                             |
+
+Au total, dix nouveaux AC comblent des lacunes réelles : trois sont déjà prouvés par des tests existants et sept disposent seulement d'un TC planifié. Les catégories déclarées non applicables n'ont pas donné lieu à des critères artificiels.
 
 ## Matrice US → AC → comportement → preuve
 
@@ -90,22 +126,23 @@ Résultats : `P` = passant conforme, `XF` = échec attendu, `NA` = non applicabl
 | AC-11 | Neutraliser les données absentes       | 006                | `@positive` | P        | `CMP1` : aucun statut inventé            | Complète                                   |
 | AC-12 | Rester local                           | 001, 002, 004, 005 | `@positive` | P        | `CMP1` : aucune écriture API             | Complète                                   |
 
-### US-DEEP-LINKING-01 — 10/11 applicables, 90,9 %
+### US-DEEP-LINKING-01 — 10/12 applicables, 83,3 %
 
-| AC    | Comportement attendu                 | TC                      | Catégorie                | Résultat                   | Preuve                                                           | Statut                   |
-| ----- | ------------------------------------ | ----------------------- | ------------------------ | -------------------------- | ---------------------------------------------------------------- | ------------------------ |
-| AC-01 | Restaurer les paramètres valides     | 001, 004–006            | `@positive`, `@negative` | P                          | `DL` : contrôles et URL                                          | Complète                 |
-| AC-02 | Déclencher la recherche du deep link | 001, 004, 005           | `@positive`, `@negative` | P                          | `DL` : paramètres GET                                            | Complète                 |
-| AC-03 | Restaurer ou normaliser la page      | 001, 006                | `@positive`, `@negative` | P                          | `DL` : page et pagination                                        | Complète                 |
-| AC-04 | Restaurer/normaliser la taille       | 001, 004                | `@positive`, `@negative` | P                          | `DL` : contrôle et `per_page`                                    | Complète                 |
-| AC-05 | Restaurer le tri client              | 001, 004                | `@positive`, `@negative` | P                          | `DL` : contrôle et ordre                                         | Complète                 |
-| AC-06 | Synchroniser l’URL après interaction | 007 ; 002               | `@positive`              | P + XF                     | `DL` : interactions ordinaires conformes, reset commune en échec | **Partielle**            |
-| AC-07 | Navigation Back/Forward              | Aucun                   | NA                       | NA                         | Plan : `replaceState`, aucun parcours utilisateur successif      | Non applicable           |
-| AC-08 | URL vide vers état initial propre    | 003                     | `@positive`              | P                          | `DL` : contrôles vides, aucun artefact                           | Complète                 |
-| AC-09 | Traiter les paramètres invalides     | 003–006                 | `@negative`, `@positive` | P                          | `DL` : valeurs ignorées/normalisées                              | Complète                 |
-| AC-10 | Cohérence réseau                     | 001–007                 | `@positive`, `@negative` | P, sauf assertion reset XF | `DL` : nombre de GET et aucune écriture                          | Complète pour le réseau  |
-| AC-11 | Isoler les stockages                 | 001, 003, 005           | `@positive`, `@negative` | P                          | `DL` : sentinelles inchangées                                    | Complète                 |
-| AC-12 | Rester déterministe                  | 001, 002, 004, 006, 007 | `@positive`, `@negative` | P, un XF                   | `DL` : mocks et ordres exacts                                    | Complète comme stratégie |
+| AC    | Comportement attendu                    | TC                      | Catégorie                | Résultat                   | Preuve                                                           | Statut                   |
+| ----- | --------------------------------------- | ----------------------- | ------------------------ | -------------------------- | ---------------------------------------------------------------- | ------------------------ |
+| AC-01 | Restaurer les paramètres valides        | 001, 004–006            | `@positive`, `@negative` | P                          | `DL` : contrôles et URL                                          | Complète                 |
+| AC-02 | Déclencher la recherche du deep link    | 001, 004, 005           | `@positive`, `@negative` | P                          | `DL` : paramètres GET                                            | Complète                 |
+| AC-03 | Restaurer ou normaliser la page         | 001, 006                | `@positive`, `@negative` | P                          | `DL` : page et pagination                                        | Complète                 |
+| AC-04 | Restaurer/normaliser la taille          | 001, 004                | `@positive`, `@negative` | P                          | `DL` : contrôle et `per_page`                                    | Complète                 |
+| AC-05 | Restaurer le tri client                 | 001, 004                | `@positive`, `@negative` | P                          | `DL` : contrôle et ordre                                         | Complète                 |
+| AC-06 | Synchroniser l’URL après interaction    | 007 ; 002               | `@positive`              | P + XF                     | `DL` : interactions ordinaires conformes, reset commune en échec | **Partielle**            |
+| AC-07 | Navigation Back/Forward                 | Aucun                   | NA                       | NA                         | Plan : `replaceState`, aucun parcours utilisateur successif      | Non applicable           |
+| AC-08 | URL vide vers état initial propre       | 003                     | `@positive`              | P                          | `DL` : contrôles vides, aucun artefact                           | Complète                 |
+| AC-09 | Traiter les paramètres invalides        | 003–006                 | `@negative`, `@positive` | P                          | `DL` : valeurs ignorées/normalisées                              | Complète                 |
+| AC-10 | Cohérence réseau                        | 001–007                 | `@positive`, `@negative` | P, sauf assertion reset XF | `DL` : nombre de GET et aucune écriture                          | Complète pour le réseau  |
+| AC-11 | Isoler les stockages                    | 001, 003, 005           | `@positive`, `@negative` | P                          | `DL` : sentinelles inchangées                                    | Complète                 |
+| AC-12 | Rester déterministe                     | 001, 002, 004, 006, 007 | `@positive`, `@negative` | P, un XF                   | `DL` : mocks et ordres exacts                                    | Complète comme stratégie |
+| AC-13 | Gérer l’échec de la recherche restaurée | 008                     | `@error`                 | Non exécuté                | TC planifié, aucune assertion Playwright                         | **Non couverte**         |
 
 ### US-DETAIL-01 — 9/9, 100 %
 
@@ -121,21 +158,22 @@ Résultats : `P` = passant conforme, `XF` = échec attendu, `NA` = non applicabl
 | AC-08 | Utiliser la réponse courante              | 004, 005      | `@positive` | P        | Pas de donnée obsolète ni GET supplémentaire | Complète                           |
 | AC-09 | Contrôles utilisables de façon accessible | 001, 003      | `@positive` | P        | Locators orientés utilisateur                | Complète dans le périmètre de l’AC |
 
-### US-EXPORT-01 — 11/11, 100 %
+### US-EXPORT-01 — 11/12, 91,7 %
 
-| AC    | Comportement attendu                         | TC                | Catégorie                | Résultat | Preuve                                              | Statut   |
-| ----- | -------------------------------------------- | ----------------- | ------------------------ | -------- | --------------------------------------------------- | -------- |
-| AC-01 | Rendre JSON et CSV disponibles au bon moment | 001, 002, 006     | `@positive`, `@negative` | P        | `EXP1` : contrôles disponibles/désactivés           | Complète |
-| AC-02 | Produire un JSON valide                      | 001               | `@positive`              | P        | Téléchargement parsé et comparé                     | Complète |
-| AC-03 | Produire un CSV tabulaire                    | 002               | `@positive`              | P        | En-tête, lignes et colonnes                         | Complète |
-| AC-04 | Échapper les caractères spéciaux             | 003               | `@positive`              | P        | Virgules, guillemets, retours ligne                 | Complète |
-| AC-05 | Neutraliser les formules CSV                 | 003               | `@positive`              | P        | Préfixes dangereux vérifiés                         | Complète |
-| AC-06 | Exporter l’état courant                      | 004, 006          | `@positive`, `@negative` | P        | Page/ordre courant et collection obsolète interdite | Complète |
-| AC-07 | Refuser l’export sans résultat               | 005               | `@negative`              | P        | Aucun download                                      | Complète |
-| AC-08 | Ne pas appeler l’API                         | 001–006           | `@positive`, `@negative` | P        | Compteurs inchangés, aucun write                    | Complète |
-| AC-09 | Utiliser un vrai téléchargement              | 001–004, 006      | `@positive`, `@negative` | P        | Événement `download` Playwright                     | Complète |
-| AC-10 | Rester déterministe                          | 001–006           | `@positive`, `@negative` | P        | Payloads mockés                                     | Complète |
-| AC-11 | Ne pas modifier les autres états             | 001, 002, 004–006 | `@positive`, `@negative` | P        | Snapshots `localStorage`                            | Complète |
+| AC    | Comportement attendu                         | TC                | Catégorie                | Résultat    | Preuve                                              | Statut           |
+| ----- | -------------------------------------------- | ----------------- | ------------------------ | ----------- | --------------------------------------------------- | ---------------- |
+| AC-01 | Rendre JSON et CSV disponibles au bon moment | 001, 002, 006     | `@positive`, `@negative` | P           | `EXP1` : contrôles disponibles/désactivés           | Complète         |
+| AC-02 | Produire un JSON valide                      | 001               | `@positive`              | P           | Téléchargement parsé et comparé                     | Complète         |
+| AC-03 | Produire un CSV tabulaire                    | 002               | `@positive`              | P           | En-tête, lignes et colonnes                         | Complète         |
+| AC-04 | Échapper les caractères spéciaux             | 003               | `@positive`              | P           | Virgules, guillemets, retours ligne                 | Complète         |
+| AC-05 | Neutraliser les formules CSV                 | 003               | `@positive`              | P           | Préfixes dangereux vérifiés                         | Complète         |
+| AC-06 | Exporter l’état courant                      | 004, 006          | `@positive`, `@negative` | P           | Page/ordre courant et collection obsolète interdite | Complète         |
+| AC-07 | Refuser l’export sans résultat               | 005               | `@negative`              | P           | Aucun download                                      | Complète         |
+| AC-08 | Ne pas appeler l’API                         | 001–006           | `@positive`, `@negative` | P           | Compteurs inchangés, aucun write                    | Complète         |
+| AC-09 | Utiliser un vrai téléchargement              | 001–004, 006      | `@positive`, `@negative` | P           | Événement `download` Playwright                     | Complète         |
+| AC-10 | Rester déterministe                          | 001–006           | `@positive`, `@negative` | P           | Payloads mockés                                     | Complète         |
+| AC-11 | Ne pas modifier les autres états             | 001, 002, 004–006 | `@positive`, `@negative` | P           | Snapshots `localStorage`                            | Complète         |
+| AC-12 | Interdire un export obsolète après erreur    | 016               | `@error`                 | Non exécuté | TC planifié, aucune assertion Playwright            | **Non couverte** |
 
 ### US-FAVORITES-01 — 8/9, 88,9 %
 
@@ -151,19 +189,20 @@ Résultats : `P` = passant conforme, `XF` = échec attendu, `NA` = non applicabl
 | AC-08 | Gérer l’état vide                        | 002, 005      | `@positive` | P                    | Collection absente, vide et vidée  | Complète                                 |
 | AC-09 | Ne pas écrire vers l’API                 | 001–006       | `@positive` | P, un XF fonctionnel | Suivi réseau                       | Complète pour le réseau                  |
 
-### US-FILTERS-01 — 7/7, 100 %
+### US-FILTERS-01 — 7/8, 87,5 %
 
-| AC    | Comportement attendu                  | TC                     | Catégorie             | Résultat | Preuve                                  | Statut   |
-| ----- | ------------------------------------- | ---------------------- | --------------------- | -------- | --------------------------------------- | -------- |
-| AC-01 | Filtrer et transmettre le code postal | 001 API, 005 UI        | `@positive`           | P        | `FILTERS1` : résultats et `code_postal` | Complète |
-| AC-02 | Filtrer par commune/code INSEE        | 002, 005, 009, 010     | `@positive`, `@error` | P        | API, résolution Geo et erreur Geo       | Complète |
-| AC-03 | Filtrer par statut A/C                | 003, 005               | `@positive`           | P        | API réelle et paramètre UI              | Complète |
-| AC-04 | Combiner les filtres                  | 004, 006               | `@positive`           | P        | Combinaison API et UI                   | Complète |
-| AC-05 | Conserver les filtres visibles        | 007, 008               | `@positive`           | P        | Contrôles et puces                      | Complète |
-| AC-06 | Gérer zéro résultat filtré            | 008                    | `@positive`           | P        | État vide distinct d’une erreur         | Complète |
-| AC-07 | Assurer requête/résultats cohérents   | 001–004, 006, 009, 010 | `@positive`, `@error` | P        | Paramètres et cartes                    | Complète |
+| AC    | Comportement attendu                   | TC                | Catégorie   | Résultat    | Preuve                                   | Statut           |
+| ----- | -------------------------------------- | ----------------- | ----------- | ----------- | ---------------------------------------- | ---------------- |
+| AC-01 | Filtrer et transmettre le code postal  | 001 API, 005 UI   | `@positive` | P           | `FILTERS1` : résultats et `code_postal`  | Complète         |
+| AC-02 | Filtrer par commune/code INSEE         | 002, 005, 009     | `@positive` | P           | API et résolution Geo                    | Complète         |
+| AC-03 | Filtrer par statut A/C                 | 003, 005          | `@positive` | P           | API réelle et paramètre UI               | Complète         |
+| AC-04 | Combiner les filtres                   | 004, 006          | `@positive` | P           | Combinaison API et UI                    | Complète         |
+| AC-05 | Conserver les filtres visibles         | 007, 008          | `@positive` | P           | Contrôles et puces                       | Complète         |
+| AC-06 | Gérer zéro résultat filtré             | 008               | `@positive` | P           | État vide distinct d’une erreur          | Complète         |
+| AC-07 | Assurer requête/résultats cohérents    | 001–004, 006, 009 | `@positive` | P           | Paramètres et cartes                     | Complète         |
+| AC-08 | Gérer l’erreur d’une recherche filtrée | 021               | `@error`    | Non exécuté | TC planifié, aucune assertion Playwright | **Non couverte** |
 
-### US-HISTORY-01 — 10/11, 90,9 %
+### US-HISTORY-01 — 12/12, 100 %
 
 | AC    | Comportement attendu                   | TC           | Catégorie                          | Résultat | Preuve                                                                                                                     | Statut   |
 | ----- | -------------------------------------- | ------------ | ---------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- | -------- |
@@ -178,36 +217,40 @@ Résultats : `P` = passant conforme, `XF` = échec attendu, `NA` = non applicabl
 | AC-09 | Nettoyer uniquement History            | 006          | `@positive`                        | P        | Autres stockages inchangés                                                                                                 | Complète |
 | AC-10 | Rester robuste aux entrées incomplètes | 001, 008–010 | `@positive`, `@negative`, `@error` | P        | `TC-HISTORY-010` injecte une entrée ne contenant que `query` ; rendu neutre, action utilisable et aucun artefact technique | Complète |
 | AC-11 | Éviter les opérations API inutiles     | 004–009      | `@positive`, `@negative`, `@error` | P        | Aucun write ; GET seulement au replay                                                                                      | Complète |
+| AC-12 | Ne pas historiser un refus ou un échec | 008, 009     | `@negative`, `@error`              | P        | Stockage vide et aucune mutation après validation/HTTP 500                                                                 | Complète |
 
-### US-PAGINATION-01 — 8/8, 100 %
+### US-PAGINATION-01 — 8/9, 88,9 %
 
-| AC    | Comportement attendu                      | TC       | Catégorie   | Résultat | Preuve                            | Statut   |
-| ----- | ----------------------------------------- | -------- | ----------- | -------- | --------------------------------- | -------- |
-| AC-01 | Afficher l’état de pagination             | 001, 002 | `@positive` | P        | `PAG` : page/total et métadonnées | Complète |
-| AC-02 | Passer à la page suivante                 | 001, 003 | `@positive` | P        | `page=2` et nouvelles cartes      | Complète |
-| AC-03 | Revenir à la page précédente              | 001, 004 | `@positive` | P        | Page 1 et cartes correspondantes  | Complète |
-| AC-04 | Respecter les limites                     | 001, 002 | `@positive` | P        | Boutons désactivés                | Complète |
-| AC-05 | Choisir la taille de page                 | 005      | `@positive` | P        | `per_page` et contrôle            | Complète |
-| AC-06 | Revenir page 1 après changement de taille | 005      | `@positive` | P        | Page et requête                   | Complète |
-| AC-07 | Revenir page 1 après nouveaux critères    | 006      | `@positive` | P        | Nouvelle requête                  | Complète |
-| AC-08 | Associer requête et résultats             | 001–006  | `@positive` | P        | URL, métadonnées et cartes        | Complète |
+| AC    | Comportement attendu                      | TC       | Catégorie   | Résultat    | Preuve                                   | Statut           |
+| ----- | ----------------------------------------- | -------- | ----------- | ----------- | ---------------------------------------- | ---------------- |
+| AC-01 | Afficher l’état de pagination             | 001, 002 | `@positive` | P           | `PAG` : page/total et métadonnées        | Complète         |
+| AC-02 | Passer à la page suivante                 | 001, 003 | `@positive` | P           | `page=2` et nouvelles cartes             | Complète         |
+| AC-03 | Revenir à la page précédente              | 001, 004 | `@positive` | P           | Page 1 et cartes correspondantes         | Complète         |
+| AC-04 | Respecter les limites                     | 001, 002 | `@positive` | P           | Boutons désactivés                       | Complète         |
+| AC-05 | Choisir la taille de page                 | 005      | `@positive` | P           | `per_page` et contrôle                   | Complète         |
+| AC-06 | Revenir page 1 après changement de taille | 005      | `@positive` | P           | Page et requête                          | Complète         |
+| AC-07 | Revenir page 1 après nouveaux critères    | 006      | `@positive` | P           | Nouvelle requête                         | Complète         |
+| AC-08 | Associer requête et résultats             | 001–006  | `@positive` | P           | URL, métadonnées et cartes               | Complète         |
+| AC-09 | Gérer une erreur de navigation            | 007      | `@error`    | Non exécuté | TC planifié, aucune assertion Playwright | **Non couverte** |
 
-### US-SAVED-SEARCH-01 — 12/12, 100 %
+### US-SAVED-SEARCH-01 — 13/14, 92,9 %
 
-| AC    | Comportement attendu                            | TC                      | Catégorie                | Résultat | Preuve                                        | Statut   |
-| ----- | ----------------------------------------------- | ----------------------- | ------------------------ | -------- | --------------------------------------------- | -------- |
-| AC-01 | Sauvegarder explicitement ; refuser un nom vide | 001, 008                | `@positive`, `@negative` | P        | `SAVED` : stockage inchangé pour nom invalide | Complète |
-| AC-02 | Conserver le nom                                | 001, 002, 008           | `@positive`, `@negative` | P        | Nom exact et validation                       | Complète |
-| AC-03 | Conserver les critères                          | 002, 004                | `@positive`              | P        | Requête, CP, commune, statut                  | Complète |
-| AC-04 | Conserver la taille de page                     | 004                     | `@positive`              | P        | Contrôle restauré                             | Complète |
-| AC-05 | Gérer les identités distinctes                  | 002, 003                | `@positive`              | P        | Déduplication, ordre, capacité                | Complète |
-| AC-06 | Afficher les sauvegardes                        | 002, 003, 005, 006      | `@positive`              | P        | Noms et critères rendus                       | Complète |
-| AC-07 | Relancer la recherche choisie                   | 004                     | `@positive`              | P        | Restauration et GET attendu                   | Complète |
-| AC-08 | Persister après reload                          | 005                     | `@positive`              | P        | Vrai reload                                   | Complète |
-| AC-09 | Supprimer uniquement la cible                   | 006                     | `@positive`              | P        | Autre sauvegarde préservée                    | Complète |
-| AC-10 | Gérer l’état vide                               | 006, 007                | `@positive`              | P        | Clé absente, vide et vidée                    | Complète |
-| AC-11 | Isoler Saved Searches de History                | 001, 002, 004, 006, 008 | `@positive`, `@negative` | P        | Snapshot History inchangé                     | Complète |
-| AC-12 | Ne pas écrire vers l’API                        | 001–008                 | `@positive`, `@negative` | P        | Aucun write                                   | Complète |
+| AC    | Comportement attendu                            | TC                      | Catégorie                | Résultat    | Preuve                                          | Statut           |
+| ----- | ----------------------------------------------- | ----------------------- | ------------------------ | ----------- | ----------------------------------------------- | ---------------- |
+| AC-01 | Sauvegarder explicitement ; refuser un nom vide | 001, 008                | `@positive`, `@negative` | P           | `SAVED` : stockage inchangé pour nom invalide   | Complète         |
+| AC-02 | Conserver le nom                                | 001, 002, 008           | `@positive`, `@negative` | P           | Nom exact et validation                         | Complète         |
+| AC-03 | Conserver les critères                          | 002, 004                | `@positive`              | P           | Requête, CP, commune, statut                    | Complète         |
+| AC-04 | Conserver la taille de page                     | 004                     | `@positive`              | P           | Contrôle restauré                               | Complète         |
+| AC-05 | Gérer les identités distinctes                  | 002, 003                | `@positive`              | P           | Déduplication, ordre, capacité                  | Complète         |
+| AC-06 | Afficher les sauvegardes                        | 002, 003, 005, 006      | `@positive`              | P           | Noms et critères rendus                         | Complète         |
+| AC-07 | Relancer la recherche choisie                   | 004                     | `@positive`              | P           | Restauration et GET attendu                     | Complète         |
+| AC-08 | Persister après reload                          | 005                     | `@positive`              | P           | Vrai reload                                     | Complète         |
+| AC-09 | Supprimer uniquement la cible                   | 006                     | `@positive`              | P           | Autre sauvegarde préservée                      | Complète         |
+| AC-10 | Gérer l’état vide                               | 006, 007                | `@positive`              | P           | Clé absente, vide et vidée                      | Complète         |
+| AC-11 | Isoler Saved Searches de History                | 001, 002, 004, 006, 008 | `@positive`, `@negative` | P           | Snapshot History inchangé                       | Complète         |
+| AC-12 | Ne pas écrire vers l’API                        | 001–008                 | `@positive`, `@negative` | P           | Aucun write                                     | Complète         |
+| AC-13 | Refuser un nom inexploitable                    | 008                     | `@negative`              | P           | Nom vide/blanc, stockages et requêtes inchangés | Complète         |
+| AC-14 | Gérer l’échec technique d’une relance           | 009                     | `@error`                 | Non exécuté | TC planifié, aucune assertion Playwright        | **Non couverte** |
 
 ### US-SEARCH-01 — 8/8, 100 %
 
@@ -238,50 +281,53 @@ Résultats : `P` = passant conforme, `XF` = échec attendu, `NA` = non applicabl
 | AC-08 | Appliquer le tri aux nouveaux résultats | 007          | `@positive` | P        | Deuxième réponse triée              | Complète |
 | AC-09 | Cohérence contrôle/ordre                | 001–005, 007 | `@positive` | P        | Valeur du select et cartes          | Complète |
 
-### US-STATS-01 — 8/8, 100 %
+### US-STATS-01 — 8/9, 88,9 %
 
-| AC    | Comportement attendu                     | TC       | Catégorie   | Résultat | Preuve                           | Statut   |
-| ----- | ---------------------------------------- | -------- | ----------- | -------- | -------------------------------- | -------- |
-| AC-01 | Afficher les statistiques avec résultats | 001      | `@positive` | P        | `STATS` : panneau visible        | Complète |
-| AC-02 | Calculer sur les entreprises affichées   | 001, 006 | `@positive` | P        | Total, statuts, moyenne et dates | Complète |
-| AC-03 | Mettre à jour après recherche            | 002      | `@positive` | P        | Anciennes valeurs absentes       | Complète |
-| AC-04 | Mettre à jour après filtre               | 003      | `@positive` | P        | Réponse filtrée recalculée       | Complète |
-| AC-05 | Mettre à jour après pagination           | 004      | `@positive` | P        | Valeurs de la nouvelle page      | Complète |
-| AC-06 | Ne pas varier lors du tri                | 004      | `@positive` | P        | Valeurs inchangées               | Complète |
-| AC-07 | Gérer l’absence de résultats             | 005      | `@positive` | P        | Panneau masqué et vidé           | Complète |
-| AC-08 | Gérer les valeurs absentes               | 006      | `@positive` | P        | Absences exclues et rendu neutre | Complète |
+| AC    | Comportement attendu                      | TC       | Catégorie   | Résultat    | Preuve                                   | Statut           |
+| ----- | ----------------------------------------- | -------- | ----------- | ----------- | ---------------------------------------- | ---------------- |
+| AC-01 | Afficher les statistiques avec résultats  | 001      | `@positive` | P           | `STATS` : panneau visible                | Complète         |
+| AC-02 | Calculer sur les entreprises affichées    | 001, 006 | `@positive` | P           | Total, statuts, moyenne et dates         | Complète         |
+| AC-03 | Mettre à jour après recherche             | 002      | `@positive` | P           | Anciennes valeurs absentes               | Complète         |
+| AC-04 | Mettre à jour après filtre                | 003      | `@positive` | P           | Réponse filtrée recalculée               | Complète         |
+| AC-05 | Mettre à jour après pagination            | 004      | `@positive` | P           | Valeurs de la nouvelle page              | Complète         |
+| AC-06 | Ne pas varier lors du tri                 | 004      | `@positive` | P           | Valeurs inchangées                       | Complète         |
+| AC-07 | Gérer l’absence de résultats              | 005      | `@positive` | P           | Panneau masqué et vidé                   | Complète         |
+| AC-08 | Gérer les valeurs absentes                | 006      | `@positive` | P           | Absences exclues et rendu neutre         | Complète         |
+| AC-09 | Neutraliser les statistiques après erreur | 007      | `@error`    | Non exécuté | TC planifié, aucune assertion Playwright | **Non couverte** |
 
-### US-THEME-01 — 11/11 applicables, 100 %
+### US-THEME-01 — 11/12 applicables, 91,7 %
 
-| AC    | Comportement attendu                 | TC       | Catégorie   | Résultat | Preuve                                    | Statut         |
-| ----- | ------------------------------------ | -------- | ----------- | -------- | ----------------------------------------- | -------------- |
-| AC-01 | Exposer un contrôle utilisable       | 001      | `@positive` | P        | `THEME` : bouton visible/actif            | Complète       |
-| AC-02 | Activer le thème alternatif          | 001      | `@positive` | P        | `data-theme=dark`, glyphe, stockage       | Complète       |
-| AC-03 | Revenir au thème clair               | 001      | `@positive` | P        | Document, bouton et stockage              | Complète       |
-| AC-04 | Persister le choix                   | 001, 002 | `@positive` | P        | Clé, valeurs et moment d’écriture         | Complète       |
-| AC-05 | Restaurer après reload               | 002      | `@positive` | P        | Vrai reload                               | Complète       |
-| AC-06 | Restaurer lors d’une nouvelle visite | 002      | `@positive` | P        | Nouvelle navigation, même contexte        | Complète       |
-| AC-07 | État initial sans préférence         | 003      | `@positive` | P        | Clair sans écriture automatique           | Complète       |
-| AC-08 | Préférence système                   | Aucun    | NA          | NA       | Aucun `matchMedia`/`prefers-color-scheme` | Non applicable |
-| AC-09 | Isoler les autres stockages          | 001, 002 | `@positive` | P        | Sentinelles inchangées                    | Complète       |
-| AC-10 | Rester indépendant du réseau         | 001–003  | `@positive` | P        | Zéro `/search`                            | Complète       |
-| AC-11 | Rester cohérent entre vues           | 002      | `@positive` | P        | Vue Favoris représentative                | Complète       |
-| AC-12 | Rester déterministe                  | 001–003  | `@positive` | P        | Pas d’API réelle ni pixel-perfect         | Complète       |
+| AC    | Comportement attendu                 | TC       | Catégorie   | Résultat    | Preuve                                    | Statut           |
+| ----- | ------------------------------------ | -------- | ----------- | ----------- | ----------------------------------------- | ---------------- |
+| AC-01 | Exposer un contrôle utilisable       | 001      | `@positive` | P           | `THEME` : bouton visible/actif            | Complète         |
+| AC-02 | Activer le thème alternatif          | 001      | `@positive` | P           | `data-theme=dark`, glyphe, stockage       | Complète         |
+| AC-03 | Revenir au thème clair               | 001      | `@positive` | P           | Document, bouton et stockage              | Complète         |
+| AC-04 | Persister le choix                   | 001, 002 | `@positive` | P           | Clé, valeurs et moment d’écriture         | Complète         |
+| AC-05 | Restaurer après reload               | 002      | `@positive` | P           | Vrai reload                               | Complète         |
+| AC-06 | Restaurer lors d’une nouvelle visite | 002      | `@positive` | P           | Nouvelle navigation, même contexte        | Complète         |
+| AC-07 | État initial sans préférence         | 003      | `@positive` | P           | Clair sans écriture automatique           | Complète         |
+| AC-08 | Préférence système                   | Aucun    | NA          | NA          | Aucun `matchMedia`/`prefers-color-scheme` | Non applicable   |
+| AC-09 | Isoler les autres stockages          | 001, 002 | `@positive` | P           | Sentinelles inchangées                    | Complète         |
+| AC-10 | Rester indépendant du réseau         | 001–003  | `@positive` | P           | Zéro `/search`                            | Complète         |
+| AC-11 | Rester cohérent entre vues           | 002      | `@positive` | P           | Vue Favoris représentative                | Complète         |
+| AC-12 | Rester déterministe                  | 001–003  | `@positive` | P           | Pas d’API réelle ni pixel-perfect         | Complète         |
+| AC-13 | Ignorer une préférence invalide      | 004      | `@negative` | Non exécuté | TC planifié, aucune assertion Playwright  | **Non couverte** |
 
-### US-FILTERS-02 — 10/10, 100 %
+### US-FILTERS-02 — 11/11, 100 %
 
-| AC    | Comportement attendu                         | TC       | Catégorie             | Résultat | Preuve                                 | Statut   |
-| ----- | -------------------------------------------- | -------- | --------------------- | -------- | -------------------------------------- | -------- |
-| AC-01 | Transmettre un NAF valide                    | 011      | `@positive`           | P        | `FILTERS2` : `activite_principale`     | Complète |
-| AC-02 | Refuser un NAF invalide avant API            | 012      | `@negative`           | P        | Aucun appel recherche                  | Complète |
-| AC-03 | Accepter les départements, `2A`, `2B`        | 013      | `@positive`           | P        | Paramètres transmis                    | Complète |
-| AC-04 | Transmettre la région                        | 014      | `@positive`           | P        | Paramètre `region`                     | Complète |
-| AC-05 | Transmettre la tranche                       | 015      | `@positive`           | P        | `tranche_effectif_salarie`             | Complète |
-| AC-06 | Retirer une puce et revenir page 1           | 016      | `@positive`           | P        | Autres critères conservés              | Complète |
-| AC-07 | Effacer les filtres sans perdre la requête   | 017      | `@positive`           | P        | Requête conservée                      | Complète |
-| AC-08 | Restaurer les filtres depuis l’URL           | 018      | `@positive`           | P        | Contrôles et puces                     | Complète |
-| AC-09 | Ignorer/normaliser les filtres URL invalides | 019      | `@negative`           | P        | Pas de requête incohérente             | Complète |
-| AC-10 | Résoudre une commune via Geo API             | 010, 020 | `@error`, `@positive` | P        | Erreur Geo mockée et chaîne E2E réelle | Complète |
+| AC    | Comportement attendu                         | TC  | Catégorie   | Résultat | Preuve                                             | Statut   |
+| ----- | -------------------------------------------- | --- | ----------- | -------- | -------------------------------------------------- | -------- |
+| AC-01 | Transmettre un NAF valide                    | 011 | `@positive` | P        | `FILTERS2` : `activite_principale`                 | Complète |
+| AC-02 | Refuser un NAF invalide avant API            | 012 | `@negative` | P        | Aucun appel recherche                              | Complète |
+| AC-03 | Accepter les départements, `2A`, `2B`        | 013 | `@positive` | P        | Paramètres transmis                                | Complète |
+| AC-04 | Transmettre la région                        | 014 | `@positive` | P        | Paramètre `region`                                 | Complète |
+| AC-05 | Transmettre la tranche                       | 015 | `@positive` | P        | `tranche_effectif_salarie`                         | Complète |
+| AC-06 | Retirer une puce et revenir page 1           | 016 | `@positive` | P        | Autres critères conservés                          | Complète |
+| AC-07 | Effacer les filtres sans perdre la requête   | 017 | `@positive` | P        | Requête conservée                                  | Complète |
+| AC-08 | Restaurer les filtres depuis l’URL           | 018 | `@positive` | P        | Contrôles et puces                                 | Complète |
+| AC-09 | Ignorer/normaliser les filtres URL invalides | 019 | `@negative` | P        | Pas de requête incohérente                         | Complète |
+| AC-10 | Résoudre une commune via Geo API             | 020 | `@positive` | P        | Chaîne E2E réelle                                  | Complète |
+| AC-11 | Gérer une erreur Geo API                     | 010 | `@error`    | P        | Message, saisie conservée, aucun appel Entreprises | Complète |
 
 ### US-AUTOCOMPLETE-01 — 10/10, 100 %
 
@@ -350,35 +396,35 @@ Ces tests sont correctement classés par type de situation, mais leur présence 
 
 ## Bilan par User Story
 
-| User Story         | AC totaux | AC non applicables | AC pleinement conformes | Partiels ou non validés |       Présence de tests |  Couverture effective | 100 % ? |
-| ------------------ | --------: | -----------------: | ----------------------: | ----------------------: | ----------------------: | --------------------: | ------- |
-| US-COMPARE-01      |        12 |                  0 |                      12 |                       0 |                   12/12 |                 100 % | Oui     |
-| US-DEEP-LINKING-01 |        12 |                  1 |                      10 |                       1 |       11/11 applicables |                90,9 % | **Non** |
-| US-DETAIL-01       |         9 |                  0 |                       9 |                       0 |                     9/9 |                 100 % | Oui     |
-| US-EXPORT-01       |        11 |                  0 |                      11 |                       0 |                   11/11 |                 100 % | Oui     |
-| US-FAVORITES-01    |         9 |                  0 |                       8 |                       1 |                     9/9 |                88,9 % | **Non** |
-| US-FILTERS-01      |         7 |                  0 |                       7 |                       0 |                     7/7 |                 100 % | Oui     |
-| US-HISTORY-01      |        11 |                  0 |                      11 |                       0 |                   11/11 |                 100 % | Oui     |
-| US-PAGINATION-01   |         8 |                  0 |                       8 |                       0 |                     8/8 |                 100 % | Oui     |
-| US-SAVED-SEARCH-01 |        12 |                  0 |                      12 |                       0 |                   12/12 |                 100 % | Oui     |
-| US-SEARCH-01       |         8 |                  0 |                       8 |                       0 |                     8/8 |                 100 % | Oui     |
-| US-SORT-01         |         9 |                  0 |                       9 |                       0 |                     9/9 |                 100 % | Oui     |
-| US-STATS-01        |         8 |                  0 |                       8 |                       0 |                     8/8 |                 100 % | Oui     |
-| US-THEME-01        |        12 |                  1 |                      11 |                       0 |       11/11 applicables | 100 % des applicables | Oui     |
-| US-FILTERS-02      |        10 |                  0 |                      10 |                       0 |                   10/10 |                 100 % | Oui     |
-| US-AUTOCOMPLETE-01 |        10 |                  0 |                      10 |                       0 |                   10/10 |                 100 % | Oui     |
-| US-SHARE-01        |         7 |                  0 |                       7 |                       0 |                     7/7 |                 100 % | Oui     |
-| US-COMPARE-02      |         9 |                  0 |                       9 |                       0 |                     9/9 |                 100 % | Oui     |
-| US-EXPORT-02       |         9 |                  0 |                       9 |                       0 |                     9/9 |                 100 % | Oui     |
-| **Total**          |   **173** |              **2** |                 **169** |                   **2** | **171/171 applicables** |            **98,8 %** | **Non** |
+| User Story         | AC totaux | AC non applicables | AC pleinement conformes | Partiels ou non validés |       Présence de tests | Couverture effective | 100 % ? |
+| ------------------ | --------: | -----------------: | ----------------------: | ----------------------: | ----------------------: | -------------------: | ------- |
+| US-COMPARE-01      |        12 |                  0 |                      12 |                       0 |                   12/12 |                100 % | Oui     |
+| US-DEEP-LINKING-01 |        13 |                  1 |                      10 |                       2 |       10/12 applicables |               83,3 % | **Non** |
+| US-DETAIL-01       |         9 |                  0 |                       9 |                       0 |                     9/9 |                100 % | Oui     |
+| US-EXPORT-01       |        12 |                  0 |                      11 |                       1 |                   11/12 |               91,7 % | **Non** |
+| US-FAVORITES-01    |         9 |                  0 |                       8 |                       1 |                     9/9 |               88,9 % | **Non** |
+| US-FILTERS-01      |         8 |                  0 |                       7 |                       1 |                     7/8 |               87,5 % | **Non** |
+| US-HISTORY-01      |        12 |                  0 |                      12 |                       0 |                   12/12 |                100 % | Oui     |
+| US-PAGINATION-01   |         9 |                  0 |                       8 |                       1 |                     8/9 |               88,9 % | **Non** |
+| US-SAVED-SEARCH-01 |        14 |                  0 |                      13 |                       1 |                   13/14 |               92,9 % | **Non** |
+| US-SEARCH-01       |         8 |                  0 |                       8 |                       0 |                     8/8 |                100 % | Oui     |
+| US-SORT-01         |         9 |                  0 |                       9 |                       0 |                     9/9 |                100 % | Oui     |
+| US-STATS-01        |         9 |                  0 |                       8 |                       1 |                     8/9 |               88,9 % | **Non** |
+| US-THEME-01        |        13 |                  1 |                      11 |                       1 |       11/12 applicables |               91,7 % | **Non** |
+| US-FILTERS-02      |        11 |                  0 |                      11 |                       0 |                   11/11 |                100 % | Oui     |
+| US-AUTOCOMPLETE-01 |        10 |                  0 |                      10 |                       0 |                   10/10 |                100 % | Oui     |
+| US-SHARE-01        |         7 |                  0 |                       7 |                       0 |                     7/7 |                100 % | Oui     |
+| US-COMPARE-02      |         9 |                  0 |                       9 |                       0 |                     9/9 |                100 % | Oui     |
+| US-EXPORT-02       |         9 |                  0 |                       9 |                       0 |                     9/9 |                100 % | Oui     |
+| **Total**          |   **183** |              **2** |                 **172** |                   **9** | **174/181 automatisés** |           **95,0 %** | **Non** |
 
 ## Distinction entre tests existants et validation du produit
 
 | Axe                          | Conclusion                                                                                                                                                         |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Présence de tests            | Chaque AC applicable possède au moins une trace vers un test existant : 171/171.                                                                                   |
-| Couverture des comportements | 169 AC sont entièrement prouvés. Deux autres AC disposent d’un oracle complet mais placé derrière `test.fail()`.                                                   |
-| Validation effective         | 169/171 AC applicables sont confirmés. Deep Linking AC-06 et Favorites AC-07 restent non conformes ; ils ne sont pas traités par cette mise à jour.                |
+| Présence de tests            | 174/181 AC applicables possèdent un test automatisé ; sept nouveaux AC ne disposent encore que d’un TC planifié.                                                   |
+| Couverture des comportements | 172 AC sont entièrement prouvés. Deux autres disposent d’un oracle derrière `test.fail()` et sept attendent leur automatisation.                                   |
+| Validation effective         | 172/181 AC applicables sont confirmés. Les nouveaux critères sans assertions ne sont pas comptés comme couverts.                                                   |
 | Catégories                   | L’absence de `@negative` ou `@error` sur de nombreux AC est normale : ces catégories ne s’appliquent pas lorsque le critère ne décrit ni refus ni panne technique. |
 
 ## Divergences entre exigences, plans, tests et rapports

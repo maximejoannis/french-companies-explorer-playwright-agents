@@ -325,6 +325,14 @@ Aucun `E2E_REAL` n’apporte de frontière distincte : les suites Search et Filt
 - **Défaut associé** : `BUG-014 — Une page URL non numérique produit une recherche et une pagination NaN`.
 - **Limite volontaire / duplication** : ne pas ajouter un TC par valeur négative, décimale, nulle ou hors limites tant qu’aucun contrat plus précis n’est défini.
 
+### TC-DEEP-LINK-008 — Erreur de la recherche restaurée
+
+- **Objectif** : charger un deep link valide face à une erreur API et vérifier l’état d’erreur, la cohérence URL/contrôles, l’absence d’ancien résultat et l’isolation des stockages.
+- **Critère couvert** : `AC-13`.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+- **Statut** : à automatiser.
+
 ## Matrice de traçabilité
 
 | Cas de test        | Critères couverts                                                         | Niveau      | Priorité | Statut          |
@@ -335,6 +343,7 @@ Aucun `E2E_REAL` n’apporte de frontière distincte : les suites Search et Filt
 | `TC-DEEP-LINK-004` | `AC-01`, `AC-02`, `AC-04`, `AC-05`, `AC-09`, `AC-10`, `AC-12`             | `UI_MOCKED` | Moyenne  | Actif           |
 | `TC-DEEP-LINK-005` | `AC-01`, `AC-02`, `AC-09`, `AC-10`, `AC-11`                               | `UI_MOCKED` | Moyenne  | Actif           |
 | `TC-DEEP-LINK-006` | `AC-01`, `AC-03`, `AC-09`, `AC-10`, `AC-12`                               | `UI_MOCKED` | Haute    | `fixme` BUG-014 |
+| `TC-DEEP-LINK-008` | `AC-13`                                                                   | `UI_MOCKED` | Haute    | À automatiser   |
 | Non applicable     | `AC-07` : aucune navigation Back/Forward entre états créée par le produit | —           | —        | Pas de TC       |
 
 ## Risques de duplication

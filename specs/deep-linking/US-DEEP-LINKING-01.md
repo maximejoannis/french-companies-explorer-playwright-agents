@@ -115,6 +115,10 @@ Les assertions détaillées sur les résultats restaurés, l’ordre et les para
 
 Aucune entreprise publique réelle ne doit devenir un oracle stable de cette US.
 
+### AC-13 — Gérer l’échec de la recherche restaurée
+
+Étant donné une URL contenant des critères valides qui déclenchent une recherche, lorsque l’API Entreprises ou le réseau échoue, l’interface affiche un état d’erreur technique distinct d’un résultat vide. Les contrôles et l’URL restent cohérents avec les critères restaurés, aucun ancien résultat n’est présenté comme le résultat du deep link et les stockages indépendants ne sont pas modifiés.
+
 ## Hors périmètre
 
 - règles métier internes de l’API gouvernementale ;

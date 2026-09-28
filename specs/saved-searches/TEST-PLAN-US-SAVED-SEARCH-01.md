@@ -252,6 +252,14 @@ Les réponses synthétiques Recherche existantes suffisent. Une réponse minimal
 - **Priorité** : Moyenne.
 - **Justification du niveau** : l’initialisation et le rendu vide sont entièrement locaux ; une structure paramétrée est acceptable si les partitions restent clairement nommées sous ce même TC.
 
+### TC-SAVED-009 — Conserver la sauvegarde après l’échec d’une relance
+
+- **Objectif** : relancer une sauvegarde déterministe face à une erreur API et vérifier l’erreur visible, l’absence de résultat obsolète et l’intégrité de `fce_saved` et `fce_history`.
+- **Critère couvert** : `AC-14`.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+- **Statut** : à automatiser.
+
 ## Matrice de traçabilité
 
 | Cas de test    | Critères couverts                                    | Niveau      | Priorité |
@@ -263,9 +271,10 @@ Les réponses synthétiques Recherche existantes suffisent. Une réponse minimal
 | `TC-SAVED-005` | `AC-06`, `AC-08`, `AC-12`                            | `UI_MOCKED` | Haute    |
 | `TC-SAVED-006` | `AC-06`, `AC-09`, `AC-10`, `AC-11`, `AC-12`          | `UI_MOCKED` | Haute    |
 | `TC-SAVED-007` | `AC-10`, `AC-12`                                     | `UI_MOCKED` | Moyenne  |
-| `TC-SAVED-008` | `AC-01`, `AC-02`                                     | `UI_MOCKED` | Haute    |
+| `TC-SAVED-008` | `AC-01`, `AC-02`, `AC-13`                            | `UI_MOCKED` | Haute    |
+| `TC-SAVED-009` | `AC-14`                                              | `UI_MOCKED` | Haute    |
 
-Tous les critères `AC-01` à `AC-12` sont couverts. Aucun scénario ne duplique le contrat backend de Recherche/Filtres ni les responsabilités propres à History.
+Les critères `AC-01` à `AC-13` sont couverts ; le nouvel `AC-13` est déjà vérifié par `TC-SAVED-008`. Le nouvel `AC-14` reste spécifié mais non automatisé via `TC-SAVED-009`. Aucun scénario ne duplique le contrat backend de Recherche/Filtres ni les responsabilités propres à History.
 
 ## Défauts potentiels découverts
 

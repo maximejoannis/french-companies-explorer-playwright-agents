@@ -113,6 +113,10 @@ Les valeurs renseignées ou sélectionnées ne doivent pas être perdues lors de
 
 La validation détaillée des règles métier de filtrage appartient principalement aux tests API.
 
+## AC-08 — Gérer une erreur de recherche filtrée
+
+**Étant donné** une recherche valide accompagnée de filtres visibles, **lorsque** l’API Entreprises ou le réseau empêche d’obtenir la réponse filtrée, **alors** l’interface affiche un état d’erreur technique distinct d’un état sans résultat. Les filtres saisis restent identifiables afin de permettre une correction ou une nouvelle tentative, et d’anciens résultats ne doivent pas être présentés comme la réponse aux critères en échec.
+
 ---
 
 # Risques fonctionnels

@@ -11,7 +11,7 @@
 ![Allure](https://img.shields.io/badge/Report-Allure-ff69b4)
 ![ESLint](https://img.shields.io/badge/ESLint-10.x-4B32C3?logo=eslint&logoColor=white)
 ![Prettier](https://img.shields.io/badge/Prettier-3.x-F7B93E?logo=prettier&logoColor=black)
-![Functional Scope](https://img.shields.io/badge/Functional%20Scope-100%25-brightgreen)
+![AC Verified](https://img.shields.io/badge/AC%20Verified-95.0%25-yellow)
 ![Tests](https://img.shields.io/badge/Playwright%20Tests-136-blue)
 ![E2E Real](https://img.shields.io/badge/E2E%20Real-3%20tests-brightgreen)
 
@@ -55,26 +55,27 @@ Le projet met en œuvre une démarche QA Automation complète :
 
 ## État v1.1.1
 
-| Indicateur                      |            Résultat |
-| ------------------------------- | ------------------: |
-| User Stories couvertes          | **18 / 18 (100 %)** |
-| TC planifiés                    |             **136** |
-| Tests Playwright automatisés    |             **136** |
-| Tests actifs ordinaires         |             **133** |
-| `test.fixme`                    |               **0** |
-| Scénarios annotés `test.fail()` |               **3** |
-| Échecs inattendus               |               **0** |
-| Succès inattendus               |               **0** |
-| Tests instables                 |               **0** |
-| Tests ignorés                   |               **0** |
-| Tests API réels                 |               **6** |
-| Tests UI mockés                 |             **127** |
-| Tests E2E réels                 |               **3** |
-| Fiches de défaut historiques    |              **16** |
-| Anomalies encore ouvertes       |               **3** |
-| Défauts résolus                 |              **13** |
+| Indicateur                      |               Résultat |
+| ------------------------------- | ---------------------: |
+| User Stories couvertes          |    **18 / 18 (100 %)** |
+| AC applicables vérifiés         | **172 / 181 (95,0 %)** |
+| TC planifiés                    |                **143** |
+| Tests Playwright automatisés    |                **136** |
+| Tests actifs ordinaires         |                **133** |
+| `test.fixme`                    |                  **0** |
+| Scénarios annotés `test.fail()` |                  **3** |
+| Échecs inattendus               |                  **0** |
+| Succès inattendus               |                  **0** |
+| Tests instables                 |                  **0** |
+| Tests ignorés                   |                  **0** |
+| Tests API réels                 |                  **6** |
+| Tests UI mockés                 |                **127** |
+| Tests E2E réels                 |                  **3** |
+| Fiches de défaut historiques    |                 **16** |
+| Anomalies encore ouvertes       |                  **3** |
+| Défauts résolus                 |                 **13** |
 
-Le rapport de couverture distingue les 133 tests actifs ordinaires, les trois scénarios associés à `test.fail()` et les éventuels `test.fixme()`. Le résultat Chromium disponible dans `test-results/results.json` est présenté séparément : un scénario annoté `test.fail()` n’est compté comme échec attendu que si le run l’observe effectivement ; un passage devient un succès inattendu bloquant. Les retries ne créent pas de doublons dans ces totaux.
+Le rapport de couverture distingue les 133 tests actifs ordinaires, les trois scénarios associés à `test.fail()` et les éventuels `test.fixme()`. Sept TC nouvellement planifiés pour des AC ajoutés restent à automatiser et ne sont pas comptés comme couverts. Le résultat Chromium disponible dans `test-results/results.json` est présenté séparément : un scénario annoté `test.fail()` n’est compté comme échec attendu que si le run l’observe effectivement ; un passage devient un succès inattendu bloquant. Les retries ne créent pas de doublons dans ces totaux.
 
 ## Baseline historique v1.0.0
 

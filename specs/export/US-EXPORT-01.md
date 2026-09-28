@@ -124,6 +124,10 @@ Les exports ne doivent pas modifier de manière injustifiée :
 
 Aucun stockage local sans rapport avec l’export ne doit être modifié par le simple téléchargement d’un fichier.
 
+### AC-12 — Ne pas exporter après une erreur de recherche
+
+Étant donné qu’une collection précédente a été affichée, lorsqu’une nouvelle recherche échoue techniquement, les actions d’export ne doivent pas télécharger l’ancienne collection comme si elle correspondait à la recherche en erreur. L’interface conserve son état d’erreur, aucun fichier trompeur n’est créé et les stockages indépendants ne sont pas modifiés.
+
 ## Hors périmètre
 
 Cette User Story ne vise pas à tester :

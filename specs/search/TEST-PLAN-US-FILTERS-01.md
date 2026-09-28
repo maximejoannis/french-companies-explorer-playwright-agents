@@ -181,6 +181,14 @@ Comportements constatés :
 - **Traitement historique du défaut :** tant que l’incompatibilité commune textuelle → API subsistait (`BUG-001`), le test devait être déclaré avec `test.fixme` sans modifier l’attendu.
 - **Mise à jour du 2026-09-28 :** `BUG-001` est résolu ; `TC-FILTERS-009` est automatisé, actif et ne porte pas `test.fixme`.
 
+### TC-FILTERS-021 — Erreur de l’API Entreprises avec filtres actifs
+
+- **Objectif** : vérifier l’état d’erreur d’une recherche filtrée sans perdre les critères ni réafficher d’anciens résultats.
+- **Critère couvert** : `AC-08`.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+- **Statut** : à automatiser ; aucun test actuel ne prouve simultanément l’erreur, la conservation visuelle des filtres et l’absence de résultat obsolète.
+
 ## Matrice de traçabilité
 
 | Cas de test      | Critère(s)                    | Niveau      | Priorité |
@@ -194,6 +202,7 @@ Comportements constatés :
 | `TC-FILTERS-007` | `AC-05`                       | `UI_MOCKED` | Moyenne  |
 | `TC-FILTERS-008` | `AC-06`, contribution `AC-05` | `UI_MOCKED` | Moyenne  |
 | `TC-FILTERS-009` | `AC-02`, `AC-07`              | `E2E_REAL`  | Haute    |
+| `TC-FILTERS-021` | `AC-08`                       | `UI_MOCKED` | Haute    |
 
 ## Analyse de couverture et arbitrages
 
@@ -205,6 +214,7 @@ Comportements constatés :
 - `AC-05` : `TC-FILTERS-007` couvre le succès et `TC-FILTERS-008` confirme la conservation dans l’état vide.
 - `AC-06` : `TC-FILTERS-008` couvre l’état vide filtré sans reproduire toute la preuve générique de `TC-SEARCH-006`.
 - `AC-07` : les tests API contrôlent les invariants de filtrage et `TC-FILTERS-006` vérifie que le frontend restitue la réponse associée sans conserver d’ancien résultat.
+- `AC-08` : nouvel AC spécifié ; `TC-FILTERS-021` reste à automatiser.
 
 ### Trou de couverture et critère actuellement non satisfait
 

@@ -132,6 +132,10 @@ La consultation, la persistance et la gestion locale de l’historique ne doiven
 
 Une nouvelle requête `GET /search` reste légitime lorsqu’une action de réutilisation déclenche réellement une nouvelle recherche.
 
+## AC-12 — Ne pas historiser une recherche refusée ou échouée
+
+Lorsqu’une saisie est refusée par la validation locale ou qu’une recherche valide échoue pour une raison technique, aucune nouvelle entrée ne doit être ajoutée à `fce_history`. Les entrées déjà présentes, leur ordre et leur récence restent inchangés ; le message de validation ou d’erreur appartient à la vue Recherche et l’ouverture de l’historique reste utilisable.
+
 ---
 
 ## Risques fonctionnels

@@ -371,7 +371,7 @@ test('TC-SAVED-007 @positive @regression initialise proprement une collection ab
 test('TC-SAVED-008 @negative @regression BUG-011 refuse un nom composé uniquement d’espaces', async ({
   page,
 }) => {
-  // Couvre US-SAVED-SEARCH-01 / AC-01, AC-02, AC-11, AC-12
+  // Couvre US-SAVED-SEARCH-01 / AC-01, AC-02, AC-11, AC-12, AC-13
   // Niveau : UI_MOCKED
   // Défaut connu : defects/BUG-011-saved-search-allows-whitespace-only-name.md
   const { search, apiRequests } = await prepareSearch(page);

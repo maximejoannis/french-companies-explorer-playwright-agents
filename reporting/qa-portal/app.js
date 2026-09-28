@@ -81,7 +81,7 @@
       setText(
         'coverageSummary',
         coverage.features
-          ? `${coverage.features.automated}/${coverage.features.defined} Features couvertes · ${coverage.testCases.automated} TC automatisés.`
+          ? `${coverage.features.automated}/${coverage.features.defined} US avec au moins un TC · ${coverage.testCases.automated} TC automatisés. Cette mesure ne vaut pas couverture complète des AC.`
           : null,
         'Données de couverture indisponibles.',
       );

@@ -144,7 +144,7 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 
 - **Question principale** : une saisie numérique invalide peut-elle créer une entrée d’historique ?
 - **Objectif** : vérifier que la validation frontend bloque la recherche et son historisation.
-- **AC couverts** : `AC-10`, `AC-11`.
+- **AC couverts** : `AC-10`, `AC-11`, `AC-12`.
 - **Préconditions** : `fce_history` absent ; API bloquée ; identifiant numérique de huit chiffres.
 - **Étapes essentielles** : soumettre `12345678`, contrôler la validation, puis ouvrir Historique.
 - **Attendu** : le message d’identifiant invalide est affiché ; aucun GET, aucune écriture API et aucune entrée d’historique ne sont produits.
@@ -156,7 +156,7 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 
 - **Question principale** : une panne de l’API peut-elle créer une entrée d’historique ?
 - **Objectif** : vérifier qu’une réponse HTTP 500 est signalée et n’est pas historisée.
-- **AC couverts** : `AC-10`, `AC-11`.
+- **AC couverts** : `AC-10`, `AC-11`, `AC-12`.
 - **Préconditions** : `fce_history` absent ; réponse `/search` mockée en HTTP 500.
 - **Étapes essentielles** : soumettre une recherche valide, contrôler le message d’erreur, puis ouvrir Historique.
 - **Attendu** : l’erreur API est affichée ; le GET en échec ne crée aucune entrée et aucune écriture API n’est émise.
@@ -277,11 +277,11 @@ Les mocks existants de recherche peuvent être réutilisés, car History persist
 | `TC-HISTORY-005` | `AC-03`, `AC-06`, `AC-11`          | `UI_MOCKED` | Haute    |
 | `TC-HISTORY-006` | `AC-08`, `AC-09`, `AC-11`          | `UI_MOCKED` | Moyenne  |
 | `TC-HISTORY-007` | `AC-01`, `AC-03`, `AC-04`, `AC-11` | `UI_MOCKED` | Haute    |
-| `TC-HISTORY-008` | `AC-10`, `AC-11`                   | `UI_MOCKED` | Haute    |
-| `TC-HISTORY-009` | `AC-10`, `AC-11`                   | `UI_MOCKED` | Haute    |
+| `TC-HISTORY-008` | `AC-10`, `AC-11`, `AC-12`          | `UI_MOCKED` | Haute    |
+| `TC-HISTORY-009` | `AC-10`, `AC-11`, `AC-12`          | `UI_MOCKED` | Haute    |
 | `TC-HISTORY-010` | `AC-10`                            | `UI_MOCKED` | Haute    |
 
-Tous les critères `AC-01` à `AC-11` sont couverts. Aucun scénario API ou E2E réel ne duplique les baselines Recherche, Filtres, Pagination ou Tri.
+Tous les critères `AC-01` à `AC-12` sont couverts. Le nouvel `AC-12` est déjà vérifié par `TC-HISTORY-008` et `TC-HISTORY-009`, qui contrôlent respectivement le refus local et l’échec technique. Aucun scénario API ou E2E réel ne duplique les baselines Recherche, Filtres, Pagination ou Tri.
 
 ## Défauts potentiels découverts
 

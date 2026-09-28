@@ -172,6 +172,14 @@ Les pages et réponses successives utiliseront des sous-ensembles incompatibles 
 - **Condition historique avant implémentation :** `BUG-007` devait être documenté et le scénario complet conservé avec `test.fixme`, sans aligner l’oracle sur le défaut.
 - **Mise à jour du 2026-09-28 :** `BUG-007` est résolu ; `TC-STATS-006` est automatisé, actif et ne porte pas `test.fixme`.
 
+### TC-STATS-007 — Masquer les statistiques après une erreur
+
+- **Objectif** : partir de statistiques visibles, déclencher une nouvelle recherche en erreur et vérifier qu’aucune valeur précédente ou technique n’est présentée comme courante.
+- **Critère couvert** : `AC-09`.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+- **Statut** : à automatiser.
+
 ## Matrice de traçabilité
 
 | Cas de test    | Critère(s)       | Niveau      | Priorité |
@@ -182,10 +190,11 @@ Les pages et réponses successives utiliseront des sous-ensembles incompatibles 
 | `TC-STATS-004` | `AC-05`, `AC-06` | `UI_MOCKED` | Haute    |
 | `TC-STATS-005` | `AC-07`          | `UI_MOCKED` | Haute    |
 | `TC-STATS-006` | `AC-02`, `AC-08` | `UI_MOCKED` | Haute    |
+| `TC-STATS-007` | `AC-09`          | `UI_MOCKED` | Haute    |
 
 ## Analyse de couverture et doublons évités
 
-- Les six TC couvrent `AC-01` à `AC-08` sans cas API ni E2E réel.
+- Les six TC actifs couvrent `AC-01` à `AC-08` sans cas API ni E2E réel. Le nouvel `AC-09` reste à automatiser via `TC-STATS-007`.
 - `TC-STATS-001` prouve la frontière page courante avec un `total_results` supérieur, sans répéter le contrat de pagination de l’API.
 - `TC-STATS-002` et `TC-STATS-003` utilisent tous deux des réponses successives, mais posent des questions différentes : remplacement par une nouvelle recherche et recalcul après application explicite d’un filtre.
 - `TC-STATS-004` regroupe naturellement pagination et tri : le premier change la composition, le second change seulement l’ordre. Aucun cas distinct par mode de tri n’est nécessaire.

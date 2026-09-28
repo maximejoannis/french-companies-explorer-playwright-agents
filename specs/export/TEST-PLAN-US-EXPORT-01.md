@@ -356,18 +356,27 @@ Le plan évite :
 - **Défaut associé** : `BUG-013 — L’export conserve les résultats précédents pendant un chargement ou après une erreur`.
 - **Limite volontaire** : la partition « après erreur » reste documentée dans `BUG-013` et ne nécessite pas un second TC tant qu’elle provient de la même cause racine.
 
+### TC-EXPORT-016 — Interdire l’export après une erreur de recherche
+
+- **Objectif principal** : vérifier qu’après une recherche réussie puis une nouvelle recherche en erreur, aucun export de la collection précédente n’est possible.
+- **Critère couvert** : `AC-12`.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Haute.
+- **Statut** : à automatiser. `TC-EXPORT-006` vérifie le chargement concurrent mais ne prouve pas l’état final après erreur.
+
 ## Matrice de traçabilité
 
-| Cas de test     | Critères couverts                                    | Niveau      | Priorité | Statut          |
-| --------------- | ---------------------------------------------------- | ----------- | -------- | --------------- |
-| `TC-EXPORT-001` | `AC-01`, `AC-02`, `AC-08`, `AC-09`, `AC-10`, `AC-11` | `UI_MOCKED` | Haute    | Actif           |
-| `TC-EXPORT-002` | `AC-01`, `AC-03`, `AC-08`, `AC-09`, `AC-10`, `AC-11` | `UI_MOCKED` | Haute    | Actif           |
-| `TC-EXPORT-003` | `AC-04`, `AC-05`, `AC-08`, `AC-09`, `AC-10`          | `UI_MOCKED` | Haute    | Actif           |
-| `TC-EXPORT-004` | `AC-06`, `AC-08`, `AC-09`, `AC-10`, `AC-11`          | `UI_MOCKED` | Haute    | Actif           |
-| `TC-EXPORT-005` | `AC-07`, `AC-08`, `AC-09`, `AC-10`, `AC-11`          | `UI_MOCKED` | Moyenne  | Actif           |
-| `TC-EXPORT-006` | `AC-01`, `AC-06`, `AC-08`, `AC-09`, `AC-11`          | `UI_MOCKED` | Haute    | `fixme` BUG-013 |
+| Cas de test     | Critères couverts                                    | Niveau      | Priorité | Statut        |
+| --------------- | ---------------------------------------------------- | ----------- | -------- | ------------- |
+| `TC-EXPORT-001` | `AC-01`, `AC-02`, `AC-08`, `AC-09`, `AC-10`, `AC-11` | `UI_MOCKED` | Haute    | Actif         |
+| `TC-EXPORT-002` | `AC-01`, `AC-03`, `AC-08`, `AC-09`, `AC-10`, `AC-11` | `UI_MOCKED` | Haute    | Actif         |
+| `TC-EXPORT-003` | `AC-04`, `AC-05`, `AC-08`, `AC-09`, `AC-10`          | `UI_MOCKED` | Haute    | Actif         |
+| `TC-EXPORT-004` | `AC-06`, `AC-08`, `AC-09`, `AC-10`, `AC-11`          | `UI_MOCKED` | Haute    | Actif         |
+| `TC-EXPORT-005` | `AC-07`, `AC-08`, `AC-09`, `AC-10`, `AC-11`          | `UI_MOCKED` | Moyenne  | Actif         |
+| `TC-EXPORT-006` | `AC-01`, `AC-06`, `AC-08`, `AC-09`, `AC-11`          | `UI_MOCKED` | Haute    | Actif         |
+| `TC-EXPORT-016` | `AC-12`                                              | `UI_MOCKED` | Haute    | À automatiser |
 
-Tous les critères `AC-01` à `AC-11` sont couverts.
+Les critères `AC-01` à `AC-11` sont couverts. Le nouvel `AC-12` reste non vérifié jusqu’à l’automatisation de `TC-EXPORT-016`.
 
 ## Risques de duplication avec les tests existants
 

@@ -12,7 +12,7 @@
   text('fixmeMetric', data.testCases.fixme);
   text(
     'coverageSummary',
-    `${data.features.rate} % du périmètre fonctionnel défini possède au moins un TC automatisé.`,
+    `${data.features.automated}/${data.features.defined} US possèdent au moins un TC automatisé. Cet indicateur ne mesure pas la couverture de chaque AC.`,
   );
   text(
     'generatedAt',

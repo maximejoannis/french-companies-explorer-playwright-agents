@@ -84,6 +84,10 @@ Les entreprises dont certaines informations sont absentes ne doivent pas provoqu
 
 Le comportement exact sera confirmé pendant l’exploration.
 
+### AC-09 — Ne pas afficher de statistiques obsolètes pendant une erreur
+
+Étant donné que des statistiques ont été calculées pour une recherche précédente, lorsqu’une nouvelle recherche est en cours puis échoue techniquement, le panneau ne doit pas présenter les anciennes valeurs comme celles de la recherche en erreur. Il est masqué, vidé ou explicitement rendu indisponible de manière cohérente avec l’état de l’interface, sans afficher de valeur technique.
+
 ---
 
 ## Risques fonctionnels

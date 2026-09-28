@@ -156,24 +156,35 @@ Cette valeur ne peut pas être produite par l’interface et aucune règle de va
 - **Réseau attendu** : zéro `/search` dans chaque partition et aucune écriture API.
 - **Préférence système** : non testée, car non consultée par l’application. Le thème clair est un défaut applicatif fixe, pas le résultat de l’environnement Playwright.
 - **Défaut associé** : aucun.
-- **Limite volontaire / risque de duplication** : deux contextes constituent deux partitions d’un même TC, pas deux tests. Ne pas émuler clair/sombre au niveau système et ne pas tester une valeur de stockage corrompue.
+- **Limite volontaire / risque de duplication** : deux contextes constituent deux partitions d’un même TC, pas deux tests. Ne pas émuler clair/sombre au niveau système. La valeur persistée invalide relève désormais du scénario distinct `TC-THEME-004`.
+
+### TC-THEME-004 — Ignorer une préférence persistée invalide
+
+- **Question fonctionnelle unique** : une valeur `fce_theme` non supportée est-elle neutralisée sans affecter l’interface, le réseau ou les autres stockages ?
+- **AC couvert** : `AC-13`.
+- **Niveau** : `UI_MOCKED`.
+- **Priorité** : Moyenne.
+- **Statut proposé** : à automatiser, `@negative @regression`.
+- **Préconditions** : injecter une valeur de thème invalide et une clé locale sentinelle avant la navigation ; bloquer `/search`.
+- **Assertions principales** : thème clair et contrôle cohérent, aucun artefact technique, sentinelle inchangée et aucune requête réseau.
 
 ## 4. Matrice de traçabilité AC → TC
 
-| Critère | Cas de test                                    | Niveau      | Priorité | Statut   |
-| ------- | ---------------------------------------------- | ----------- | -------- | -------- |
-| `AC-01` | `TC-THEME-001`                                 | `UI_MOCKED` | Haute    | Actif    |
-| `AC-02` | `TC-THEME-001`                                 | `UI_MOCKED` | Haute    | Actif    |
-| `AC-03` | `TC-THEME-001`                                 | `UI_MOCKED` | Haute    | Actif    |
-| `AC-04` | `TC-THEME-001`, `TC-THEME-002`                 | `UI_MOCKED` | Haute    | Actifs   |
-| `AC-05` | `TC-THEME-002`                                 | `UI_MOCKED` | Haute    | Actif    |
-| `AC-06` | `TC-THEME-002`                                 | `UI_MOCKED` | Haute    | Actif    |
-| `AC-07` | `TC-THEME-003`                                 | `UI_MOCKED` | Moyenne  | Actif    |
-| `AC-08` | Non applicable                                 | —           | —        | Aucun TC |
-| `AC-09` | `TC-THEME-001`, `TC-THEME-002`                 | `UI_MOCKED` | Haute    | Actifs   |
-| `AC-10` | `TC-THEME-001`, `TC-THEME-002`, `TC-THEME-003` | `UI_MOCKED` | Haute    | Actifs   |
-| `AC-11` | `TC-THEME-002`                                 | `UI_MOCKED` | Moyenne  | Actif    |
-| `AC-12` | `TC-THEME-001`, `TC-THEME-002`, `TC-THEME-003` | `UI_MOCKED` | Haute    | Actifs   |
+| Critère | Cas de test                                    | Niveau      | Priorité | Statut        |
+| ------- | ---------------------------------------------- | ----------- | -------- | ------------- |
+| `AC-01` | `TC-THEME-001`                                 | `UI_MOCKED` | Haute    | Actif         |
+| `AC-02` | `TC-THEME-001`                                 | `UI_MOCKED` | Haute    | Actif         |
+| `AC-03` | `TC-THEME-001`                                 | `UI_MOCKED` | Haute    | Actif         |
+| `AC-04` | `TC-THEME-001`, `TC-THEME-002`                 | `UI_MOCKED` | Haute    | Actifs        |
+| `AC-05` | `TC-THEME-002`                                 | `UI_MOCKED` | Haute    | Actif         |
+| `AC-06` | `TC-THEME-002`                                 | `UI_MOCKED` | Haute    | Actif         |
+| `AC-07` | `TC-THEME-003`                                 | `UI_MOCKED` | Moyenne  | Actif         |
+| `AC-08` | Non applicable                                 | —           | —        | Aucun TC      |
+| `AC-09` | `TC-THEME-001`, `TC-THEME-002`                 | `UI_MOCKED` | Haute    | Actifs        |
+| `AC-10` | `TC-THEME-001`, `TC-THEME-002`, `TC-THEME-003` | `UI_MOCKED` | Haute    | Actifs        |
+| `AC-11` | `TC-THEME-002`                                 | `UI_MOCKED` | Moyenne  | Actif         |
+| `AC-12` | `TC-THEME-001`, `TC-THEME-002`, `TC-THEME-003` | `UI_MOCKED` | Haute    | Actifs        |
+| `AC-13` | `TC-THEME-004`                                 | `UI_MOCKED` | Moyenne  | À automatiser |
 
 ## 5. Critère non applicable
 

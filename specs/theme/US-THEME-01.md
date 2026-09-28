@@ -140,6 +140,10 @@ La couverture du thème doit rester déterministe et indépendante :
 - de captures d’écran pixel-perfect ;
 - de valeurs CSS détaillées susceptibles d’évoluer sans modifier le contrat fonctionnel.
 
+### AC-13 — Ignorer une préférence persistée invalide
+
+Étant donné que la valeur persistée du thème n’appartient pas aux thèmes supportés, lorsque l’application est chargée, elle applique son thème initial valide et expose un contrôle cohérent avec ce thème. La valeur invalide ne doit produire ni erreur visible ni représentation technique, les autres clés de stockage restent inchangées et aucune requête réseau n’est déclenchée à cause de cette récupération.
+
 ## Hors périmètre
 
 - validation exhaustive de la palette de couleurs ;

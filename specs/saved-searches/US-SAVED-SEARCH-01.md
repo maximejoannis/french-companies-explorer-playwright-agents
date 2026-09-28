@@ -141,6 +141,14 @@ La création, la consultation, la persistance et la suppression d’une recherch
 
 Les GET nécessaires à l’exécution ou à la relance réelle d’une recherche restent légitimes.
 
+## AC-13 — Refuser un nom inexploitable
+
+Lorsqu’un utilisateur confirme la sauvegarde avec un nom vide ou composé uniquement d’espaces, l’action est refusée avec un retour compréhensible. Aucune entrée ne doit être créée ou remplacée dans `fce_saved`, les recherches déjà sauvegardées restent inchangées et aucune requête API n’est déclenchée.
+
+## AC-14 — Gérer l’échec technique d’une relance
+
+Lorsqu’une recherche sauvegardée valide est relancée et que l’API Entreprises ou le réseau échoue, l’interface affiche un état d’erreur technique distinct d’une absence de résultat. La sauvegarde choisie reste disponible avec son nom et ses critères, aucune autre sauvegarde ni entrée History n’est supprimée, et aucun ancien résultat ne doit être présenté comme la réponse réussie de cette relance.
+
 ---
 
 ## Risques fonctionnels

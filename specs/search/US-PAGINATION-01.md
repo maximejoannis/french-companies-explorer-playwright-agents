@@ -115,6 +115,10 @@ Les résultats et l’état de pagination doivent correspondre à cette nouvelle
 **alors** l’interface affiche les résultats associés à cette réponse
 **et** son état de pagination correspond aux informations de pagination disponibles.
 
+## AC-09 — Gérer une erreur pendant la navigation
+
+**Étant donné** qu’une page de résultats est affichée, **lorsque** l’utilisateur demande une autre page ou une autre taille et que la requête correspondante échoue, **alors** l’interface affiche un état d’erreur technique exploitable. Elle ne doit ni annoncer que la page demandée est chargée, ni associer les anciens résultats au nouveau numéro de page ; les contrôles doivent rester dans un état cohérent permettant une nouvelle tentative.
+
 ---
 
 # Risques fonctionnels
